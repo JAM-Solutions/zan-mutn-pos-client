@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/screens/auth/user.dart';
+import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class AuthProvider with ChangeNotifier {
   bool isAuthenticated = false;
@@ -25,12 +26,15 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  void userUnAuthorized() {
+  void userUnAuthorized()  {
     isAuthenticated = false;
     notifyListeners();
   }
 
-  void userAuthorized() {
+  void userAuthorized(Map<String, dynamic> credentials) async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConst.userKey, jsonEncode(credentials['User']));
+    await prefs.setString(AppConst.tokenKey, credentials['access_token']);
     isAuthenticated = true;
     sessionHasBeenFetched = true;
     notifyListeners();
