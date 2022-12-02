@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_screen.dart';
 
 /// Screen to display when app is loading authentication session
 class SplashScreen extends StatelessWidget {
@@ -6,11 +7,11 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return   Container(
-        decoration:  const BoxDecoration(color: Colors.lightBlue),
-    child:  const Center(
-    child:  Text("Loading...."),
-    ),
+    return   const Padding(
+      padding:  EdgeInsets.all(16.0),
+      child:  Center(
+      child:  Text("Loading....", textDirection: TextDirection.ltr,),
+      ),
     );
   }
 }
