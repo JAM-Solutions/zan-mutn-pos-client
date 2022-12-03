@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 
 /// Screen to display when app is loading authentication session
 class SplashScreen extends StatelessWidget {

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class AppScreen extends StatelessWidget {
+class AppBaseScreen extends StatelessWidget {
   final Widget child;
   final bool? isLoading;
-  const AppScreen({Key? key, required this.child, this.isLoading = false}) : super(key: key);
+  final AppBar? appBar;
+
+  const AppBaseScreen({Key? key,
+    required this.child,
+    this.isLoading = false, this.appBar}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: appBar,
         body: SafeArea(
       child: Stack(
         alignment: AlignmentDirectional.center,

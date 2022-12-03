@@ -14,7 +14,7 @@ class Api {
 
   static Dio createDio() {
     var dio = Dio(BaseOptions(
-        baseUrl: 'http://192.168.100.233:8088/api/v1',
+        baseUrl: 'http://192.168.203.41:8088/api/v1',
         connectTimeout: 10000,
         receiveTimeout: 15000,
         sendTimeout: 15000));

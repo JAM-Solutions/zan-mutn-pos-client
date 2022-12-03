@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_fetcher.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -55,25 +57,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScreen(
+    return AppBaseScreen(
       isLoading: _isLoading,
-      child: AppForm(
-        formKey: _loginForm,
-       controls: [
-         const AppInputHidden(fieldName: 'grant_type', value: 'password',),
-         AppInputText(fieldName: 'username', label: 'Email',validators: [
-           FormBuilderValidators.required(errorText: "Email is required")
-         ],),
-         AppInputText(
-           fieldName: 'password',
-           label: 'Password',
-           obscureText: true,
-           validators: [
-             FormBuilderValidators.required(errorText: "Password is required")
+      child: Center(
+        child: AppForm(
+          formKey: _loginForm,
+         controls: [
+           const AppInputHidden(
+             fieldName: 'grant_type',
+             value: 'password',),
+           AppInputText(
+             fieldName: 'username',
+             label: 'Email',
+             validators: [
+             FormBuilderValidators.required(
+                 errorText: "Email is required")
            ],),
-          AppButton(onPress: _onSubmit, label: 'Login'),
-       ],
-        ),
+           AppInputText(
+             fieldName: 'password',
+             label: 'Password',
+             obscureText: true,
+             validators: [
+               FormBuilderValidators.required(
+                   errorText: "Password is required")
+             ],),
+            AppButton(onPress: _onSubmit, label: 'Login'),
+         ],
+          ),
+      ),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/screens/splash/splash_screen.dart';
+import 'package:zanmutm_pos_client/src/theme/app_theme.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -38,9 +39,7 @@ class _AppState extends State<App> {
           localizationsDelegates: const [
             FormBuilderLocalizations.delegate,
           ],
-          theme: ThemeData(
-            primarySwatch: Colors.indigo,
-          ),
+          theme: defaultTheme,
         )
             : const SplashScreen());
   }
