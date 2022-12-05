@@ -20,12 +20,13 @@ class DashboardScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Center(
             child: Column (
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 84,color: Colors.teal,),
+                Icon(icon, size: 84,color: Theme.of(context).primaryColor,),
                 const SizedBox(height: 12,),
-                Text(name, style: const TextStyle(
+                Text(name, style:  TextStyle(
                     fontSize: 16,
-                    color: Colors.teal,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.w500),)
               ],
             ),

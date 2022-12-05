@@ -25,6 +25,7 @@ class AppForm extends StatelessWidget {
         initialValue: initialValue,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const AppInputHidden(fieldName: 'id'),
             const AppInputHidden(fieldName: 'uuid'),
