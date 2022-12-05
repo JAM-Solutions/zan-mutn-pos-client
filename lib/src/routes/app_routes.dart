@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/payment/payment_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_route_shell.dart';
 
 abstract class AppRoutes {
   //Const variable for route path
   static const String dashboard = "/";
+  static const String payment = "payment";
   static const String login = "/login";
 
   //Route mapping
@@ -21,7 +23,14 @@ abstract class AppRoutes {
             GoRoute(
                 path: AppRoutes.dashboard,
                 builder: (BuildContext context, GoRouterState state) =>
-                    const DashboardScreen()),
+                    const DashboardScreen(),
+                routes: [
+                  GoRoute(path: AppRoutes.payment,
+                    builder: (BuildContext context, GoRouterState state) =>
+                        const PaymentScreen()
+                  ),
+                ]
+            ),
             GoRoute(
                 path: AppRoutes.login,
                 builder: (BuildContext context, GoRouterState state) =>

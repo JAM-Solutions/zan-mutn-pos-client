@@ -13,8 +13,8 @@ class AuthProvider with ChangeNotifier {
   void getSession() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? token = prefs.getString("TODO");
-      final String? userString = prefs.getString("TODO");
+      final String? token = prefs.getString(AppConst.tokenKey);
+      final String? userString = prefs.getString(AppConst.userKey);
       if (token != null && userString != null) {
         user = User.fromJson(jsonDecode(userString));
         isAuthenticated = true;
@@ -42,6 +42,8 @@ class AuthProvider with ChangeNotifier {
 
   void userLoggedOut() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AppConst.userKey);
+    await prefs.remove(AppConst.tokenKey);
     isAuthenticated = false;
     sessionHasBeenFetched = true;
     notifyListeners();

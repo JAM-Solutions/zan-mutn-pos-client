@@ -5,15 +5,21 @@ const Color dangerColor =  Colors.red;
 
 final ThemeData defaultTheme = ThemeData(
   primaryColor: primaryColor,
+  secondaryHeaderColor: Colors.tealAccent,
   fontFamily: 'Roboto',
   textTheme: const TextTheme(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
   ),
-  elevatedButtonTheme: const ElevatedButtonThemeData(
-
+  appBarTheme: const AppBarTheme(
+    color: primaryColor
   ),
+ elevatedButtonTheme: ElevatedButtonThemeData(
+   style: ElevatedButton.styleFrom(
+     backgroundColor: primaryColor,
+   ),
+ ),
   iconTheme: const IconThemeData(
-    color: Colors.blueGrey
+    color: Color.fromARGB(200, 110, 114, 116)
   ),
   inputDecorationTheme: const InputDecorationTheme(
      labelStyle: TextStyle(fontSize: 14),
