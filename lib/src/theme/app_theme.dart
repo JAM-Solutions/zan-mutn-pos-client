@@ -13,11 +13,19 @@ final ThemeData defaultTheme = ThemeData(
   appBarTheme: const AppBarTheme(
     color: primaryColor
   ),
+ textButtonTheme: TextButtonThemeData(
+   style: TextButton.styleFrom(
+     foregroundColor: primaryColor,
+   ),
+ ),
  elevatedButtonTheme: ElevatedButtonThemeData(
    style: ElevatedButton.styleFrom(
      backgroundColor: primaryColor,
    ),
  ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(
+    color: primaryColor
+  ),
   iconTheme: const IconThemeData(
     color: Color.fromARGB(200, 110, 114, 116)
   ),

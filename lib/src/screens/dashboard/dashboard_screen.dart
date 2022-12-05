@@ -21,7 +21,7 @@ class DashboardScreen extends StatelessWidget {
           child: Center(
             child: Column (
               children: [
-                Icon(icon, size: 96,color: Colors.teal,),
+                Icon(icon, size: 84,color: Colors.teal,),
                 const SizedBox(height: 12,),
                 Text(name, style: const TextStyle(
                     fontSize: 16,
