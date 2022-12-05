@@ -49,7 +49,7 @@ class DashboardScreen extends StatelessWidget {
         child: GridView.count(
           crossAxisCount: 2,
           children: [
-            getTile(context,Icons.point_of_sale_sharp, 'Configuration', '/${AppRoutes.payment}'),
+            getTile(context,Icons.point_of_sale_rounded, 'Configuration', '/${AppRoutes.payment}'),
             getTile(context,Icons.receipt, 'Receipt', '/${AppRoutes.payment}'),
             getTile(context,Icons.payment, 'Payment', '/${AppRoutes.payment}'),
             getTile(context,Icons.wifi_protected_setup_outlined, 'Synchronise', '/${AppRoutes.payment}')
