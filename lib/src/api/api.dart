@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
@@ -14,10 +16,10 @@ class Api {
 
   static Dio createDio() {
     var dio = Dio(BaseOptions(
-        baseUrl: 'http://192.168.203.41:8088/api/v1',
-        connectTimeout: 10000,
-        receiveTimeout: 15000,
-        sendTimeout: 15000));
+        baseUrl: dotenv.env['API_SERVER'] ?? 'http://noapi',
+        connectTimeout: int.parse(dotenv.env['API_CONNECTION_TIMEOUT'] ?? '10000'),
+        receiveTimeout: int.parse(dotenv.env['API_RECEIVE_TIMEOUT'] ?? '15000'),
+        sendTimeout: int.parse(dotenv.env['API_SEND_TIMEOUT'] ?? '10000')));
     dio.interceptors.add(AppInterceptor());
     return dio;
   }
@@ -25,8 +27,9 @@ class Api {
 
 class AppInterceptor extends Interceptor {
   AppInterceptor();
-  // TODO move to secure place
-  String clientAuth = "d2ViYXBwOndlYmFwcA==";
+  Codec<String, String> stringToBase64 = utf8.fuse(base64);
+  String clientAuth = base64.encode(
+      utf8.encode("${dotenv.env['0AUTH_CLIENT_ID']}:${dotenv.env['0AUTH_CLIENT_SECRET']}"));
 
   @override
   void onRequest(
