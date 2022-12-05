@@ -1,16 +1,10 @@
-# zanmutm_pos_client
+# Zan Mutm POS mobile client.
 
-A new Flutter project.
+## Development setup
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Android Development
+1. Install Flutter
+2. Install Android Studio
+3. Setup device/emulator
+4. Clone the project
+5. Copy .env.example to .env and update env variable to your development values
