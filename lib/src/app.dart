@@ -32,6 +32,7 @@ class _AppState extends State<App> {
         builder: (context, sessionHasBeenFetched, child) =>
         sessionHasBeenFetched
             ? MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           routeInformationProvider: _router.routeInformationProvider,
           routeInformationParser: _router.routeInformationParser,
           routerDelegate: _router.routerDelegate,
