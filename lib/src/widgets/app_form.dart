@@ -39,6 +39,7 @@ class AppForm extends StatelessWidget {
                 ],
               )).toList(),
             ) : customLayout ?? Container()],
-        ));
+        )
+    );
   }
 }
