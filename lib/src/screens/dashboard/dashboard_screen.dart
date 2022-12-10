@@ -13,7 +13,7 @@ class DashboardScreen extends StatelessWidget {
 
   Widget getTile(BuildContext context, IconData icon, String name, String link) {
     return GestureDetector(
-      onTap: ()  => context.push(link),
+      onTap: ()  => context.go(link),
       child: Card(
         elevation: 4,
         child: Padding(
@@ -49,10 +49,10 @@ class DashboardScreen extends StatelessWidget {
         child: GridView.count(
           crossAxisCount: 2,
           children: [
-            getTile(context,Icons.point_of_sale_rounded, 'Configuration', '/${AppRoutes.payment}'),
-            getTile(context,Icons.receipt, 'Receipt', '/${AppRoutes.payment}'),
-            getTile(context,Icons.payment, 'Payment', '/${AppRoutes.payment}'),
-            getTile(context,Icons.wifi_protected_setup_outlined, 'Synchronise', '/${AppRoutes.payment}')
+            getTile(context,Icons.point_of_sale_rounded, 'Configuration', '/'),
+            getTile(context,Icons.receipt, 'Receipt', '/'),
+            getTile(context,Icons.payment, 'Payment', '/'),
+            getTile(context,Icons.wifi_protected_setup_outlined, 'Synchronise', '/')
           ],
         )
 

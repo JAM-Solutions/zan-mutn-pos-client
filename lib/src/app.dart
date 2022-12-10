@@ -14,7 +14,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final GoRouter _router = AppRoutes.router;
+  final GoRouter _router = AppRoutes().getRoutes();
 
   @override
   void initState() {

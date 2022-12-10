@@ -27,6 +27,7 @@ class Api {
 
 class AppInterceptor extends Interceptor {
   AppInterceptor();
+  //TODO use device serial number as cliendid and secret
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
   String clientAuth = base64.encode(
       utf8.encode("${dotenv.env['0AUTH_CLIENT_ID']}:${dotenv.env['0AUTH_CLIENT_SECRET']}"));
