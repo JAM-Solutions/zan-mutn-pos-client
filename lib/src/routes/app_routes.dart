@@ -59,21 +59,6 @@ class AppRoutes {
               },
               // builder: (BuildContext context, GoRouterState state) => e.widget,
             )),
-            // GoRoute(
-            //     path: AppRoutes.dashboard,
-            //     builder: (BuildContext context, GoRouterState state) =>
-            //         const DashboardScreen(),
-            //     routes: [
-            //       GoRoute(path: AppRoutes.payment,
-            //         builder: (BuildContext context, GoRouterState state) =>
-            //             const PaymentScreen()
-            //       ),
-            //     ]
-            // ),GoRoute(
-            //     path: AppRoutes.dashboard,
-            //     builder: (BuildContext context, GoRouterState state) =>
-            //         const DashboardScreen(),
-            // ),
           ]),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
