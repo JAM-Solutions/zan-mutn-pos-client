@@ -5,12 +5,14 @@ import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/payment/payment_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/pos_config/pos_config_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_route_shell.dart';
 
 class AppRoutes {
   //Const variable for route path
   static const String dashboard = "/";
   static const String login = "/login";
+  static const String posConfig = "/pos-config";
 
   static  const List<AppTabItem> tabs = [
    AppTabItem(
@@ -65,18 +67,30 @@ class AppRoutes {
           path: AppRoutes.login,
           builder: (BuildContext context, GoRouterState state) =>
           const LoginScreen()),
+      GoRoute(
+        parentNavigatorKey: rootNavigatorKey,
+          path: AppRoutes.posConfig,
+          builder: (BuildContext context, GoRouterState state) =>
+          const PosConfigScreen()),
     ],
     //Check auth state and redirect to login if user not authenticated
     redirect: (context, state) {
       final loggedIn = authProvider.isAuthenticated;
+      final hasConfig = authProvider.posConfiguration != null;
       //If user is 
-      final isLoginRoute = state.subloc == '/login';
+      final isLoginRoute = state.subloc == AppRoutes.login;
+      final isConfigRoute = state.subloc == AppRoutes.posConfig;
+      final toRoute = state.subloc;
       //If is state is not logged in return login
-      if (!loggedIn) return isLoginRoute ? null : '/login';
+      if (!loggedIn) {
+        return isLoginRoute ? null : AppRoutes.login;
+      } else if(loggedIn && !hasConfig) {
+        return isConfigRoute ? null : AppRoutes.posConfig;
+      }
       //Else return default router
       // TODO implement back to previous page before redirected
       if (isLoginRoute) return '/';
-      return null;
+      return toRoute;
     },
   );
 }

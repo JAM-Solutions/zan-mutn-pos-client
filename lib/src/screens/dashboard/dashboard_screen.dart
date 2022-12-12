@@ -41,6 +41,8 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Zan-Mutm POS",),
         centerTitle: true,
+        leading: IconButton(onPressed: () => context.go(AppRoutes.posConfig),
+            icon: const Icon(Icons.settings)) ,
         actions: [
           IconButton(onPressed: () => _logout(context),
               icon: const Icon(Icons.logout))

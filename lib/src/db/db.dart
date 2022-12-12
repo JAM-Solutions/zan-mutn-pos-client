@@ -25,7 +25,7 @@ class DbProvider {
     }
 
     initDB() async {
-      String dbName =  dotenv.env['DB_NAME'] ?? 'zanmutm_default_db';
+      String dbName =  dotenv.env['LOCAL_DB_NAME'] ?? 'zanmutm_default_db';
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
         String path = join(documentsDirectory.path, "$dbName.db");
         return await openDatabase(path, version: 1, onOpen: (db) {},
@@ -42,21 +42,16 @@ class DbProvider {
     }
 
     migrate() async {
-      debugPrint("****Migrating**********");
       var db = await database;
       List<Map<String, dynamic>> executed = await db.query('migrations');
       List<String> versions = executed.map((e) => e['version'].toString()).toList();
-      debugPrint(versions.toString());
       final manifestJson = await rootBundle.loadString('AssetManifest.json');
       final List<String> migrations = (json.decode(manifestJson).keys.where((String key) => key.startsWith('migrations'))).toList();
       for (var m in migrations) {
         final names = m.replaceFirst('migrations/', '').split('__');
         if (!versions.contains(names[0])) {
           String content = await rootBundle.loadString(m);
-          debugPrint(names.toString());
-          debugPrint(content);
            await db.execute(content);
-
           var insert = {
             'version': names[0],
             'description':names[1].replaceFirst('.sql', ''),
@@ -64,8 +59,8 @@ class DbProvider {
             'success': 1
           };
           await db.insert('migrations', insert);
+          debugPrint("$m migrated successfully----");
         }
       }
-      debugPrint("****Migrating successfully**********");
     }
 }
