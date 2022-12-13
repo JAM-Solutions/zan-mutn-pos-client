@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 
 class AppListviewBuilder extends StatelessWidget {
   final String title;
-  final String number;
-  final String text;
   final Function onTap;
   final bool disabled;
-  const AppListviewBuilder({Key? key, required this.text, required this.number, required this.title, required this.onTap,this.disabled = false}) : super(key: key);
+  final int itemnumber;
+  const AppListviewBuilder({Key? key, required this.title, required this.onTap,this.disabled = false, required this.itemnumber}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
     shrinkWrap: true,
     itemBuilder: (context, index) {
           return Column(
             children: [
-              ListTile(
-                onTap: disabled ? null : () => onTap(),
-              leading: Text(number),
-                title: Text(title),
-                trailing: Text(text),
+              Card(
+                elevation: 2,
+                child: ListTile(
+                  onTap: disabled ? null : () => onTap(),
+                  title: Text(title),
           ),
+              ),
             ],
           );
-    }
+    },
+    itemCount: itemnumber != 0 ? itemnumber : null,
     );
   }
 }
