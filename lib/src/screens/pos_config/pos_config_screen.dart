@@ -76,11 +76,12 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
                 ],
               actionBuilder: (data) =>IconButton(
                 splashRadius: 24,
-                padding: EdgeInsets.all(1),
+                padding: const EdgeInsets.all(1),
                   onPressed: () => _loadConfig(), icon: const Icon(Icons.sync)),
             )
           ],
-        ));
+        )
+  );
   },
 );
   }
