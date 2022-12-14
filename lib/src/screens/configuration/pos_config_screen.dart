@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/models/format_type.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/screens/pos_config/pos_config_service.dart';
+import 'package:zanmutm_pos_client/src/screens/configuration/configuration_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
 
@@ -18,12 +16,12 @@ class PosConfigScreen extends StatefulWidget {
 
 class _PosConfigScreenState extends State<PosConfigScreen> {
 
-  late AuthProvider authProvider;
+  late AppStateProvider authProvider;
   bool _isLoading = false;
 
   @override
   void initState() {
-    authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider = Provider.of<AppStateProvider>(context, listen: false);
     if (authProvider.posConfiguration == null) {
       _loadConfig();
     }
@@ -55,13 +53,11 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
+    return Consumer<AppStateProvider>(
   builder: (context, provider, child) {
   return AppBaseScreen(
         appBar: AppBar(
           title: const Text("Pos Configurations"),
-          leading: IconButton(icon: const Icon(Icons.arrow_back),
-            onPressed:() => context.go(AppRoutes.dashboard),),
         ),
         isLoading: _isLoading,
         child: ListView(

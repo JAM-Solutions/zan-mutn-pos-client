@@ -2,28 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
+import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_config_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/payment/payment_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/pos_config/pos_config_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/configuration/pos_config_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_route_shell.dart';
 
 class AppRoutes {
   //Const variable for route path
   static const String dashboard = "/";
+  static const String collectCash = "/collect-cash";
+  static const String compileBill = "/compile-bill";
   static const String login = "/login";
-  static const String posConfig = "/pos-config";
+  static const String config = "/config";
+  static const String configPos = "pos";
+  static const String configFinancialYear = "fy";
+  static const String configRevenue = "revenue";
 
   static  const List<AppTabItem> tabs = [
    AppTabItem(
      icon: Icon(Icons.home),
-     label: "Home",path: "/",
+     label: "Home",path: dashboard,
      widget:  DashboardScreen(),
    ),
    AppTabItem(
        icon: Icon(Icons.payment),
-       label: "Payments",
-       path: "/payment",
+       label: "Cash",
+       path: collectCash,
+       widget: PaymentScreen()
+   ),
+    AppTabItem(
+       icon: Icon(Icons.collections),
+       label: "Bill",
+       path: collectCash,
        widget: PaymentScreen()
    )
   ];
@@ -35,12 +49,12 @@ class AppRoutes {
   //Route mapping
   GoRouter getRoutes() =>  GoRouter(
     //Listen to change of auth state from auth provider
-    refreshListenable: authProvider,
+    refreshListenable: appStateProvider,
     navigatorKey: rootNavigatorKey,
     routes: [
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
-          builder: (context, state, child) => AppRouteShell(child: child),
+          builder: (context, state, child) => AppTabNavigationShell(child: child),
           routes: <RouteBase>[
             ...tabs.map((e) => GoRoute(
               path: e.path,
@@ -69,23 +83,38 @@ class AppRoutes {
           const LoginScreen()),
       GoRoute(
         parentNavigatorKey: rootNavigatorKey,
-          path: AppRoutes.posConfig,
+          path: AppRoutes.config,
           builder: (BuildContext context, GoRouterState state) =>
-          const PosConfigScreen()),
+          const ConfigurationScreen(),
+          routes: [
+            GoRoute(
+              path: AppRoutes.configFinancialYear,
+              builder: (BuildContext context, GoRouterState state) =>
+              const FinancialYearConfigScreen(),),
+            GoRoute(
+              path: AppRoutes.configPos,
+              builder: (BuildContext context, GoRouterState state) =>
+              const PosConfigScreen(),),
+            GoRoute(
+              path: AppRoutes.configRevenue,
+              builder: (BuildContext context, GoRouterState state) =>
+              const RevenueConfigScreen(),)
+          ]
+      ),
     ],
     //Check auth state and redirect to login if user not authenticated
     redirect: (context, state) {
-      final loggedIn = authProvider.isAuthenticated;
-      final hasConfig = authProvider.posConfiguration != null;
+      final loggedIn = appStateProvider.isAuthenticated;
+      final hasConfig = appStateProvider.posConfiguration != null;
       //If user is 
       final isLoginRoute = state.subloc == AppRoutes.login;
-      final isConfigRoute = state.subloc == AppRoutes.posConfig;
+      final isConfigRoute = state.subloc == AppRoutes.config;
       final toRoute = state.subloc;
       //If is state is not logged in return login
       if (!loggedIn) {
         return isLoginRoute ? null : AppRoutes.login;
       } else if(loggedIn && !hasConfig) {
-        return isConfigRoute ? null : AppRoutes.posConfig;
+        return isConfigRoute ? null : AppRoutes.config;
       }
       //Else return default router
       // TODO implement back to previous page before redirected

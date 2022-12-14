@@ -29,6 +29,13 @@ final ThemeData defaultTheme = ThemeData(
   iconTheme: const IconThemeData(
     color: Color.fromARGB(200, 110, 114, 116)
   ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    selectedLabelStyle: TextStyle(color: primaryColor),
+    selectedItemColor: primaryColor,
+    selectedIconTheme: IconThemeData(
+      color: primaryColor
+    )
+  ),
   inputDecorationTheme: const InputDecorationTheme(
      labelStyle: TextStyle(fontSize: 14),
       border: OutlineInputBorder(

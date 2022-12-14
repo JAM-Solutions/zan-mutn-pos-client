@@ -8,7 +8,7 @@ import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
  _logout(context) {
-   Provider.of<AuthProvider>(context,listen: false).userLoggedOut();
+   Provider.of<AppStateProvider>(context,listen: false).userLoggedOut();
  }
 
   Widget getTile(BuildContext context, IconData icon, String name, String link) {
@@ -41,7 +41,7 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Zan-Mutm POS",),
         centerTitle: true,
-        leading: IconButton(onPressed: () => context.go(AppRoutes.posConfig),
+        leading: IconButton(onPressed: () => context.go(AppRoutes.config),
             icon: const Icon(Icons.settings)) ,
         actions: [
           IconButton(onPressed: () => _logout(context),

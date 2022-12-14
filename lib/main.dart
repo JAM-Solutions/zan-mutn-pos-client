@@ -11,7 +11,7 @@ Future<void> main() async {
   await DbProvider().migrate();
   runApp(MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(create: (_) => authProvider),
+        ChangeNotifierProvider<AppStateProvider>(create: (_) => appStateProvider),
       ],
     child: App(),));
 }

@@ -19,7 +19,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     //Load session when app initialized
-    Provider.of<AuthProvider>(context, listen: false).getSession();
+    Provider.of<AppStateProvider>(context, listen: false).getSession();
     super.initState();
   }
   @override
@@ -27,7 +27,7 @@ class _AppState extends State<App> {
     ///Select state of authentication from auth provider
     ///If state is session loading return splash screen
     ///else return a router app
-    return Selector<AuthProvider, bool>(
+    return Selector<AppStateProvider, bool>(
         selector: ((_, authState) => authState.sessionHasBeenFetched),
         builder: (context, sessionHasBeenFetched, child) =>
         sessionHasBeenFetched

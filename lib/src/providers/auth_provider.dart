@@ -7,13 +7,15 @@ import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/screens/auth/user.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
-class AuthProvider with ChangeNotifier {
+class AppStateProvider with ChangeNotifier {
   bool isAuthenticated = false;
   bool sessionHasBeenFetched = false;
   bool configurationHasBeenLoaded = false;
-  PosConfiguration? posConfiguration;
-
   User? user;
+  PosConfiguration? posConfiguration;
+  //Todo add revenue source
+  // Todo add financial year
+
 
   void getSession() async {
     try {
@@ -97,4 +99,4 @@ class AuthProvider with ChangeNotifier {
   }
 }
 
-final authProvider = AuthProvider();
+final appStateProvider = AppStateProvider();

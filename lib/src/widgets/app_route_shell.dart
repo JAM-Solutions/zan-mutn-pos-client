@@ -4,18 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 
-/// This widget a wrapper that can be used to provide common functionalities/feature
+/// This widget a wrapper for tabs
 /// that can be applied to all routed pages
 /// It accept child widget which is a router page
-class AppRouteShell extends StatefulWidget {
+class AppTabNavigationShell extends StatefulWidget {
   final Widget child;
-  const AppRouteShell({Key? key, required this.child}) : super(key: key);
+  const AppTabNavigationShell({Key? key, required this.child}) : super(key: key);
 
   @override
-  State<AppRouteShell> createState() => _AppRouteShellState();
+  State<AppTabNavigationShell> createState() => _AppTabNavigationShellState();
 }
 
-class _AppRouteShellState extends State<AppRouteShell> {
+class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
 
   int _currentTabIndex = 0;
 

@@ -5,13 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_fetcher.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_snackbar.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -21,14 +19,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _loginForm = GlobalKey<FormBuilderState>();
-  late Function _onError;
   bool _isLoading = false;
-  late AuthProvider _authProvider;
+  late AppStateProvider _authProvider;
 
   @override
   void initState() {
-    _onError = appError(context, autoClose: true);
-    _authProvider =  Provider.of<AuthProvider>(context, listen: false);
+    _authProvider =  Provider.of<AppStateProvider>(context, listen: false);
     super.initState();
   }
 
@@ -46,11 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
            _isLoading = false;
          });
       }catch(e) {
-        debugPrint(e.toString());
-        _onError(e.toString());
         setState(() {
           _isLoading = false;
         });
+        debugPrint(e.toString());
+        AppMessages.showError(context, e.toString());
       }
     }
   }
@@ -64,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.point_of_sale_outlined, size: 120, color: Theme.of(context).primaryColor,),
-            SizedBox(height: 16,),
+           const SizedBox(height: 16,),
             AppForm(
               formKey: _loginForm,
              controls: [
