@@ -54,7 +54,7 @@ final ThemeData defaultTheme = ThemeData(
   ),
   snackBarTheme: const SnackBarThemeData(
     behavior: SnackBarBehavior.floating,
-    backgroundColor:  Color.fromARGB(255, 15, 15, 15),
+    backgroundColor:  Color.fromARGB(255, 50, 50, 50),
     elevation: 4,
     actionTextColor: Colors.white,
   )

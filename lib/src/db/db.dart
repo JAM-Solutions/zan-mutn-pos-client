@@ -43,6 +43,8 @@ class DbProvider {
 
     migrate() async {
       var db = await database;
+     // await db.execute('DROP TABLE pos_configurations');
+     // await db.execute('DELETE FROM migrations');
       List<Map<String, dynamic>> executed = await db.query('migrations');
       List<String> versions = executed.map((e) => e['version'].toString()).toList();
       final manifestJson = await rootBundle.loadString('AssetManifest.json');

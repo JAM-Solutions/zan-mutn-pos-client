@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
-import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/screens/configuration/configuration_service.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_card.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 class PosConfigScreen extends StatefulWidget {
   const PosConfigScreen({Key? key}) : super(key: key);
@@ -16,39 +16,38 @@ class PosConfigScreen extends StatefulWidget {
 
 class _PosConfigScreenState extends State<PosConfigScreen> {
 
-  late AppStateProvider authProvider;
+  late AppStateProvider _configProvider;
   bool _isLoading = false;
 
   @override
   void initState() {
-    authProvider = Provider.of<AppStateProvider>(context, listen: false);
-    if (authProvider.posConfiguration == null) {
+    _configProvider =Provider.of<AppStateProvider>(context, listen: false);
+    if (_configProvider.posConfiguration == null) {
       _loadConfig();
     }
     super.initState();
   }
 
   Future<void> _loadConfig() async {
+    String? deviceId = _configProvider.deviceInfo?.id;
+    if (deviceId == null) {
+      AppMessages.showError(context, 'No device id found');
+    }
     setState(() {
       _isLoading = true;
     });
     try {
-     var resp = await  fetchPosConfig(1);
-     if (resp.data != null && resp.data['data'] != null) {
-       authProvider.updateConfiguration(resp.data['data']);
-     } else {
-
-     }
+      await configService.fetchPosConfig(deviceId!);
      setState(() {
        _isLoading = false;
      });
-    } catch(e) {
+    } 
+    catch(e) {
       setState(() {
         _isLoading = false;
       });
-      debugPrint(e.toString());
+      AppMessages.showError(context, e.toString());
     }
-    debugPrint("Loading config from api ");
   }
 
   @override
@@ -60,10 +59,11 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
           title: const Text("Pos Configurations"),
         ),
         isLoading: _isLoading,
-        child: ListView(
+        child: Column(
           children: [
             AppDetailCard(
                 title: "Pos Configuration",
+                subTitle: "POS ID: ${provider.deviceInfo?.id ?? ''}",
                 data: provider.posConfiguration != null ? provider.posConfiguration!.toJson() : null,
                 columns: [
                   AppDetailColumn(header: 'Device name', value: 'posDeviceName'),
@@ -72,11 +72,11 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
                 ],
               actionBuilder: (data) =>IconButton(
                 splashRadius: 24,
-                padding: EdgeInsets.all(1),
                   onPressed: () => _loadConfig(), icon: const Icon(Icons.sync)),
-            )
+            ),
           ],
-        ));
+        )
+  );
   },
 );
   }

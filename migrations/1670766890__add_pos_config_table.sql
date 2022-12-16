@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS pos_configurations (
     amountLimit double precision NOT NULL,
     posDeviceId integer NOT NULL,
     posDeviceName VARCHAR(200) NOT NULL,
+    posDeviceNumber VARCHAR(200) NOT NULL,
     UNIQUE(posDeviceId),
     UNIQUE(uuid)
 )

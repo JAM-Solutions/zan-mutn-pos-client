@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/screens/login/login_service.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class Api {
@@ -62,7 +63,6 @@ class AppInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     debugPrint("Api response: [${response.statusCode}]");
-   // debugPrint("Payload: [${response.data?.toString() ?? ''}]");
     handler.next(response);
   }
 
@@ -87,7 +87,6 @@ class AppInterceptor extends Interceptor {
                     err.response?.data['error_description'] ??
                     'Bad request');
           case 401:
-            appStateProvider.userUnAuthorized();
             throw UnauthorizedException(err.requestOptions);
           case 403:
             throw PermissionDenied(err.requestOptions);
@@ -109,6 +108,7 @@ class AppInterceptor extends Interceptor {
     return handler.next(err);
   }
 }
+
 
 class BadRequestException extends DioError {
   final String _message;
@@ -154,7 +154,7 @@ class UnauthorizedException extends DioError {
 
   @override
   String toString() {
-    return 'Access denied';
+    return requestOptions.path.contains(authenticationApi) ? 'Invalid credentials': '';
   }
 }
 
@@ -163,7 +163,7 @@ class NotFoundException extends DioError {
 
   @override
   String toString() {
-    return 'The requested information could not be found';
+    return 'Resource Not found';
   }
 }
 

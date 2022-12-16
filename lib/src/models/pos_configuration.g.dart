@@ -14,6 +14,7 @@ PosConfiguration _$PosConfigurationFromJson(Map<String, dynamic> json) =>
       (json['amountLimit'] as num).toDouble(),
       json['posDeviceId'] as int,
       json['posDeviceName'] as String,
+      json['posDeviceNumber'] as String,
     );
 
 Map<String, dynamic> _$PosConfigurationToJson(PosConfiguration instance) =>
@@ -23,5 +24,6 @@ Map<String, dynamic> _$PosConfigurationToJson(PosConfiguration instance) =>
       'offlineLimit': instance.offlineLimit,
       'amountLimit': instance.amountLimit,
       'posDeviceId': instance.posDeviceId,
+      'posDeviceNumber': instance.posDeviceNumber,
       'posDeviceName': instance.posDeviceName,
     };

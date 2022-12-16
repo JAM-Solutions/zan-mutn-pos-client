@@ -15,11 +15,18 @@ class AppDetailColumn {
 }
 class AppDetailCard extends StatelessWidget {
  final String title;
+ final String? subTitle;
   final Map<String, dynamic>? data;
   final List<AppDetailColumn> columns;
   final Widget Function(Map<String, dynamic>? row)? actionBuilder;
   
-  const AppDetailCard({Key? key, required this.data, required this.columns, this.actionBuilder, required this.title}) : super(key: key);
+  const AppDetailCard({Key? key,
+    required this.data,
+    required this.columns,
+    this.actionBuilder,
+    required this.title,
+    this.subTitle
+  }) : super(key: key);
 
  static const TextStyle headerStyle = TextStyle(
      fontWeight: FontWeight.normal, color: Color.fromARGB(255, 71, 85, 105));
@@ -40,7 +47,15 @@ class AppDetailCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  Text(title),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                    if(subTitle != null)
+                      const SizedBox(height: 1,),
+                      if(subTitle != null)
+                        Text(subTitle!,  style: const TextStyle(fontSize: 11))
+                  ],),
                   if (actionBuilder != null)
                     SizedBox(
                       child: actionBuilder!(data),
@@ -50,6 +65,8 @@ class AppDetailCard extends StatelessWidget {
                   height: 12,
                   thickness: 1,
                 ),
+                if(data == null)
+                  Center(child: Text("No data!", style: const TextStyle(fontSize: 11),),),
                 if (data != null)
                 ...columns.map((col) => Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,7 +91,9 @@ class AppDetailCard extends StatelessWidget {
                       height: 12,
                     )
                   ],
-                )),
+                ),
+
+    ),
               ],
             ),
           ),

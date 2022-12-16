@@ -9,10 +9,11 @@ class PosConfiguration {
   final double offlineLimit;
   final double amountLimit;
   final int posDeviceId;
+  final String posDeviceNumber;
   final String posDeviceName;
 
   PosConfiguration(this.id, this.uuid, this.offlineLimit, this.amountLimit,
-      this.posDeviceId, this.posDeviceName);
+      this.posDeviceId, this.posDeviceName, this.posDeviceNumber);
 
   factory PosConfiguration.fromJson(Map<String, dynamic> json) =>
       _$PosConfigurationFromJson(json);

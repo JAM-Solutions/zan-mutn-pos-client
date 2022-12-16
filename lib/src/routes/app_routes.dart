@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zanmutm_pos_client/src/providers/auth_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_config_screen.dart';
@@ -108,7 +108,7 @@ class AppRoutes {
       final hasConfig = appStateProvider.posConfiguration != null;
       //If user is 
       final isLoginRoute = state.subloc == AppRoutes.login;
-      final isConfigRoute = state.subloc == AppRoutes.config;
+      final isConfigRoute = state.subloc.contains(AppRoutes.config) ;
       final toRoute = state.subloc;
       //If is state is not logged in return login
       if (!loggedIn) {
@@ -117,7 +117,6 @@ class AppRoutes {
         return isConfigRoute ? null : AppRoutes.config;
       }
       //Else return default router
-      // TODO implement back to previous page before redirected
       if (isLoginRoute) return '/';
       return toRoute;
     },
