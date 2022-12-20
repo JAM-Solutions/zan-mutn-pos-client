@@ -15,13 +15,12 @@ class PosConfigScreen extends StatefulWidget {
 }
 
 class _PosConfigScreenState extends State<PosConfigScreen> {
-
   late AppStateProvider _configProvider;
   bool _isLoading = false;
 
   @override
   void initState() {
-    _configProvider =Provider.of<AppStateProvider>(context, listen: false);
+    _configProvider = Provider.of<AppStateProvider>(context, listen: false);
     if (_configProvider.posConfiguration == null) {
       _loadConfig();
     }
@@ -37,12 +36,11 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
       _isLoading = true;
     });
     try {
-      await configService.fetchPosConfig(deviceId!);
-     setState(() {
-       _isLoading = false;
-     });
-    } 
-    catch(e) {
+      await configService.fetchFromApi(deviceId!);
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
       setState(() {
         _isLoading = false;
       });
@@ -53,32 +51,36 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppStateProvider>(
-  builder: (context, provider, child) {
-  return AppBaseScreen(
-        appBar: AppBar(
-          title: const Text("Pos Configurations"),
-        ),
-        isLoading: _isLoading,
-        child: Column(
-          children: [
-            AppDetailCard(
-                title: "Pos Configuration",
-                subTitle: "POS ID: ${provider.deviceInfo?.id ?? ''}",
-                data: provider.posConfiguration != null ? provider.posConfiguration!.toJson() : null,
-                columns: [
-                  AppDetailColumn(header: 'Device name', value: 'posDeviceName'),
-                  AppDetailColumn(header: 'Offline', value: 'offlineLimit'),
-                  AppDetailColumn(header: 'Amount Limit', value: 'amountLimit'),
-                ],
-              actionBuilder: (data) =>IconButton(
-                splashRadius: 24,
-                  onPressed: () => _loadConfig(), icon: const Icon(Icons.sync)),
+      builder: (context, provider, child) {
+        return AppBaseScreen(
+            appBar: AppBar(
+              title: const Text("Pos Configurations"),
             ),
-          ],
-        )
-  );
-  },
-);
+            isLoading: _isLoading,
+            child: Column(
+              children: [
+                AppDetailCard(
+                  title: "Pos Configuration",
+                  subTitle: "POS ID: ${provider.deviceInfo?.id ?? ''}",
+                  data: provider.posConfiguration != null
+                      ? provider.posConfiguration!.toJson()
+                      : null,
+                  columns: [
+                    AppDetailColumn(
+                        header: 'Device name', value: 'posDeviceName'),
+                    AppDetailColumn(header: 'Offline', value: 'offlineLimit'),
+                    AppDetailColumn(
+                        header: 'Amount Limit', value: 'amountLimit'),
+                    AppDetailColumn(header: 'Last Update', value: 'lastUpdate'),
+                  ],
+                  actionBuilder: (data) => IconButton(
+                      splashRadius: 24,
+                      onPressed: () => _loadConfig(),
+                      icon: const Icon(Icons.sync)),
+                ),
+              ],
+            ));
+      },
+    );
   }
-
 }

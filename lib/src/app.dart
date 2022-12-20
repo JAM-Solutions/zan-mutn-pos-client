@@ -35,7 +35,7 @@ class _AppState extends State<App> {
     AppDeviceInfo info = await DeviceInfoService().getInfo(infoPlugin);
     await _appState.setDeviceInfo(info);
     await authService.getSession();
-    await configService.getConfiguration(info.id);
+    await configService.queryFromDb(info.id);
   }
 
   @override

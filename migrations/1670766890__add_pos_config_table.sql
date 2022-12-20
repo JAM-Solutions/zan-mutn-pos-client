@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS pos_configurations (
     posDeviceId integer NOT NULL,
     posDeviceName VARCHAR(200) NOT NULL,
     posDeviceNumber VARCHAR(200) NOT NULL,
+    lastUpdate VARCHAR(200) NOT NULL,
     UNIQUE(posDeviceId),
     UNIQUE(uuid)
 )

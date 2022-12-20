@@ -15,35 +15,47 @@ class ConfigurationScreen extends StatefulWidget {
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateProvider>(builder: (context, appState, child)  {
-     return AppBaseScreen(
-       appBar: AppBar(
-         title: Text('Configurations'),
-         leading: IconButton(icon: const Icon(Icons.arrow_back),
-           onPressed:() => context.go(AppRoutes.dashboard),),
-       ),
+    return Consumer<AppStateProvider>(builder: (context, appState, child) {
+      return AppBaseScreen(
+        appBar: AppBar(
+          title: const Text('Configurations'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go(AppRoutes.dashboard),
+          ),
+        ),
         child: ListView(
-          children:  [
+          children: [
             ListTile(
-              leading: Icon(Icons.calendar_month),
-              title: Text('Financial Year Configuration'),
-              subtitle: Text('Last update'),
-              onTap: () => context.push('${AppRoutes.config}/${AppRoutes.configFinancialYear}'),
+              leading: const Icon(Icons.calendar_month),
+              title: const Text('Financial Year Configuration'),
+              subtitle: Text(
+                  'Last update: ${appState.financialYear?.lastUpdate ?? ''}'),
+              trailing: appState.financialYear != null
+                ? const Icon(Icons.verified, color: Colors.green)
+                : null,
+              onTap: () => context
+                  .go('${AppRoutes.config}/${AppRoutes.configFinancialYear}'),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              leading: Icon(Icons.point_of_sale_outlined),
-              title: Text('Pos Configuration'),
-              subtitle: Text('Last update'),
-              onTap: () => context.push('${AppRoutes.config}/${AppRoutes.configPos}'),
+              leading: const Icon(Icons.point_of_sale_outlined),
+              title: const Text('Pos Configuration'),
+              subtitle: Text(
+                  'Last update: ${appState.posConfiguration?.lastUpdate ?? ''}'),
+              trailing: appState.posConfiguration != null
+                  ? const Icon(Icons.verified, color: Colors.green)
+                  : null,
+              onTap: () =>
+                  context.go('${AppRoutes.config}/${AppRoutes.configPos}'),
             ),
-            Divider(),
+            const Divider(),
             ListTile(
-              leading: Icon(Icons.monetization_on_outlined),
-              title: Text('Revenue Configuration'),
-              subtitle: Text('Last update'),
-              onTap: () => context.push('${AppRoutes.config}/${AppRoutes.configRevenue}'),
-
+              leading: const Icon(Icons.monetization_on_outlined),
+              title: const Text('Revenue Configuration'),
+              subtitle: const Text('Last update'),
+              onTap: () => context
+                  .push('${AppRoutes.config}/${AppRoutes.configRevenue}'),
             )
           ],
         ),

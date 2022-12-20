@@ -14,6 +14,7 @@ FinancialYear _$FinancialYearFromJson(Map<String, dynamic> json) =>
       json['endDate'] as String,
       json['name'] as String,
       json['isCurrent'] as bool,
+      json['lastUpdate'] as String?,
     );
 
 Map<String, dynamic> _$FinancialYearToJson(FinancialYear instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$FinancialYearToJson(FinancialYear instance) =>
       'endDate': instance.endDate,
       'name': instance.name,
       'isCurrent': instance.isCurrent,
+      'lastUpdate': instance.lastUpdate,
     };

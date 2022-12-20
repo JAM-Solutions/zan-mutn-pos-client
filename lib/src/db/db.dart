@@ -19,6 +19,7 @@ class DbProvider {
     factory DbProvider() => _singleton;
 
     Future<Database> get database async {
+      debugPrint(_database.toString());
         if (_database != null) return _database!;
         _database = await initDB();
         return _database!;
@@ -43,8 +44,8 @@ class DbProvider {
 
     migrate() async {
       var db = await database;
-     // await db.execute('DROP TABLE pos_configurations');
-     // await db.execute('DELETE FROM migrations');
+     // await db.execute('DROP TABLE financial_years');
+     // await db.execute("DELETE FROM migrations where version='1671522846'");
       List<Map<String, dynamic>> executed = await db.query('migrations');
       List<String> versions = executed.map((e) => e['version'].toString()).toList();
       final manifestJson = await rootBundle.loadString('AssetManifest.json');

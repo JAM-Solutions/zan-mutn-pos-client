@@ -15,6 +15,7 @@ PosConfiguration _$PosConfigurationFromJson(Map<String, dynamic> json) =>
       json['posDeviceId'] as int,
       json['posDeviceName'] as String,
       json['posDeviceNumber'] as String,
+      json['lastUpdate'] as String,
     );
 
 Map<String, dynamic> _$PosConfigurationToJson(PosConfiguration instance) =>
@@ -26,4 +27,5 @@ Map<String, dynamic> _$PosConfigurationToJson(PosConfiguration instance) =>
       'posDeviceId': instance.posDeviceId,
       'posDeviceNumber': instance.posDeviceNumber,
       'posDeviceName': instance.posDeviceName,
+      'lastUpdate': instance.lastUpdate,
     };

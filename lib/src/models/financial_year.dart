@@ -10,8 +10,9 @@ class FinancialYear {
   final String endDate;
   final String name;
   final bool isCurrent;
+  final String? lastUpdate;
 
-  FinancialYear(this.id, this.uuid, this.startDate, this.endDate, this.name, this.isCurrent);
+  FinancialYear(this.id, this.uuid, this.startDate, this.endDate, this.name, this.isCurrent, this.lastUpdate);
 
   factory FinancialYear.fromJson(Map<String, dynamic> json) => _$FinancialYearFromJson(json);
   Map<String, dynamic> toJson() =>_$FinancialYearToJson(this);

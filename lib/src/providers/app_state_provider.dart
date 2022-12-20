@@ -46,8 +46,11 @@ class AppStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setFinancialYear(FinancialYear financialYear) async {
-    financialYear = financialYear;
+  void setFinancialYear(FinancialYear? fy)  {
+    debugPrint(posConfiguration.toString());
+    debugPrint(sessionHasBeenFetched.toString());
+//    debugPrint(posConfiguration.toString());
+    financialYear = fy;
     notifyListeners();
   }
 

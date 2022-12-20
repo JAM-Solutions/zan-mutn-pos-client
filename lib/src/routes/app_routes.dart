@@ -9,7 +9,7 @@ import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/payment/payment_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/pos_config_screen.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_route_shell.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
 
 class AppRoutes {
   //Const variable for route path
@@ -88,6 +88,7 @@ class AppRoutes {
           const ConfigurationScreen(),
           routes: [
             GoRoute(
+              parentNavigatorKey: rootNavigatorKey,
               path: AppRoutes.configFinancialYear,
               builder: (BuildContext context, GoRouterState state) =>
               const FinancialYearConfigScreen(),),
@@ -106,19 +107,25 @@ class AppRoutes {
     redirect: (context, state) {
       final loggedIn = appStateProvider.isAuthenticated;
       final hasConfig = appStateProvider.posConfiguration != null;
-      //If user is 
+      //If user is
       final isLoginRoute = state.subloc == AppRoutes.login;
       final isConfigRoute = state.subloc.contains(AppRoutes.config) ;
       final toRoute = state.subloc;
+      debugPrint(toRoute);
+      debugPrint(hasConfig.toString());
+      debugPrint(isConfigRoute.toString());
       //If is state is not logged in return login
       if (!loggedIn) {
         return isLoginRoute ? null : AppRoutes.login;
       } else if(loggedIn && !hasConfig) {
         return isConfigRoute ? null : AppRoutes.config;
       }
-      //Else return default router
-      if (isLoginRoute) return '/';
-      return toRoute;
+      else if (isLoginRoute && loggedIn ) {
+         return '/';
+      }
+      else {
+        return null;
+      }
     },
   );
 }
