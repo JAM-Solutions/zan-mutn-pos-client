@@ -27,19 +27,19 @@ class _FinancialYearConfigScreenState extends State<FinancialYearConfigScreen> {
       setState(() {
         _isLoading= true;
       });
-     // try {
+      try {
         debugPrint('About to fetch');
         await FinancialYearService().fetchFromApi();
       debugPrint('Fetch completed');
       setState(() {
           _isLoading = false;
         });
-      //} catch(e) {
+      } catch(e) {
         setState(() {
           _isLoading = false;
         });
-     //   AppMessages.showError(context, e.toString());
-  //    }
+        AppMessages.showError(context, e.toString());
+     }
   }
 
   @override

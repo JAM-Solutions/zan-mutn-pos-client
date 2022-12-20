@@ -17,6 +17,10 @@ class AppStateProvider with ChangeNotifier {
   FinancialYear? financialYear;
   AppDeviceInfo? deviceInfo;
 
+  static final AppStateProvider _instance = AppStateProvider._();
+  factory AppStateProvider() => _instance;
+  AppStateProvider._();
+
 
   Future<void> sessionFetched(User? user) async {
 

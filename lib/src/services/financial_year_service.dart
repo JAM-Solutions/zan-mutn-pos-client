@@ -18,12 +18,9 @@ class FinancialYearService {
   Future<void> fetchFromApi() async {
     try {
       var resp = await Api().dio.get("/financial-years/current");
-      debugPrint(resp.data.toString());
-
       if (resp.data != null && resp.data['data'] != null) {
         FinancialYear year = FinancialYear.fromJson(resp.data['data']);
-        // Store to db
-       await storeToDb(year);
+        await storeToDb(year);
       }
     } on NoInternetConnectionException {
       await queryFromDb();
@@ -48,13 +45,9 @@ class FinancialYearService {
 
   ///Save pos config to database
   Future<int> storeToDb(FinancialYear year) async {
-    debugPrint('store to db');
     var db = await DbProvider().database;
-    debugPrint('get db');
-
     var existing = await db.query(dbName,
         where: 'isCurrent=?', whereArgs: [1], limit: 1);
-    debugPrint('query existing db');
     var data = {
       ...year.toJson(),
       'isCurrent': year.isCurrent ? 1 : 0,
@@ -63,9 +56,6 @@ class FinancialYearService {
     var result = await (existing.isNotEmpty
         ? db.update(dbName, data)
         : db.insert(dbName, data));
-    debugPrint('update or create new');
-    debugPrint(result.toString());
-    debugPrint('set state');
      appStateProvider.setFinancialYear(year);
     return result;
   }

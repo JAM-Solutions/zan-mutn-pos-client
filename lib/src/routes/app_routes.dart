@@ -111,9 +111,6 @@ class AppRoutes {
       final isLoginRoute = state.subloc == AppRoutes.login;
       final isConfigRoute = state.subloc.contains(AppRoutes.config) ;
       final toRoute = state.subloc;
-      debugPrint(toRoute);
-      debugPrint(hasConfig.toString());
-      debugPrint(isConfigRoute.toString());
       //If is state is not logged in return login
       if (!loggedIn) {
         return isLoginRoute ? null : AppRoutes.login;

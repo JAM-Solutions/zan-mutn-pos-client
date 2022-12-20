@@ -19,7 +19,6 @@ class DbProvider {
     factory DbProvider() => _singleton;
 
     Future<Database> get database async {
-      debugPrint(_database.toString());
         if (_database != null) return _database!;
         _database = await initDB();
         return _database!;
