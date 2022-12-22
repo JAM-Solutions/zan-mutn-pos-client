@@ -91,7 +91,6 @@ class AppRoutes {
   //Route mapping
   GoRouter getRoutes() => GoRouter(
         //Listen to change of auth state from auth provider
-        refreshListenable: appStateProvider,
         navigatorKey: _rootNavigatorKey,
         routes: [
           ShellRoute(
@@ -125,6 +124,8 @@ class AppRoutes {
         ],
         //Check auth state and redirect to login if user not authenticated
         redirect: (context, state) {
+          debugPrint('**Called*****');
+
           var appState = Provider.of<AppStateProvider>(context,listen: false);
           final loggedIn = appState.isAuthenticated;
           //If user is
@@ -140,7 +141,6 @@ class AppRoutes {
           if (!loggedIn) {
             return isLoginRoute ? null : AppRoutes.login;
           } else if (loggedIn && appState.posConfiguration == null) {
-            debugPrint('*******');
             return isConfigRoute ? null : AppRoutes.config;
           } else if (isLoginRoute && loggedIn) {
             return '/';
