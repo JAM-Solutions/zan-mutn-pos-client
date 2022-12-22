@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';

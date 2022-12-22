@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';

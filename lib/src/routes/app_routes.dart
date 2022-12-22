@@ -27,7 +27,6 @@ class AppRoutes {
   static const String financialYear = "/financial-year";
   static const String revenueSource = "/revenue-sources";
 
-
   final _rootNavigatorKey = GlobalKey<NavigatorState>();
   final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -126,16 +125,14 @@ class AppRoutes {
         redirect: (context, state) {
           debugPrint('**Called*****');
 
-          var appState = Provider.of<AppStateProvider>(context,listen: false);
+          var appState = Provider.of<AppStateProvider>(context, listen: false);
           final loggedIn = appState.isAuthenticated;
           //If user is
           final isLoginRoute = state.subloc == AppRoutes.login;
-          final isConfigRoute =
-              state.subloc.contains(AppRoutes.config) ||
+          final isConfigRoute = state.subloc.contains(AppRoutes.config) ||
               state.subloc.contains(AppRoutes.financialYear) ||
               state.subloc.contains(AppRoutes.posConfig) ||
-              state.subloc.contains(AppRoutes.revenueSource)
-          ;
+              state.subloc.contains(AppRoutes.revenueSource);
           final toRoute = state.subloc;
           //If is state is not logged in return login
           if (!loggedIn) {
