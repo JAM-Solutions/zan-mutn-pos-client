@@ -3,7 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 class AppInputInteger extends StatelessWidget {
-  final String fieldName;
+  final String name;
   final String displayValue;
   final String label;
   final List<String? Function(int?)> validators;
@@ -11,7 +11,7 @@ class AppInputInteger extends StatelessWidget {
 
   const AppInputInteger(
       {super.key,
-      required this.fieldName,
+      required this.name,
       this.displayValue = 'name',
       required this.label,
       this.validators = const [],
@@ -20,7 +20,7 @@ class AppInputInteger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderField<int>(
-        name: fieldName,
+        name: name,
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
           return TextFormField(

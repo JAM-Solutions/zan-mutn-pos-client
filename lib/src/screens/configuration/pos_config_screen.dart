@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
@@ -36,7 +37,8 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
       _isLoading = true;
     });
     try {
-      await configService.fetchFromApi(deviceId!);
+     PosConfiguration? config = await posConfigService.fetchAndStore(deviceId!);
+     _configProvider.setPosConfig(config);
       setState(() {
         _isLoading = false;
       });

@@ -8,38 +8,43 @@ import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class FinancialYearService {
   static final FinancialYearService _instance = FinancialYearService._();
-
   factory FinancialYearService() => _instance;
-
   FinancialYearService._();
 
   final String dbName = 'financial_years';
 
-  Future<void> fetchFromApi() async {
+  Future<FinancialYear?> fetchAndStore() async {
     try {
       var resp = await Api().dio.get("/financial-years/current");
       if (resp.data != null && resp.data['data'] != null) {
         FinancialYear year = FinancialYear.fromJson(resp.data['data']);
         await storeToDb(year);
+        return year;
       }
     } on NoInternetConnectionException {
-      await queryFromDb();
+      var fromDb = await queryFromDb();
+      return fromDb;
     } catch (e) {
       debugPrint(e.toString());
       throw ValidationException(e.toString());
     }
+    return null;
   }
 
   /// Get Pos config from local db
-  Future<void> queryFromDb() async {
+  Future<FinancialYear?> queryFromDb() async {
     var db = await DbProvider().database;
     var result = await db.query(dbName,
         where: 'isCurrent=?', whereArgs: [1], limit: 1);
     if (result.isNotEmpty) {
-      FinancialYear year = FinancialYear.fromJson(result.single);
-       appStateProvider.setFinancialYear(year);
+      var data = result.single;
+      FinancialYear year = FinancialYear.fromJson({
+          ...data,
+        'isCurrent': data['isCurrent'] == 1
+      });
+      return year;
     } else {
-      appStateProvider.setFinancialYear(null);
+      return null;
     }
   }
 
@@ -56,7 +61,6 @@ class FinancialYearService {
     var result = await (existing.isNotEmpty
         ? db.update(dbName, data)
         : db.insert(dbName, data));
-     appStateProvider.setFinancialYear(year);
     return result;
   }
 }

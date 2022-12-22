@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/models/device_info.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
+import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
@@ -16,25 +17,25 @@ class AppStateProvider with ChangeNotifier {
   PosConfiguration? posConfiguration;
   FinancialYear? financialYear;
   AppDeviceInfo? deviceInfo;
+  List<RevenueSource> revenueSource = List.empty(growable: false);
 
   static final AppStateProvider _instance = AppStateProvider._();
   factory AppStateProvider() => _instance;
   AppStateProvider._();
 
-
-  Future<void> sessionFetched(User? user) async {
-
-    isAuthenticated = user != null;
+  void sessionFetched(User? sessionUser)  {
+    user = sessionUser;
+    isAuthenticated = sessionUser != null;
       sessionHasBeenFetched = true;
       notifyListeners();
   }
 
-  Future<void> setDeviceInfo(AppDeviceInfo info) async {
+  void setDeviceInfo(AppDeviceInfo info) {
     deviceInfo = info;
     notifyListeners();
   }
 
-  Future<void> setAuthenticated(User loggedInUser) async {
+  void setAuthenticated(User loggedInUser)  {
     isAuthenticated = true;
     sessionHasBeenFetched = true;
     user = loggedInUser;
@@ -51,15 +52,23 @@ class AppStateProvider with ChangeNotifier {
   }
 
   void setFinancialYear(FinancialYear? fy)  {
-    debugPrint(posConfiguration.toString());
-    debugPrint(sessionHasBeenFetched.toString());
-//    debugPrint(posConfiguration.toString());
     financialYear = fy;
     notifyListeners();
   }
 
-  Future<void> setPosConfig(PosConfiguration? config) async {
+  void setRevenueSources(List<RevenueSource>? sources) {
+    if (sources != null) {
+      revenueSource = sources;
+      notifyListeners();
+    }
+  }
+
+  void setPosConfig(PosConfiguration? config) {
     posConfiguration = config;
+    notifyListeners();
+  }
+
+  void setConfigLoaded() {
     configurationHasBeenLoaded = true;
     notifyListeners();
   }

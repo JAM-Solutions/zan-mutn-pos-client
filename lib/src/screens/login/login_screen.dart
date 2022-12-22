@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/screens/login/login_service.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
@@ -38,7 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       Map<String, dynamic> payload = _loginForm.currentState!.value;
       try {
-         await authService.login(payload);
+         User user = await authService.login(payload);
+         _authProvider.setAuthenticated(user);
          setState(() {
            _isLoading = false;
          });

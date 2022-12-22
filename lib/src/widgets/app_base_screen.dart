@@ -4,10 +4,11 @@ class AppBaseScreen extends StatelessWidget {
   final Widget child;
   final bool? isLoading;
   final AppBar? appBar;
+  final EdgeInsetsGeometry? padding;
 
   const AppBaseScreen({Key? key,
     required this.child,
-    this.isLoading = false, this.appBar}) : super(key: key);
+    this.isLoading = false, this.appBar, this.padding}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class AppBaseScreen extends StatelessWidget {
           alignment: AlignmentDirectional.center,
           children: [
         Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: padding ?? const EdgeInsets.all(16.0),
             child: child,
           ),
             isLoading! ? const CircularProgressIndicator() : Container(),

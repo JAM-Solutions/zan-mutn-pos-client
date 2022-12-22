@@ -7,57 +7,56 @@ import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class ConfigService {
   static final ConfigService _instance = ConfigService._();
-
   factory ConfigService() => _instance;
-
-  final String dbName = 'pos_configurations';
+  final String tableName = 'pos_configurations';
 
   ConfigService._();
 
   /// Get Pos config from local db
-  Future<void> queryFromDb(String posDeviceNumber) async {
+  Future<PosConfiguration?> queryFromDb(String posDeviceNumber) async {
     var db = await DbProvider().database;
-    var result = await db.query(dbName,
+    var result = await db.query(tableName,
         where: 'posDeviceNumber=?', whereArgs: [posDeviceNumber], limit: 1);
     if (result.isNotEmpty) {
       PosConfiguration posConfiguration =
           PosConfiguration.fromJson(result.single);
-      appStateProvider.setPosConfig(posConfiguration);
+       return posConfiguration;
     } else {
-      appStateProvider.setPosConfig(null);
+      return null;
     }
   }
 
   /// Fetch config from api
   /// Store to database
   /// Update State
-  Future<void> fetchFromApi(String posDeviceNumber) async {
+  Future<PosConfiguration?> fetchAndStore(String posDeviceNumber) async {
+    PosConfiguration config;
     var resp = await Api()
         .dio
         .get("/pos-configurations/$posDeviceNumber/configurations");
     if (resp.data != null && resp.data['data'] != null) {
-      PosConfiguration config = PosConfiguration.fromJson({
+       config = PosConfiguration.fromJson({
         ...resp.data['data'],
         'posDeviceNumber': posDeviceNumber,
         'lastUpdate': dateFormat.format(DateTime.now())
       });
-      await storeToDb(config,
-          update: appStateProvider.posConfiguration != null);
-      await appStateProvider.setPosConfig(config);
+       await storeToDb(config);
+       return config;
     } else {
       throw ValidationException("No POS config found for this POS");
     }
   }
 
   ///Save pos config to database
-  Future<int> storeToDb(PosConfiguration config,
-      {bool update = false}) async {
+  Future<int> storeToDb(PosConfiguration config) async {
     var db = await DbProvider().database;
     var data = config.toJson();
+    var existing = await db.query(tableName,
+        where: 'posDeviceNumber=?', whereArgs: [config.posDeviceNumber], limit: 1);
     var result =
-        await (update ? db.update(dbName, data) : db.insert(dbName, data));
+        await (existing.isNotEmpty ? db.update(tableName, data) : db.insert(tableName, data));
     return result;
   }
 }
 
-final configService = ConfigService();
+final posConfigService = ConfigService();

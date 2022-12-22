@@ -23,7 +23,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
     setState(() {
       _currentTabIndex = index;
     });
-    AppTabItem tab = AppRoutes.tabs.elementAt(index);
+    AppTabItem tab = AppRoutes.tabRoutes.elementAt(index);
     context.go(tab.path);
 
   }
@@ -35,7 +35,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentTabIndex,
         items:  [
-          ...AppRoutes.tabs.map((e) =>
+          ...AppRoutes.tabRoutes.map((e) =>
               BottomNavigationBarItem(icon: e.icon,label: e.label)
           )
         ],

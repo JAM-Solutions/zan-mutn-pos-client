@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AppTabItem {
 
@@ -6,6 +7,7 @@ class AppTabItem {
   final Icon icon;
   final String path;
   final Widget widget;
+  final List<GoRoute>? childRoutes;
 
-  const  AppTabItem( {required this.widget,required this.label, required this.icon, required this.path});
+  const  AppTabItem( {required this.widget,required this.label, required this.icon, required this.path, this.childRoutes});
 }

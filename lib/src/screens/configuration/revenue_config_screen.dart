@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
@@ -12,14 +14,16 @@ class RevenueConfigScreen extends StatefulWidget {
 }
 
 class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
-
-  List<Map<String, dynamic>> _sources = List.empty(growable: true);
   bool _isLoading = false;
+  late AppStateProvider _configProvider;
 
   @override
   void initState() {
+    _configProvider = Provider.of<AppStateProvider>(context, listen: false);
+    if (_configProvider.revenueSource.isEmpty) {
+      _loadRevenueSources();
+    }
     super.initState();
-    _loadRevenueSources();
   }
 
   _loadRevenueSources() async {
@@ -27,12 +31,12 @@ class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
       _isLoading = true;
     });
     try {
-     var sources = await revenueConfigService.fetchFromApi();
-     setState(() {
-       _sources = sources.map((e) => e.toJson()).toList();
-       _isLoading = false;
-     });
-    } catch(e) {
+      var sources = await revenueConfigService.fetchAndStore();
+      _configProvider.setRevenueSources(sources);
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
       setState(() {
         _isLoading = false;
       });
@@ -42,17 +46,21 @@ class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBaseScreen(
-      isLoading: _isLoading,
-      appBar: AppBar(title: const Text('Revenue Sources'),),
-        child: AppTable(
-          data: _sources,
-          columns: [
-            AppTableColumn(header: 'Name', value: 'name'),
-            AppTableColumn(header: 'Gfs Code', value: 'gfsCode')
-          ],
-        ));
+    return Consumer<AppStateProvider>(
+      builder: (context, provider, child) {
+        return AppBaseScreen(
+            isLoading: _isLoading,
+            appBar: AppBar(
+              title: const Text('Revenue Sources'),
+            ),
+            child: AppTable(
+              data: provider.revenueSource.map((e) => e.toJson()).toList(),
+              columns: [
+                AppTableColumn(header: 'Name', value: 'name'),
+                AppTableColumn(header: 'Gfs Code', value: 'gfsCode')
+              ],
+            ));
+      },
+    );
   }
-
-
 }

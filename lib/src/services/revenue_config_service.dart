@@ -15,7 +15,7 @@ class RevenueConfigService {
   final String tableName = 'revenue_sources';
   final String resource = '/revenue-sources';
 
-  Future<List<RevenueSource>> fetchFromApi() async {
+  Future<List<RevenueSource>> fetchAndStore() async {
     List<RevenueSource> sources = List.empty(growable: true);
     try {
       var resp = await Api().dio.get("$resource/by-collector");
