@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/cash-collection/cash_collection_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/cash-collection/cash_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
@@ -18,9 +16,11 @@ import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
 class AppRoutes {
   //Const variable for route path
   static const String dashboardTab = "/";
-  static const String cashTab = "/cash";
+  static const String cartTab = "/cart";
   static const String compileBillTab = "/compile-bill";
-  static const String cashCollection = "/cash-collection";
+  static const String generateBillTab = "/generate-bill";
+  static const String cashCollection = "/cart";
+  static const String billTab = "/bill";
   static const String login = "/login";
   static const String config = "/configs";
   static const String posConfig = "/pos-config";
@@ -37,13 +37,6 @@ class AppRoutes {
           path: AppRoutes.login,
           builder: (BuildContext context, GoRouterState state) =>
               const LoginScreen()),
-      GoRoute(
-          path: AppRoutes.cashCollection,
-          parentNavigatorKey: _rootNavigatorKey,
-          builder: (BuildContext context, GoRouterState state) {
-            var revenueSource = state.extra as RevenueSource;
-            return CashCollectionScreen(revenueSource: revenueSource);
-          }),
       GoRoute(
           path: AppRoutes.config,
           parentNavigatorKey: _rootNavigatorKey,
@@ -75,16 +68,28 @@ class AppRoutes {
       widget: DashboardScreen(),
     ),
     AppTabItem(
-      icon: Icon(Icons.money),
-      label: "Cash",
-      path: cashTab,
-      widget: CashScreen(),
+      icon: Icon(Icons.shopping_cart),
+      label: "Cart",
+      path: cartTab,
+      widget: CartScreen(),
     ),
     AppTabItem(
-        icon: Icon(Icons.collections),
-        label: "Bill",
-        path: cashTab,
-        widget: BillScreen())
+        icon: Icon(Icons.compress),
+        label: "Compile",
+        path: compileBillTab,
+        widget: BillScreen()),
+    AppTabItem(
+        icon: Icon(Icons.generating_tokens),
+        label: "Generate",
+        path: generateBillTab,
+        widget: BillScreen()),
+    AppTabItem(
+        icon: Icon(Icons.payment_sharp),
+        label: "Bills",
+        path: billTab,
+        widget: BillScreen()),
+
+
   ];
 
   //Route mapping

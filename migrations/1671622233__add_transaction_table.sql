@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS pos_transactions (
     id INTEGER PRIMARY KEY,
-    transactionNumber VARCHAR(100) NOT NULL,
+    txnNumber VARCHAR(100) NOT NULL,
     posDeviceId INTEGER NOT NULL,
     revenueSourceId INTEGER NOT NULL,
     gfsCode VARCHAR(100) NOT NULL,

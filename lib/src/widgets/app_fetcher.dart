@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
+import 'package:zanmutm_pos_client/src/db/db.dart';
 
 class AppFetcher extends StatefulWidget {
-  final String api;
+  final String? api;
+  final String? table;
   final Widget Function(List<Map<String, dynamic>>, bool) builder;
-  const AppFetcher({Key? key, required this.api, required this.builder})
+
+  const AppFetcher({Key? key,  this.api, required this.builder, this.table})
       : super(key: key);
 
   @override
@@ -18,15 +21,34 @@ class _AppFetcherState extends State<AppFetcher> {
   @override
   void initState() {
     super.initState();
-    loadItems();
+    widget.table != null ? loadFromDb() : widget.api != null ? loadFromApi() : null;
   }
 
-  loadItems() async {
+  loadFromDb() async {
     setState(() {
       _isLoading = true;
     });
     try {
-      var resp = await Api().dio.get(widget.api);
+      var db = await DbProvider().database;
+      List<Map<String, dynamic>> result = await db.query(widget.table!, where: 'isActive=?', whereArgs: [1]);
+      setState(() {
+        _isLoading = false;
+        _items = result;
+      });
+    } catch(e) {
+      debugPrint(e.toString());
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  loadFromApi() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      var resp = await Api().dio.get(widget.api!);
       List<Map<String, dynamic>> result = (resp.data['data'] as List<dynamic>)
           .map((e) => e as Map<String, dynamic>)
           .toList();

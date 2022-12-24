@@ -47,7 +47,9 @@ class AppInputNumber extends StatelessWidget {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 field.didChange(value.isNotEmpty ? _toDouble(value) : 0.00);
-              });
+              },
+
+              );
         }));
   }
 }

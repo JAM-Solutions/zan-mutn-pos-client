@@ -11,7 +11,8 @@ final ThemeData defaultTheme = ThemeData(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
   ),
   appBarTheme: const AppBarTheme(
-    color: primaryColor
+    color: primaryColor,
+    elevation: 0
   ),
  textButtonTheme: TextButtonThemeData(
    style: TextButton.styleFrom(
@@ -29,11 +30,29 @@ final ThemeData defaultTheme = ThemeData(
   iconTheme: const IconThemeData(
     color: Color.fromARGB(200, 110, 114, 116)
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: primaryColor
+  ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-    selectedLabelStyle: TextStyle(color: primaryColor),
+    showUnselectedLabels: true,
+    unselectedIconTheme: IconThemeData(
+        color: Color.fromARGB(200, 110, 114, 116),
+         size: 18
+    ),
+    unselectedItemColor: Color.fromARGB(200, 110, 114, 116),
+    unselectedLabelStyle: TextStyle(
+      color: Color.fromARGB(200, 110, 114, 116),
+      fontSize: 13,
+      overflow: TextOverflow.clip,
+    ),
+    selectedLabelStyle: TextStyle(
+        color: primaryColor,
+      fontSize: 13
+    ),
     selectedItemColor: primaryColor,
     selectedIconTheme: IconThemeData(
-      color: primaryColor
+      color: primaryColor,
+        size: 18
     )
   ),
   inputDecorationTheme: const InputDecorationTheme(

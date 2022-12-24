@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
+import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 
 part 'pos_transaction.g.dart';
@@ -8,7 +7,7 @@ part 'pos_transaction.g.dart';
 @JsonSerializable(explicitToJson: true)
 class PosTransaction {
   final int? id;
-  final String transactionNumber;
+  final String txnNumber;
   final int posDeviceId;
   final int revenueSourceId;
   final String gfsCode;
@@ -26,7 +25,7 @@ class PosTransaction {
 
   PosTransaction(
       this.id,
-      this.transactionNumber,
+      this.txnNumber,
       this.posDeviceId,
       this.revenueSourceId,
       this.gfsCode,
@@ -47,28 +46,34 @@ class PosTransaction {
   Map<String,dynamic> toJson() => _$PosTransactionToJson(this);
 
   factory PosTransaction.fromCashCollection(
-      PosConfiguration posConfig,
-      RevenueSource revenueSource,
+      String transactionId,
+      String receiptNumber,
+      DateTime transactionDate,
+      int posDeviceId,
+      CartItem cartItem,
       User user,
-      Map<String, dynamic> cashBill,
-      int financialYearId
+      Map<String, dynamic> payerDetail,
+      int financialYearId,
+      bool isPrinted,
+      String? printError
       )  {
-    return PosTransaction(null,
-        DateTime.now().toIso8601String(),
-        posConfig.posDeviceId,
-        revenueSource.id,
-        revenueSource.gfsCode,
+    return PosTransaction(
+        null,
+        transactionId,
+        posDeviceId,
+        cartItem.revenueSource.id,
+        cartItem.revenueSource.gfsCode,
         user.adminHierarchyId!,
         user.taxPayerId!,
-        cashBill['amount'],
-        cashBill['quantity'],
-        cashBill['name'],
-        DateTime.now().toIso8601String(),
-        DateTime.now(),
-        false,
-        null,
+        cartItem.amount,
+        cartItem.quantity,
+        payerDetail['name'],
+        receiptNumber,
+        transactionDate,
+        isPrinted,
+        printError,
         financialYearId,
-        cashBill['address']);
+        payerDetail['address']);
   }
 
 }

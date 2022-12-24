@@ -9,7 +9,7 @@ part of 'pos_transaction.dart';
 PosTransaction _$PosTransactionFromJson(Map<String, dynamic> json) =>
     PosTransaction(
       json['id'] as int?,
-      json['transactionNumber'] as String,
+      json['txnNumber'] as String,
       json['posDeviceId'] as int,
       json['revenueSourceId'] as int,
       json['gfsCode'] as String,
@@ -29,7 +29,7 @@ PosTransaction _$PosTransactionFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PosTransactionToJson(PosTransaction instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'transactionNumber': instance.transactionNumber,
+      'txnNumber': instance.txnNumber,
       'posDeviceId': instance.posDeviceId,
       'revenueSourceId': instance.revenueSourceId,
       'gfsCode': instance.gfsCode,

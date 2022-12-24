@@ -35,8 +35,10 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentTabIndex,
         items:  [
-          ...AppRoutes.tabRoutes.map((e) =>
-              BottomNavigationBarItem(icon: e.icon,label: e.label)
+          ...AppRoutes.tabRoutes.map((e) {
+            Widget icon = e.label.contains('Cart') ? e.icon: e.icon;
+            return BottomNavigationBarItem(icon: icon, label: e.label);
+          }
           )
         ],
         onTap: (int tabIndex) =>_goToTab(context, tabIndex),

@@ -43,11 +43,7 @@ class RevenueConfigService {
       var db = await DbProvider().database;
       var result =
           await db.query(tableName, where: 'isActive=?', whereArgs: [1]);
-      return result.map((e) => RevenueSource.fromJson({
-      ...e,
-        'isMiscellaneous': e['isMiscellaneous'] == 1,
-        'isActive': e['isActive'] == 1,
-      })).toList();
+      return result.map((e) => RevenueSource.fromJson(e)).toList();
     } catch (e) {
       throw ValidationException(e.toString());
     }

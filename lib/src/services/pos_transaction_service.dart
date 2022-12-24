@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
@@ -27,6 +28,22 @@ class PosTransactionService {
        debugPrint(e.toString());
        throw ValidationException(e.toString());
     }
+  }
+
+  Future<int> saveAll(List<PosTransaction> posTxns) async {
+    var db = await DbProvider().database;
+    int result = 0;
+   await db.transaction((txn) async {
+      for (var item in posTxns) {
+        Map<String, dynamic> data = {
+          ...item.toJson(),
+          'isPrinted': item.isPrinted ? 1 : 0,
+        };
+        result = await txn.insert(dbName, data);
+      }
+    });
+
+    return result;
   }
 
   Future<int> storeToDb(PosTransaction txn) async {
