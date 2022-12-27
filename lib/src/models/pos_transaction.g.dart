@@ -9,27 +9,27 @@ part of 'pos_transaction.dart';
 PosTransaction _$PosTransactionFromJson(Map<String, dynamic> json) =>
     PosTransaction(
       json['id'] as int?,
-      json['txnNumber'] as String,
-      json['posDeviceId'] as int,
-      json['revenueSourceId'] as int,
-      json['gfsCode'] as String,
-      json['adminHierarchyId'] as int,
-      json['taxPayerId'] as int,
+      json['trxNumber'] as String?,
+      json['posDeviceId'] as int?,
+      json['revenueSourceId'] as int?,
+      json['gfsCode'] as String?,
+      json['adminHierarchyId'] as int?,
+      json['taxPayerId'] as int?,
       (json['amount'] as num).toDouble(),
       json['quantity'] as int,
       json['cashPayerName'] as String?,
-      json['receiptNumber'] as String,
+      json['receiptNumber'] as String?,
       DateTime.parse(json['transactionDate'] as String),
       json['isPrinted'] as bool,
       json['printError'] as String?,
-      json['financialYearId'] as int,
+      json['financialYearId'] as int?,
       json['cashPayerAddress'] as String?,
     );
 
 Map<String, dynamic> _$PosTransactionToJson(PosTransaction instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'txnNumber': instance.txnNumber,
+      'trxNumber': instance.trxNumber,
       'posDeviceId': instance.posDeviceId,
       'revenueSourceId': instance.revenueSourceId,
       'gfsCode': instance.gfsCode,

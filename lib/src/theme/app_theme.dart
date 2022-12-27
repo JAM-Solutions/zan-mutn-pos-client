@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 const Color primaryColor =  Colors.teal;
 const Color dangerColor =  Colors.red;
@@ -11,6 +12,9 @@ final ThemeData defaultTheme = ThemeData(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
   ),
   appBarTheme: const AppBarTheme(
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: Color.fromARGB(0, 255, 255, 255)
+    ),
     color: primaryColor,
     elevation: 0
   ),

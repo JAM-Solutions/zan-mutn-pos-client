@@ -5,6 +5,7 @@ import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/compile/compile_bill.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
@@ -77,7 +78,7 @@ class AppRoutes {
         icon: Icon(Icons.compress),
         label: "Compile",
         path: compileBillTab,
-        widget: BillScreen()),
+        widget: CompileBillScreen()),
     AppTabItem(
         icon: Icon(Icons.generating_tokens),
         label: "Generate",
@@ -88,8 +89,6 @@ class AppRoutes {
         label: "Bills",
         path: billTab,
         widget: BillScreen()),
-
-
   ];
 
   //Route mapping
@@ -110,11 +109,17 @@ class AppRoutes {
                         child: e.widget,
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          // Change the opacity of the screen using a Curve based on the the animation's
-                          // value
-                          return FadeTransition(
-                            opacity: CurveTween(curve: Curves.easeInOutCirc)
-                                .animate(animation),
+                          var begin = Offset(
+                              context.select<AppStateProvider, double>(
+                                  (value) => value.tabDx),
+                              0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          return SlideTransition(
+                            position: animation.drive(tween),
                             child: child,
                           );
                         },

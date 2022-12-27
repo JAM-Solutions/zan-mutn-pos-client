@@ -7,25 +7,25 @@ part 'pos_transaction.g.dart';
 @JsonSerializable(explicitToJson: true)
 class PosTransaction {
   final int? id;
-  final String txnNumber;
-  final int posDeviceId;
-  final int revenueSourceId;
-  final String gfsCode;
-  final int adminHierarchyId;
-  final int taxPayerId;
+  final String? trxNumber;
+  final int? posDeviceId;
+  final int? revenueSourceId;
+  final String? gfsCode;
+  final int? adminHierarchyId;
+  final int? taxPayerId;
   final double amount;
   final int quantity;
   final String? cashPayerName;
   final String? cashPayerAddress;
-  final String receiptNumber;
+  final String? receiptNumber;
   final DateTime transactionDate;
   bool isPrinted;
   final String? printError;
-  final int financialYearId;
+  final int? financialYearId;
 
   PosTransaction(
       this.id,
-      this.txnNumber,
+      this.trxNumber,
       this.posDeviceId,
       this.revenueSourceId,
       this.gfsCode,

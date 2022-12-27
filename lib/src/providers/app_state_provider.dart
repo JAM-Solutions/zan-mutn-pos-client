@@ -18,6 +18,7 @@ class AppStateProvider with ChangeNotifier {
   FinancialYear? financialYear;
   AppDeviceInfo? deviceInfo;
   List<RevenueSource> revenueSource = List.empty(growable: false);
+  double tabDx = 1.0; // To control tab navigation
 
   static final AppStateProvider _instance = AppStateProvider._();
   factory AppStateProvider() => _instance;
@@ -28,6 +29,11 @@ class AppStateProvider with ChangeNotifier {
     isAuthenticated = sessionUser != null;
       sessionHasBeenFetched = true;
       notifyListeners();
+  }
+
+  void setTabDirection(double dir) {
+    tabDx = dir;
+    notifyListeners();
   }
 
   void setDeviceInfo(AppDeviceInfo info) {
