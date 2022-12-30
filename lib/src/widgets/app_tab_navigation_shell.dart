@@ -20,31 +20,83 @@ class AppTabNavigationShell extends StatefulWidget {
 
 class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
   int _currentTabIndex = 0;
+  AppTabItem _currentTab = AppRoutes.tabRoutes.elementAt(0);
 
   _goToTab(BuildContext context, int index) {
     Provider.of<AppStateProvider>(context, listen: false)
         .setTabDirection(_currentTabIndex < index ? 1.0 : -10.0);
     setState(() {
       _currentTabIndex = index;
+      _currentTab = AppRoutes.tabRoutes.elementAt(index);
     });
-    AppTabItem tab = AppRoutes.tabRoutes.elementAt(index);
-    context.go(tab.path);
+    context.go(_currentTab.path);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentTabIndex,
-        items: [
-          ...AppRoutes.tabRoutes.map((e) {
-            Widget icon = e.label.contains('Cart') ? e.icon : e.icon;
-            return BottomNavigationBarItem(icon: icon, label: e.label);
-          })
+    return Stack(children: [
+      Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            height: 250,
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+          ),
+          Expanded(
+              child: Container(
+            decoration:const BoxDecoration(
+              color: Color(0xFFebebeb)
+            ),
+          ))
         ],
-        onTap: (int tabIndex) => _goToTab(context, tabIndex),
       ),
-    );
+      Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text(_currentTab.label),
+          centerTitle: true,
+        ),
+        body: Column(
+          children: [
+            Container(
+              height: 110,
+              margin: const EdgeInsets.symmetric(horizontal: 18),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius:BorderRadius.only(
+                    topLeft: Radius.circular(18),
+                  topRight: Radius.circular(18),
+                )
+              ),
+              child: Column(
+                children: [
+                  Expanded(child: Row()),
+                  const Divider(height: 0,thickness: 1,)
+                ],
+              ),
+            ),
+           Expanded(
+               child: Container(
+                 decoration: const BoxDecoration(
+                   color: Colors.white,
+                   borderRadius: BorderRadius.only(
+                   )
+                 ),
+             margin: const EdgeInsets.symmetric(horizontal: 18),
+               child: widget.child)) ,
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentTabIndex,
+          items: [
+            ...AppRoutes.tabRoutes.map((e) {
+              Widget icon = e.label.contains('Cart') ? e.icon : e.icon;
+              return BottomNavigationBarItem(icon: icon, label: e.label);
+            })
+          ],
+          onTap: (int tabIndex) => _goToTab(context, tabIndex),
+        ),
+      ),
+    ]);
   }
 }

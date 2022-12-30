@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const Color primaryColor =  Colors.teal;
+const Color primaryColor =  Color(0xFF06a9c6);
 const Color dangerColor =  Colors.red;
 
 final ThemeData defaultTheme = ThemeData(

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -37,20 +38,10 @@ class DashboardScreen extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    return AppBaseScreen(
-      appBar: AppBar(
-        title: const Text("Dashboard",),
-        actions: [
-          IconButton(onPressed: () => context.go(AppRoutes.config),
-              icon: const Icon(Icons.settings)),
-          IconButton(onPressed: () => _logout(context),
-              icon: const Icon(Icons.logout))
-        ],
-      ),
-        child: const Center(
+    return const AppBaseTabScreen(
+        child:  Center(
           child: Text('POS Dashboard is working'),
         )
-
     );
   }
 }

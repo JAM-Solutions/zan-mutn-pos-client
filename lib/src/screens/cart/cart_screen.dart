@@ -11,7 +11,8 @@ import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
+import 'package:zanmutm_pos_client/src/utils/helpers.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_fetcher.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
@@ -89,7 +90,7 @@ class _CartScreenState extends State<CartScreen> {
         } else {
           _onError('Something went wrong');
         }
-      }catch(e) {
+      } catch (e) {
         _onError(e.toString());
       }
     }
@@ -109,33 +110,91 @@ class _CartScreenState extends State<CartScreen> {
     return 'No implementaion';
   }
 
+  _getTableHeader(String label, {double? width}) {
+    var h = Text(
+      label,
+      style: const TextStyle(fontSize: 11),
+    );
+    return DataColumn(
+        label: width != null
+            ? SizedBox(
+                width: width,
+                child: h,
+              )
+            : Expanded(child: h));
+  }
+
+  _getTableCell(String value, {double? width}) {
+    var h = Text(
+      value,
+      style: const TextStyle(fontSize: 11),
+    );
+    return DataCell(width != null
+        ? SizedBox(
+            width: width,
+            child: h,
+          )
+        : Expanded(child: h));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
       builder: (context, provider, child) {
         var items = provider.cartItems;
-        return AppBaseScreen(
-            isLoading: _isLoading,
-            appBar: AppBar(
-              title: const Text("Cart"),
+        return AppBaseTabScreen(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _addUpdateItem(null),
+            child: const Icon(Icons.add),
+          ),
+          child:items.isNotEmpty ? SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                DataTable(columnSpacing: 14, columns: [
+                  _getTableHeader("Revenue"),
+                  _getTableHeader("Quantity", width: 50),
+                  _getTableHeader("Amount", width: 50),
+                  _getTableHeader("Total", width: 50),
+                ], rows: [
+                  ...items.map((e) {
+                    return DataRow(cells: [
+                      _getTableCell(e.revenueSource.name),
+                      _getTableCell(e.quantity.toString(), width: 50),
+                      _getTableCell(currency.format(e.amount), width: 50),
+                      _getTableCell(currency.format(e.amount * e.quantity),
+                          width: 50),
+                    ]);
+                  }).toList(),
+                  DataRow(cells: [
+                    DataCell(Container()),
+                    DataCell(Container()),
+                    const DataCell(Text(
+                      "Total",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    )),
+                    DataCell(Text(
+                        currency.format(items
+                            .map((e) => e.amount * e.quantity)
+                            .fold(0.0, (value, next) => value + next)),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold)))
+                  ])
+                ]),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 32),
+                    child: AppButton(onPress: () {
+                      _collectCash();
+                    },
+                        label: 'Print Receipt'),
+                  )
+              ],
             ),
-            floatingAction: FloatingActionButton(
-              onPressed: () => _addUpdateItem(null),
-              child: const Icon(Icons.add),
-            ),
-            child: ListView.separated(
-                itemBuilder: (BuildContext context, idx) {
-                  var item = items[idx];
-                  return ListTile(
-                    title: Text(item.revenueSource.name),
-                    subtitle: Text('${item.amount} x ${item.quantity}'),
-                    trailing: Text((item.quantity * item.amount).toString()),
-                    onTap: () => _addUpdateItem(item),
-                  );
-                },
-                separatorBuilder: (BuildContext context, idx) =>
-                    const Divider(),
-                itemCount: provider.cartItems.length));
+          ) : const Center(child: Text("Cart is Empty"),),
+        );
       },
     );
   }
@@ -185,18 +244,6 @@ class _CartScreenState extends State<CartScreen> {
                         }
                       }),
                 ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Expanded(
-                    child: AppButton(
-                        label: 'Collect Cash',
-                        onPress: () {
-                          if (_cartItemForm.currentState?.saveAndValidate() ==
-                              true) {
-                            Navigator.of(context).pop(CartAction.collectCash);
-                          }
-                        }))
               ],
             )
           ],
@@ -205,9 +252,6 @@ class _CartScreenState extends State<CartScreen> {
     );
     if (result == CartAction.addToCart) {
       _addToCart();
-    } else if (result == CartAction.collectCash) {
-      _addToCart();
-      _collectCash();
     }
   }
 

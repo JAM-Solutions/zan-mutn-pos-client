@@ -6,6 +6,7 @@ import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
@@ -118,7 +119,9 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBaseScreen(child: Builder(builder: (_) {
+    return AppBaseTabScreen(
+
+        child: Builder(builder: (_) {
       if (!_transactionSynced && _posConnected) {
         return const Center(
           child: Text('Syncing Transactions....'),
