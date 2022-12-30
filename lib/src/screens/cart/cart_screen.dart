@@ -147,53 +147,58 @@ class _CartScreenState extends State<CartScreen> {
             onPressed: () => _addUpdateItem(null),
             child: const Icon(Icons.add),
           ),
-          child:items.isNotEmpty ? SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                DataTable(columnSpacing: 14, columns: [
-                  _getTableHeader("Revenue"),
-                  _getTableHeader("Quantity", width: 50),
-                  _getTableHeader("Amount", width: 50),
-                  _getTableHeader("Total", width: 50),
-                ], rows: [
-                  ...items.map((e) {
-                    return DataRow(cells: [
-                      _getTableCell(e.revenueSource.name),
-                      _getTableCell(e.quantity.toString(), width: 50),
-                      _getTableCell(currency.format(e.amount), width: 50),
-                      _getTableCell(currency.format(e.amount * e.quantity),
-                          width: 50),
-                    ]);
-                  }).toList(),
-                  DataRow(cells: [
-                    DataCell(Container()),
-                    DataCell(Container()),
-                    const DataCell(Text(
-                      "Total",
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    )),
-                    DataCell(Text(
-                        currency.format(items
-                            .map((e) => e.amount * e.quantity)
-                            .fold(0.0, (value, next) => value + next)),
-                        style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold)))
-                  ])
-                ]),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 32),
-                    child: AppButton(onPress: () {
-                      _collectCash();
-                    },
-                        label: 'Print Receipt'),
-                  )
-              ],
-            ),
-          ) : const Center(child: Text("Cart is Empty"),),
+          child: items.isNotEmpty
+              ? Column(
+                  children: [
+                    SingleChildScrollView(
+                      child: DataTable(columnSpacing: 14, columns: [
+                        _getTableHeader("Revenue"),
+                        _getTableHeader("Quantity", width: 50),
+                        _getTableHeader("Amount", width: 50),
+                        _getTableHeader("Total", width: 50),
+                      ], rows: [
+                        ...items.map((e) {
+                          return DataRow(cells: [
+                            _getTableCell(e.revenueSource.name),
+                            _getTableCell(e.quantity.toString(), width: 50),
+                            _getTableCell(currency.format(e.amount),
+                                width: 50),
+                            _getTableCell(
+                                currency.format(e.amount * e.quantity),
+                                width: 50),
+                          ]);
+                        }).toList(),
+                        DataRow(cells: [
+                          DataCell(Container()),
+                          DataCell(Container()),
+                          const DataCell(Text(
+                            "Total",
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          )),
+                          DataCell(Text(
+                              currency.format(items
+                                  .map((e) => e.amount * e.quantity)
+                                  .fold(0.0, (value, next) => value + next)),
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold)))
+                        ])
+                      ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 32),
+                      child: AppButton(
+                          onPress: () {
+                            _collectCash();
+                          },
+                          label: 'Print Receipt'),
+                    )
+                  ],
+                )
+              : const Center(
+                  child: Text("Cart is Empty"),
+                ),
         );
       },
     );

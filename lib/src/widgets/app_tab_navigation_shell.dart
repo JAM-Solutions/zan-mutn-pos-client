@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
@@ -44,9 +45,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
           ),
           Expanded(
               child: Container(
-            decoration:const BoxDecoration(
-              color: Color(0xFFebebeb)
-            ),
+            decoration: const BoxDecoration(color: Color(0xFFebebeb)),
           ))
         ],
       ),
@@ -56,35 +55,60 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
           title: Text(_currentTab.label),
           centerTitle: true,
         ),
-        body: Column(
-          children: [
-            Container(
-              height: 110,
-              margin: const EdgeInsets.symmetric(horizontal: 18),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius:BorderRadius.only(
-                    topLeft: Radius.circular(18),
-                  topRight: Radius.circular(18),
-                )
-              ),
-              child: Column(
-                children: [
-                  Expanded(child: Row()),
-                  const Divider(height: 0,thickness: 1,)
-                ],
-              ),
-            ),
-           Expanded(
-               child: Container(
-                 decoration: const BoxDecoration(
-                   color: Colors.white,
-                   borderRadius: BorderRadius.only(
-                   )
-                 ),
-             margin: const EdgeInsets.symmetric(horizontal: 18),
-               child: widget.child)) ,
-          ],
+        body: Selector<AppStateProvider, User>(
+          selector: (context, state) => state.user!,
+          builder: (context, user, child) {
+            return Column(
+              children: [
+                Container(
+                  height: 100,
+                  margin: const EdgeInsets.symmetric(horizontal: 18),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(18),
+                        topRight: Radius.circular(18),
+                      )),
+                  child: Column(
+                    children: [
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 46),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Text(
+                                user.firstName != null && user.lastName != null
+                                    ? '${user.firstName?.substring(0, 1)}${user.lastName?.substring(0, 1)}'
+                                    : 'AV',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
+                      const Divider(
+                        height: 0,
+                        thickness: 1,
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                    child: Container(
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only()),
+                        margin: const EdgeInsets.symmetric(horizontal: 18),
+                        child: widget.child)),
+              ],
+            );
+          },
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentTabIndex,

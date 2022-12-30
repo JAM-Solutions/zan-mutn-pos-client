@@ -93,6 +93,11 @@ flutter:
   # example:
   # fonts:
   #   - family: Schyler
+  fonts:
+      -   family: OpenSans
+          fonts:
+              -   asset: assets/fonts/OpenSans-VariableFont.ttf
+              -   asset: assets/fonts/OpenSans-Italic-VariableFont.ttf
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf

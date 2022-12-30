@@ -7,7 +7,7 @@ const Color dangerColor =  Colors.red;
 final ThemeData defaultTheme = ThemeData(
   primaryColor: primaryColor,
   secondaryHeaderColor: Colors.tealAccent,
-  fontFamily: 'Roboto',
+  fontFamily: 'OpenSans',
   textTheme: const TextTheme(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
   ),
@@ -16,6 +16,10 @@ final ThemeData defaultTheme = ThemeData(
       statusBarColor: Color.fromARGB(0, 255, 255, 255)
     ),
     color: primaryColor,
+    titleTextStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 24
+    ),
     elevation: 0
   ),
  textButtonTheme: TextButtonThemeData(
