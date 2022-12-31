@@ -5,11 +5,12 @@ import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/compile/compile_bill.dart';
+import 'package:zanmutm_pos_client/src/screens/compile/compile_bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/pos_config_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
@@ -65,28 +66,33 @@ class AppRoutes {
     AppTabItem(
       icon: Icon(Icons.home),
       label: "Home",
+      title: "Dashboard",
       path: dashboardTab,
       widget: DashboardScreen(),
     ),
     AppTabItem(
       icon: Icon(Icons.shopping_cart),
       label: "Cart",
+      title: "Collect Revenue",
       path: cartTab,
       widget: CartScreen(),
     ),
     AppTabItem(
         icon: Icon(Icons.compress),
         label: "Compile",
+        title: "Compile Transactions",
         path: compileBillTab,
         widget: CompileBillScreen()),
     AppTabItem(
         icon: Icon(Icons.generating_tokens),
         label: "Generate",
+        title: "Generate Bill",
         path: generateBillTab,
-        widget: BillScreen()),
+        widget: GenerateBillScreen()),
     AppTabItem(
         icon: Icon(Icons.payment_sharp),
         label: "Bills",
+        title: "Pay Bills",
         path: billTab,
         widget: BillScreen()),
   ];
@@ -94,6 +100,7 @@ class AppRoutes {
   //Route mapping
   GoRouter getRoutes() => GoRouter(
         //Listen to change of auth state from auth provider
+    refreshListenable: appStateProvider,
         navigatorKey: _rootNavigatorKey,
         routes: [
           ShellRoute(
@@ -133,8 +140,6 @@ class AppRoutes {
         ],
         //Check auth state and redirect to login if user not authenticated
         redirect: (context, state) {
-          debugPrint('**Called*****');
-
           var appState = Provider.of<AppStateProvider>(context, listen: false);
           final loggedIn = appState.isAuthenticated;
           //If user is

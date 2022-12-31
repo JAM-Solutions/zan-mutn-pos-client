@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class AuthService {
@@ -46,6 +47,13 @@ class AuthService {
       debugPrint(e.toString());
       return null;
     }
+  }
+
+  Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(AppConst.userKey);
+    await prefs.remove(AppConst.tokenKey);
+    appStateProvider.userLoggedOut();
   }
 
 

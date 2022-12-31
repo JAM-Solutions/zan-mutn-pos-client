@@ -3,6 +3,8 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
+import 'package:intl/intl.dart';
+import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class PosTransactionService {
   static final PosTransactionService _instance = PosTransactionService._();
@@ -63,14 +65,14 @@ class PosTransactionService {
     List<Map<String, dynamic>> dbTransactions = await db.query(table);
     debugPrint('Total transactions ${dbTransactions.length.toString()}');
     for (var txn in dbTransactions) {
-      await Future.delayed(const Duration(seconds: 3));
       var resp = await Api().dio.post(api, data: {
         ...txn,
         'id': null,
         'uuid': null,
+        'transactionDate':
+            dateTimeFormat.format(DateTime.parse(txn['transactionDate']))
       });
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        debugPrint("**deleting after sync****");
         await db.delete(table, where: 'id=?', whereArgs: [txn['id']]);
       }
     }
@@ -80,14 +82,15 @@ class PosTransactionService {
 
   Future<List<PosTransaction>> getUnCompiled(int posDeviceId) async {
     var resp = await Api().dio.get('$api/un-compiled/$posDeviceId');
-    debugPrint(resp.data.toString());
     return (resp.data['data'] as List<dynamic>)
         .map((e) => PosTransaction.fromJson(e))
         .toList();
   }
 
   Future<int?> compile(int posDeviceId) async {
-    var resp = await Api().dio.post('/pos-devices/$posDeviceId/compile-transactions',data: {});
+    var resp = await Api()
+        .dio
+        .post('/pos-devices/$posDeviceId/compile-transactions', data: {});
     return resp.statusCode;
   }
 }

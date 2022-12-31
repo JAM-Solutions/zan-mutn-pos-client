@@ -5,6 +5,8 @@ import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
+import 'package:zanmutm_pos_client/src/services/auth_service.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_icon_button.dart';
 
 /// This widget a wrapper for tabs
 /// that can be applied to all routed pages
@@ -52,7 +54,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
       Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: Text(_currentTab.label),
+          title: Text(_currentTab.title),
           centerTitle: true,
         ),
         body: Selector<AppStateProvider, User>(
@@ -74,9 +76,10 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
                       Expanded(
                           child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 46),
+                            vertical: 8, horizontal: 16),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CircleAvatar(
                               backgroundColor: Theme.of(context).primaryColor,
@@ -88,7 +91,11 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600),
                               ),
-                            )
+                            ),
+                            AppIconButton(
+                                onPressed: () {
+                                  authService.logout();
+                                }, icon: Icons.login_sharp)
                           ],
                         ),
                       )),

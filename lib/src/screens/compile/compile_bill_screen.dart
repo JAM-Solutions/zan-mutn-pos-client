@@ -66,7 +66,6 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
       try {
         List<PosTransaction> transaction =
             await posTransactionService.getUnCompiled(_posConfig!.posDeviceId);
-        debugPrint(transaction.length.toString());
         setState(() {
           _unCompiled = transaction;
           _billCompiled = transaction.isEmpty;
@@ -94,7 +93,8 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
         _billCompiled = false;
       });
       try {
-        int? status = await posTransactionService.compile(_posConfig!.posDeviceId);
+        int? status =
+            await posTransactionService.compile(_posConfig!.posDeviceId);
         if (status == 200) {
           setState(() {
             _billCompiled = true;
@@ -118,14 +118,8 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBaseTabScreen(
-
-        child: Builder(builder: (_) {
-      if (!_transactionSynced && _posConnected) {
-        return const Center(
-          child: Text('Syncing Transactions....'),
-        );
-      } else if ((!_posConnected && !_transactionSynced)) {
+    return AppBaseTabScreen(child: Builder(builder: (_) {
+      if (_error != null || !_posConnected) {
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -135,21 +129,29 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
             ],
           ),
         );
-      } else if (_transactionSynced && _billCompiled && _unCompiled.isNotEmpty) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Total items: ${_unCompiled.length}'),
-              Text('Total Amount: ${_unCompiled.length}'),
-              AppButton(onPress: () => _compileBill(), label: 'Compile Bill')
-            ],
-          ),
-        );
       } else {
-        return const Center(
-          child: Text('No transaction to compile'),
-        );
+        if (!_transactionSynced) {
+          return const Center(
+            child: Text('Syncing Transactions....'),
+          );
+        } else if (_transactionSynced &&
+            !_billCompiled &&
+            _unCompiled.isNotEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Total items: ${_unCompiled.length}'),
+                Text('Total Amount: ${_unCompiled.length}'),
+                AppButton(onPress: () => _compileBill(), label: 'Compile Bill')
+              ],
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text('No transaction to compile'),
+          );
+        }
       }
     }));
   }

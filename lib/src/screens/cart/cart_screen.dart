@@ -32,7 +32,6 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  bool _isLoading = false;
   final _cartItemForm = GlobalKey<FormBuilderState>();
   final _taxPayerForm = GlobalKey<FormBuilderState>();
   late PosConfiguration? _posConfig;
@@ -116,12 +115,7 @@ class _CartScreenState extends State<CartScreen> {
       style: const TextStyle(fontSize: 11),
     );
     return DataColumn(
-        label: width != null
-            ? SizedBox(
-                width: width,
-                child: h,
-              )
-            : Expanded(child: h));
+        label: h);
   }
 
   _getTableCell(String value, {double? width}) {
@@ -129,12 +123,7 @@ class _CartScreenState extends State<CartScreen> {
       value,
       style: const TextStyle(fontSize: 11),
     );
-    return DataCell(width != null
-        ? SizedBox(
-            width: width,
-            child: h,
-          )
-        : Expanded(child: h));
+    return DataCell(h);
   }
 
   @override
@@ -149,6 +138,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
           child: items.isNotEmpty
               ? Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SingleChildScrollView(
                       child: DataTable(columnSpacing: 14, columns: [
@@ -169,8 +159,8 @@ class _CartScreenState extends State<CartScreen> {
                           ]);
                         }).toList(),
                         DataRow(cells: [
-                          DataCell(Container()),
-                          DataCell(Container()),
+                          DataCell(Text("")),
+                          DataCell(Text("")),
                           const DataCell(Text(
                             "Total",
                             style: TextStyle(

@@ -16,7 +16,7 @@ class AppMessages {
     }
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration:
-      autoClose ? const Duration(seconds: 5) : const Duration(days: 365),
+          autoClose ? const Duration(seconds: 5) : const Duration(days: 365),
       action: SnackBarAction(
         label: "CLOSE",
         onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
@@ -24,10 +24,13 @@ class AppMessages {
       content: Row(
         children: [
           Flexible(
-            child: Text(
-              message,
-              style: const TextStyle(
-                  fontWeight: FontWeight.w500, overflow: TextOverflow.ellipsis),
+            child: RichText(
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                  text: message,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w500)),
             ),
           )
         ],

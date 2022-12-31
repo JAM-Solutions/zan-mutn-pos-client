@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/models/device_info.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
-import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class AppStateProvider with ChangeNotifier {
   bool isAuthenticated = false;
@@ -49,9 +47,6 @@ class AppStateProvider with ChangeNotifier {
   }
 
   void userLoggedOut() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(AppConst.userKey);
-    await prefs.remove(AppConst.tokenKey);
     isAuthenticated = false;
     sessionHasBeenFetched = true;
     notifyListeners();

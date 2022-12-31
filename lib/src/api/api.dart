@@ -101,7 +101,7 @@ class AppInterceptor extends Interceptor {
       case DioErrorType.cancel:
         break;
       case DioErrorType.other:
-      //  debugPrint(err.message);
+       debugPrint(err.toString());
         throw NoInternetConnectionException(err.requestOptions);
     }
 
