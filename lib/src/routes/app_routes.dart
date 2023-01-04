@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
@@ -100,7 +101,7 @@ class AppRoutes {
   //Route mapping
   GoRouter getRoutes() => GoRouter(
         //Listen to change of auth state from auth provider
-    refreshListenable: appStateProvider,
+        refreshListenable: appStateProvider,
         navigatorKey: _rootNavigatorKey,
         routes: [
           ShellRoute(
@@ -141,6 +142,8 @@ class AppRoutes {
         //Check auth state and redirect to login if user not authenticated
         redirect: (context, state) {
           var appState = Provider.of<AppStateProvider>(context, listen: false);
+          var posConfigState =
+              Provider.of<PosConfigProvider>(context, listen: false);
           final loggedIn = appState.isAuthenticated;
           //If user is
           final isLoginRoute = state.subloc == AppRoutes.login;
@@ -152,7 +155,7 @@ class AppRoutes {
           //If is state is not logged in return login
           if (!loggedIn) {
             return isLoginRoute ? null : AppRoutes.login;
-          } else if (loggedIn && appState.posConfiguration == null) {
+          } else if (loggedIn && posConfigState.posConfiguration == null) {
             return isConfigRoute ? null : AppRoutes.config;
           } else if (isLoginRoute && loggedIn) {
             return '/';

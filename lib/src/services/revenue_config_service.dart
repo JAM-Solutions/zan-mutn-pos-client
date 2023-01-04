@@ -3,6 +3,7 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
+import 'package:zanmutm_pos_client/src/models/revenue_source_config.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class RevenueConfigService {
@@ -68,6 +69,19 @@ class RevenueConfigService {
       }
     } catch (e) {
       throw ValidationException(e.toString());
+    }
+  }
+
+  Future<RevenueSourceConfig?> getRevenueSource(
+      int revenueSourceId,
+      int adminHierarchyId,
+      int financialYearId) async {
+    var resp = await Api().dio.get(
+        "/revenue-source-configurations/current/$revenueSourceId/$adminHierarchyId/$financialYearId");
+    if (resp.data != null && resp.data['data'] != null) {
+      return RevenueSourceConfig.formJson(resp.data['data']);
+    } else {
+      return null;
     }
   }
 }

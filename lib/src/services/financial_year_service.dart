@@ -3,7 +3,6 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class FinancialYearService {
@@ -22,6 +21,9 @@ class FinancialYearService {
         return year;
       }
     } on NoInternetConnectionException {
+      var fromDb = await queryFromDb();
+      return fromDb;
+    } on DeadlineExceededException {
       var fromDb = await queryFromDb();
       return fromDb;
     } catch (e) {

@@ -7,6 +7,7 @@ import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/services/device_info_service.dart';
@@ -29,10 +30,12 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final GoRouter _router = AppRoutes().getRoutes();
   late AppStateProvider _appState;
+  late PosConfigProvider _configProvider;
 
   @override
   void initState() {
     _appState = Provider.of<AppStateProvider>(context, listen: false);
+    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
     initApp();
 
     super.initState();
@@ -42,17 +45,17 @@ class _AppState extends State<App> {
     //Query and set device info
     DeviceInfoPlugin infoPlugin = DeviceInfoPlugin();
     AppDeviceInfo info = await DeviceInfoService().getInfo(infoPlugin);
-    _appState.setDeviceInfo(info);
+    _configProvider.setDeviceInfo(info);
     //Query ang get user session
     User? user = await authService.getSession();
     _appState.sessionFetched(user);
     // Check if pos config fetched/exist from db
     PosConfiguration? posConfig = await posConfigService.queryFromDb(info.id);
-    _appState.setPosConfig(posConfig);
+    _configProvider.setPosConfig(posConfig);
     FinancialYear? year = await financialYearService.queryFromDb();
-    _appState.setFinancialYear(year);
+    _configProvider.setFinancialYear(year);
     List<RevenueSource> sources = await revenueConfigService.queryFromDb();
-    _appState.setRevenueSources(sources);
+    _configProvider.setRevenueSources(sources);
     _appState.setConfigLoaded();
   }
 

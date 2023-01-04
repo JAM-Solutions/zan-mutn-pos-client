@@ -5,6 +5,7 @@ import 'package:zanmutm_pos_client/src/app.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
@@ -13,6 +14,7 @@ Future<void> main() async {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider<AppStateProvider>(create: (_) => appStateProvider),
+        ChangeNotifierProvider<PosConfigProvider>(create: (_) => posConfigProvider),
         ChangeNotifierProvider<CartProvider>(create: (_) => cartProvider),
       ],
     child: App(),));

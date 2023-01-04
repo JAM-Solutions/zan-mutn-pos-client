@@ -6,6 +6,7 @@ class AppInputInteger extends StatelessWidget {
   final String name;
   final String displayValue;
   final String label;
+  final Widget? suffix;
   final List<String? Function(int?)> validators;
   final num? initialValue;
 
@@ -15,7 +16,8 @@ class AppInputInteger extends StatelessWidget {
       this.displayValue = 'name',
       required this.label,
       this.validators = const [],
-      this.initialValue});
+      this.initialValue,
+        this.suffix});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,9 @@ class AppInputInteger extends StatelessWidget {
                   errorText: field.errorText,
                   label: Text(
                     label,
-                  )),
+                  ),
+                suffix: suffix
+              ),
               initialValue: (field.value ?? initialValue ?? 0).toString(),
               keyboardType: TextInputType.number,
               onChanged: (value) {

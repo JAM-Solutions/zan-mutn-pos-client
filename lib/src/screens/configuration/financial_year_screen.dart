@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
@@ -17,11 +17,11 @@ class FinancialYearConfigScreen extends StatefulWidget {
 
 class _FinancialYearConfigScreenState extends State<FinancialYearConfigScreen> {
   bool _isLoading = false;
-  late AppStateProvider _configProvider;
+  late PosConfigProvider _configProvider;
 
   @override
   void initState() {
-    _configProvider = Provider.of<AppStateProvider>(context, listen: false);
+    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
     if (_configProvider.financialYear == null) {
       _loadFinancialYear();
     }
@@ -48,7 +48,7 @@ class _FinancialYearConfigScreenState extends State<FinancialYearConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateProvider>(
+    return Consumer<PosConfigProvider>(
       builder: (context, provider, child) {
         return AppBaseScreen(
             isLoading: _isLoading,

@@ -1,47 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
- _logout(context) {
-   Provider.of<AppStateProvider>(context,listen: false).userLoggedOut();
- }
 
-  Widget getTile(BuildContext context, IconData icon, String name, String link) {
-    return GestureDetector(
-      onTap: ()  => context.go(link),
-      child: Card(
-        elevation: 4,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column (
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 84,color: Theme.of(context).primaryColor,),
-                const SizedBox(height: 12,),
-                Text(name, style:  TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w500),)
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    Provider.of<PosConfigProvider>(context, listen: false).getBalance();
+    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return const AppBaseTabScreen(
-        child:  Center(
-          child: Text('POS Dashboard is working'),
-        )
+    return Consumer<PosConfigProvider>(
+      builder: (context, provider, child) {
+        return AppBaseTabScreen(
+            child: Column(
+          children: [
+            ListTile(
+              dense: true,
+              title: const Text('Total Collection'),
+              subtitle: const Text('Collection since last bill'),
+              trailing: Text(
+                currency.format(provider.totalCollection),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Divider(
+              height: 2,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildStatus(
+                    "Offline Balance",
+                    Icons.account_balance_wallet_rounded,
+                    currency.format(provider.offlineBalance)),
+                const SizedBox(
+                  width: 16,
+                ),
+                _buildStatus("Collection Balance",
+                    Icons.account_balance_wallet_rounded, currency.format(0)),
+                const SizedBox(
+                  width: 16,
+                ),
+                _buildStatus("Offline Time Balance",
+                    Icons.timelapse_outlined, currency.format(0)),
+              ],
+            )
+          ],
+        ));
+      },
     );
   }
+
+  _buildStatus(String title, IconData icon, String status) => Flexible(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: Theme.of(context).primaryColor,
+            ),
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 11, fontFamily: 'Roboto'),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              status,
+              style: TextStyle(),
+            )
+          ],
+        ),
+      );
 }

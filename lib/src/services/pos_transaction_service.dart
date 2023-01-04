@@ -63,7 +63,6 @@ class PosTransactionService {
   Future<bool> sync() async {
     var db = await DbProvider().database;
     List<Map<String, dynamic>> dbTransactions = await db.query(table);
-    debugPrint('Total transactions ${dbTransactions.length.toString()}');
     for (var txn in dbTransactions) {
       var resp = await Api().dio.post(api, data: {
         ...txn,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
@@ -15,12 +15,12 @@ class PosConfigScreen extends StatefulWidget {
 }
 
 class _PosConfigScreenState extends State<PosConfigScreen> {
-  late AppStateProvider _configProvider;
+  late PosConfigProvider _configProvider;
   bool _isLoading = false;
 
   @override
   void initState() {
-    _configProvider = Provider.of<AppStateProvider>(context, listen: false);
+    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
     if (_configProvider.posConfiguration == null) {
       _loadConfig();
     }
@@ -51,7 +51,7 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateProvider>(
+    return Consumer<PosConfigProvider>(
       builder: (context, provider, child) {
         return AppBaseScreen(
             appBar: AppBar(

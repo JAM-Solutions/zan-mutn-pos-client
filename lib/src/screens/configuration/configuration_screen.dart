@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
@@ -17,14 +17,14 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
-  late AppStateProvider _configProvider;
+  late PosConfigProvider _configProvider;
   bool _posConfigIsLoading = false;
   bool _fyIsLoading = false;
   bool _revSourcesIsLoading = false;
 
   @override
   void initState() {
-    _configProvider = Provider.of<AppStateProvider>(context, listen: false);
+    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
     _checkAndLoadConfigs();
     super.initState();
   }
@@ -72,7 +72,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateProvider>(builder: (context, appState, child) {
+    return Consumer<PosConfigProvider>(builder: (context, appState, child) {
       return AppBaseScreen(
         appBar: AppBar(
           title: const Text('Configurations'),

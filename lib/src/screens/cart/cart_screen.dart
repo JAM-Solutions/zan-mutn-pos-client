@@ -6,11 +6,14 @@ import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
+import 'package:zanmutm_pos_client/src/models/revenue_source_config.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
+import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
@@ -38,13 +41,14 @@ class _CartScreenState extends State<CartScreen> {
   late FinancialYear? _year;
   late User? _user;
   late CartProvider _cartProvider;
+  RevenueSourceConfig? _revenueSourceConfig;
 
   @override
   void initState() {
     _cartProvider = Provider.of(context, listen: false);
-    var appProvider = Provider.of<AppStateProvider>(context, listen: false);
-    _posConfig = appProvider.posConfiguration;
-    _user = appProvider.user;
+    _posConfig =
+        Provider.of<PosConfigProvider>(context, listen: false).posConfiguration;
+    _user = Provider.of<AppStateProvider>(context, listen: false).user;
     _loadYear();
     super.initState();
   }
@@ -57,6 +61,16 @@ class _CartScreenState extends State<CartScreen> {
     Map<String, dynamic> formValues = _cartItemForm.currentState!.value;
     CartItem item = CartItem.fromJson(formValues);
     _cartProvider.addItem(item);
+  }
+
+  loadRevSourceConf(int revenueSourceId, StateSetter setDialogState) async {
+    try {
+      var revConfig = await revenueConfigService.getRevenueSource(
+          revenueSourceId, _user!.adminHierarchyId!, _year!.id);
+      setDialogState(() => _revenueSourceConfig = revConfig);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   _collectCash() async {
@@ -106,7 +120,7 @@ class _CartScreenState extends State<CartScreen> {
 
   //TODO
   Future<String?> _printReceipt() async {
-    return 'No implementaion';
+    return 'No implementation';
   }
 
   _getTableHeader(String label, {double? width}) {
@@ -114,8 +128,7 @@ class _CartScreenState extends State<CartScreen> {
       label,
       style: const TextStyle(fontSize: 11),
     );
-    return DataColumn(
-        label: h);
+    return DataColumn(label: h);
   }
 
   _getTableCell(String value, {double? width}) {
@@ -128,9 +141,9 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CartProvider>(
-      builder: (context, provider, child) {
-        var items = provider.cartItems;
+    return Consumer2<CartProvider, PosConfigProvider>(
+      builder: (context, cartProvider, configProvider, child) {
+        var items = cartProvider.cartItems;
         return AppBaseTabScreen(
           floatingActionButton: FloatingActionButton(
             onPressed: () => _addUpdateItem(null),
@@ -138,7 +151,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
           child: items.isNotEmpty
               ? Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SingleChildScrollView(
                       child: DataTable(columnSpacing: 14, columns: [
@@ -151,8 +164,7 @@ class _CartScreenState extends State<CartScreen> {
                           return DataRow(cells: [
                             _getTableCell(e.revenueSource.name),
                             _getTableCell(e.quantity.toString(), width: 50),
-                            _getTableCell(currency.format(e.amount),
-                                width: 50),
+                            _getTableCell(currency.format(e.amount), width: 50),
                             _getTableCell(
                                 currency.format(e.amount * e.quantity),
                                 width: 50),
@@ -202,30 +214,65 @@ class _CartScreenState extends State<CartScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Cart Item'),
-          content: SingleChildScrollView(
-            child: AppForm(
-              initialValue: data,
-              formKey: _cartItemForm,
-              controls: [
-                AppFetcher(
-                    table: 'revenue_sources',
-                    builder: (items, isLoading) {
-                      return AppInputDropDown(
-                        label: "Revenue Source",
-                        displayValue: 'name',
-                        items: items,
-                        name: 'revenueSource',
-                        validators: [
-                          FormBuilderValidators.required(
-                              errorText: "Source is required"),
-                        ],
-                      );
-                    }),
-                const AppInputInteger(name: 'quantity', label: "Quantity"),
-                const AppInputNumber(name: 'amount', label: "Amount"),
-              ],
-            ),
-          ),
+          content: StatefulBuilder(
+              builder: (BuildContext _, StateSetter setDialogState) {
+                RevenueSourceConfig? revenueSourceConfig;
+
+            return SingleChildScrollView(
+              child: AppForm(
+                initialValue: {
+                  ...data,
+                  'amount': data["amount"] != null && data['amount'] > 0.00
+                      ? data["amount"]
+                      : revenueSourceConfig?.unitCost ?? 0.00
+                },
+                formKey: _cartItemForm,
+                controls: [
+                  AppFetcher(
+                      table: 'revenue_sources',
+                      builder: (items, isLoading) {
+                        return AppInputDropDown(
+                          label: "Revenue Source",
+                          displayValue: 'name',
+                          items: items,
+                          name: 'revenueSource',
+                          onChange: (Map<String, dynamic> selectedSource) async {
+                            try {
+                              var revConfig = await revenueConfigService.getRevenueSource(
+                                  selectedSource['id'], _user!.adminHierarchyId!, _year!.id);
+                              setDialogState(() => revenueSourceConfig = revConfig);
+                            } catch (e) {
+                              debugPrint(e.toString());
+                            }
+                          },
+                          validators: [
+                            FormBuilderValidators.required(
+                                errorText: "Source is required"),
+                          ],
+                        );
+                      }),
+
+                  AppInputInteger(
+                    name: 'quantity',
+                    label: "Quantity",
+                    suffix: Text(revenueSourceConfig?.unitName ?? ''),
+                    validators: [
+                      FormBuilderValidators.required(
+                          errorText: "Quantity is required"),
+                    ],
+                  ),
+                  AppInputNumber(
+                    name: 'amount',
+                    label: "Amount",
+                    validators: [
+                      FormBuilderValidators.required(
+                          errorText: "Amount is required"),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }),
           actions: <Widget>[
             Row(
               children: [

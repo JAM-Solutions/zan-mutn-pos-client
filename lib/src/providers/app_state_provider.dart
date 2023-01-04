@@ -1,10 +1,5 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:zanmutm_pos_client/src/models/device_info.dart';
-import 'package:zanmutm_pos_client/src/models/financial_year.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 
 class AppStateProvider with ChangeNotifier {
@@ -12,10 +7,6 @@ class AppStateProvider with ChangeNotifier {
   bool sessionHasBeenFetched = false;
   bool configurationHasBeenLoaded = false;
   User? user;
-  PosConfiguration? posConfiguration;
-  FinancialYear? financialYear;
-  AppDeviceInfo? deviceInfo;
-  List<RevenueSource> revenueSource = List.empty(growable: false);
   double tabDx = 1.0; // To control tab navigation
 
   static final AppStateProvider _instance = AppStateProvider._();
@@ -34,10 +25,6 @@ class AppStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setDeviceInfo(AppDeviceInfo info) {
-    deviceInfo = info;
-    notifyListeners();
-  }
 
   void setAuthenticated(User loggedInUser)  {
     isAuthenticated = true;
@@ -49,23 +36,6 @@ class AppStateProvider with ChangeNotifier {
   void userLoggedOut() async {
     isAuthenticated = false;
     sessionHasBeenFetched = true;
-    notifyListeners();
-  }
-
-  void setFinancialYear(FinancialYear? fy)  {
-    financialYear = fy;
-    notifyListeners();
-  }
-
-  void setRevenueSources(List<RevenueSource>? sources) {
-    if (sources != null) {
-      revenueSource = sources;
-      notifyListeners();
-    }
-  }
-
-  void setPosConfig(PosConfiguration? config) {
-    posConfiguration = config;
     notifyListeners();
   }
 
