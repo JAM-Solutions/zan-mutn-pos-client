@@ -4,7 +4,7 @@ import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class AppDetailColumn {
   final String header;
-  final String value;
+  final dynamic value;
   final FormatType? format;
 
   AppDetailColumn({
@@ -98,7 +98,7 @@ class AppDetailCard extends StatelessWidget {
                         )),
                         SizedBox(
                             child: Text(
-                          formatValue(col.format, data![col.value]),
+                          formatValue(col.format, col.value),
                           style: cellStyle,
                         )),
                       ],
