@@ -15,6 +15,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       json['taxPayerId'] as int?,
       json['adminHierarchyName'] as String?,
       json['taxPayerUuid'] as String?,
+      json['taxCollectorId'] as int?,
+      json['taxCollectorUuid'] as String?,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -24,6 +26,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'email': instance.email,
       'adminHierarchyId': instance.adminHierarchyId,
       'taxPayerId': instance.taxPayerId,
+      'taxCollectorId': instance.taxCollectorId,
       'taxPayerUuid': instance.taxPayerUuid,
+      'taxCollectorUuid': instance.taxCollectorUuid,
       'adminHierarchyName': instance.adminHierarchyName,
     };

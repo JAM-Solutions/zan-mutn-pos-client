@@ -98,7 +98,7 @@ class AppDetailCard extends StatelessWidget {
                         )),
                         SizedBox(
                             child: Text(
-                          formatValue(col.format, col.value),
+                          formatValue(col.format, data![col.value]),
                           style: cellStyle,
                         )),
                       ],

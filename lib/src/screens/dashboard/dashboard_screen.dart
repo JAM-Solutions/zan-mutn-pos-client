@@ -98,6 +98,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       var item = sources[index];
                       return ListTile(
                         leading: CircleAvatar(
+                          backgroundColor: Theme.of(context).primaryColor,
                           child: Text(item.name.substring(0, 1)),
                         ),
                         title: Text(item.name),
@@ -136,6 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             contentPadding: const EdgeInsets.all(0.0),
             subtitle: Text(source.gfsCode),
             leading: CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor,
               child: Text(source.name.substring(0, 1)),
             ),
           ),

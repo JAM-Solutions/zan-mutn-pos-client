@@ -10,7 +10,9 @@ class User {
   final String email;
   final int? adminHierarchyId;
   final int? taxPayerId;
+  final int? taxCollectorId;
   final String? taxPayerUuid;
+  final String? taxCollectorUuid;
   final String? adminHierarchyName;
 
   User(
@@ -21,7 +23,9 @@ class User {
       this.adminHierarchyId,
       this.taxPayerId,
       this.adminHierarchyName,
-      this.taxPayerUuid);
+      this.taxPayerUuid,
+      this.taxCollectorId,
+      this.taxCollectorUuid);
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

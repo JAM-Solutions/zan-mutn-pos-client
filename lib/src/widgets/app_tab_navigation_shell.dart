@@ -68,7 +68,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
                     padding: const EdgeInsets.all(6),
                     position: BadgePosition.topStart(),
                     child: IconButton(
-                        onPressed: () {},
+                        onPressed: () =>_goToTab(context, 1),
                         icon: const Icon(Icons.shopping_cart)),
                   )
               ],

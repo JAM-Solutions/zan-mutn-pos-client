@@ -19,12 +19,17 @@ class AuthService {
   Future<User> login(Map<String, dynamic> payload) async {
     var resp = await Api().dio.post(authenticationApi,data: payload);
     User user = User.fromJson(resp.data['User']);
+
+    if (user.taxPayerUuid == null) {
+      throw ValidationException("User is not valid POS user, taxPayer missing");
+    }
+    if (user.taxCollectorUuid == null) {
+      throw ValidationException("User is not valid POS user, taxCollector missing");
+    }
     if (user.adminHierarchyId == null) {
       throw ValidationException("User has no admin areas");
     }
-    if (user.taxPayerId == null) {
-      throw ValidationException("User is not valid tax collector, taxPayerId missing");
-    }
+
     String token = resp.data['access_token'];
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppConst.userKey, jsonEncode(user.toJson()));

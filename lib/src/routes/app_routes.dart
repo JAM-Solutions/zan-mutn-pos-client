@@ -110,10 +110,10 @@ class AppRoutes {
                         child: e.widget,
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
-                          var begin = Offset(
+                          var begin = Offset(0.0,
                               context.select<AppStateProvider, double>(
                                   (value) => value.tabDx),
-                              0.0);
+                              );
                           const end = Offset.zero;
                           const curve = Curves.ease;
 

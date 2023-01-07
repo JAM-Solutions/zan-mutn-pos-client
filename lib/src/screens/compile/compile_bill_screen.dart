@@ -10,7 +10,6 @@ import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_charge_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
-import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
@@ -34,12 +33,15 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
   List<PosCharge> _charges = List.empty();
 
   late PosConfiguration? _posConfig;
+  late User? _user;
+
   List<PosTransaction> _unCompiled = List.empty(growable: true);
 
   @override
   void initState() {
     _posConfig =
         Provider.of<PosConfigProvider>(context, listen: false).posConfiguration;
+    _user = Provider.of<AppStateProvider>(context, listen: false).user;
     _syncAndLoad();
     super.initState();
   }
@@ -70,7 +72,7 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
     if (_transactionSynced) {
       try {
         List<PosTransaction> transaction =
-            await posTransactionService.getUnCompiled(_posConfig!.posDeviceId);
+            await posTransactionService.getUnCompiled(_user!.taxCollectorUuid!);
         setState(() => {
               _unCompiled = transaction,
               _allTransactionsCompiled = transaction.isEmpty
@@ -96,7 +98,7 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
       setState(() => _allTransactionsCompiled = false);
       try {
         int? status =
-            await posTransactionService.compile(_posConfig!.posDeviceId);
+            await posTransactionService.compile(_user!.taxCollectorUuid!);
         if (status == 200) {
           setState(() => _allTransactionsCompiled = true);
           _loadCharges();
@@ -116,7 +118,7 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
     try {
       User? user = Provider.of<AppStateProvider>(context, listen: false).user;
       List<PosCharge> charges =
-          await posChargeService.getPendingCharges(user!.taxPayerUuid!);
+          await posChargeService.getPendingCharges(user!.taxCollectorUuid!);
       setState(
           () => {_charges = charges, _allBillsGenerated = _charges.isEmpty});
     } on NoInternetConnectionException {
@@ -160,7 +162,8 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBaseTabScreen(child: Builder(builder: (_) {
+    return AppBaseTabScreen(
+        child: Builder(builder: (_) {
       // If No internet connection or error has occured display
       // Message and retry button
       if (_error != null || !_posConnected) {

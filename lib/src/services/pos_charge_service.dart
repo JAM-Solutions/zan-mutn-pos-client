@@ -8,8 +8,8 @@ class PosChargeService {
 
   final String api = '/pos-charges';
 
-  Future<List<PosCharge>> getPendingCharges(String taxPayerUuid) async {
-    var resp = await Api().dio.get('$api/$taxPayerUuid');
+  Future<List<PosCharge>> getPendingCharges(String taxCollectorUuid) async {
+    var resp = await Api().dio.get('$api/$taxCollectorUuid');
     return (resp.data['data'] as List<dynamic>)
         .map((e) => PosCharge.fromJson(e))
         .toList();

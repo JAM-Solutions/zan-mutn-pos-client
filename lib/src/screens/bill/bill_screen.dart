@@ -1,4 +1,15 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/api/api.dart';
+import 'package:zanmutm_pos_client/src/models/bill.dart';
+import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
+import 'package:zanmutm_pos_client/src/models/user.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/services/bill_service.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
 
 class BillScreen extends StatefulWidget {
   const BillScreen({Key? key}) : super(key: key);
@@ -8,8 +19,78 @@ class BillScreen extends StatefulWidget {
 }
 
 class _BillScreenState extends State<BillScreen> {
+  List<Bill> _bills = List.empty(growable: true);
+  bool _posConnected = true;
+  bool _isLoading = false;
+  late PosConfiguration? _posConfig;
+  late User? user;
+  String? _error;
+
+  @override
+  void initState() {
+    _posConfig =
+        Provider.of<PosConfigProvider>(context, listen: false).posConfiguration;
+    user = Provider.of<AppStateProvider>(context, listen: false).user;
+    _loadPendingBills();
+    super.initState();
+  }
+
+  _loadPendingBills() async {
+    try {
+      var result = await billService.getPendingBills(user!.taxPayerUuid!);
+      setState(() => {_bills = result, _isLoading = false});
+    } on NoInternetConnectionException {
+      setState(() => {_posConnected = false, _isLoading = false});
+      return false;
+    } on DeadlineExceededException {
+      setState(() => {_posConnected = false, _isLoading = false});
+    } catch (e) {
+      setState(() => {_isLoading = false, _error= e.toString()});
+    }
+  }
+
+  _retry() async {
+    setState(() => {_isLoading = true, _error = null} );
+    _loadPendingBills();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return AppBaseTabScreen(child: Builder(builder: (_) {
+      if (_error != null || !_posConnected) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(_error ?? 'No Internet connection'),
+              AppButton(onPress: () => _retry(), label: 'Retry')
+            ],
+          ),
+        );
+      } else {
+        if (_bills.isNotEmpty) {
+          return ListView.separated(
+              itemBuilder: (BuildContext _, int index) {
+                var item = _bills[index];
+                return AppDetailCard(
+                    title: 'Bill',
+                    data: item.toJson(),
+                    columns: [
+                      AppDetailColumn(header: 'Amount', value: 'amount'),
+                      AppDetailColumn(
+                          header: 'Control Number', value: 'controlNumber')
+                    ]);
+              },
+              separatorBuilder: (BuildContext _, int index) => const SizedBox(
+                    height: 4,
+                  ),
+              itemCount: _bills.length);
+        } else {
+          return const Center(
+            child: Text("No pending bills found"),
+          );
+        }
+      }
+    }));
   }
 }

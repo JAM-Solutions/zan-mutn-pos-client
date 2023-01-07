@@ -3,7 +3,6 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
-import 'package:intl/intl.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class PosTransactionService {
@@ -79,17 +78,17 @@ class PosTransactionService {
     return existing.isEmpty;
   }
 
-  Future<List<PosTransaction>> getUnCompiled(int posDeviceId) async {
-    var resp = await Api().dio.get('$api/un-compiled/$posDeviceId');
+  Future<List<PosTransaction>> getUnCompiled(String taxCollectorUuid) async {
+    var resp = await Api().dio.get('$api/un-compiled/$taxCollectorUuid');
     return (resp.data['data'] as List<dynamic>)
         .map((e) => PosTransaction.fromJson(e))
         .toList();
   }
 
-  Future<int?> compile(int posDeviceId) async {
+  Future<int?> compile(String taxCollectorUuid) async {
     var resp = await Api()
         .dio
-        .post('/pos-devices/$posDeviceId/compile-transactions', data: {});
+        .post('/pos-devices/$taxCollectorUuid/compile-transactions', data: {});
     return resp.statusCode;
   }
 }

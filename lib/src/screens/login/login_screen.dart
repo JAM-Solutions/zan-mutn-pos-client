@@ -31,20 +31,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onSubmit() async {
     if(_loginForm.currentState!.saveAndValidate()) {
-      setState(() {
-        _isLoading = true;
-      });
+      setState(() =>_isLoading = true);
       Map<String, dynamic> payload = _loginForm.currentState!.value;
       try {
          User user = await authService.login(payload);
          _authProvider.setAuthenticated(user);
-         setState(() {
-           _isLoading = false;
-         });
+         setState(() => _isLoading = false);
       } catch(e) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
         debugPrint(e.toString());
         AppMessages.showError(context, e.toString());
       }
