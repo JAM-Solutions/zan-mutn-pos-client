@@ -11,7 +11,6 @@ import 'package:zanmutm_pos_client/src/screens/configuration/configuration_scree
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/pos_config_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
@@ -80,16 +79,10 @@ class AppRoutes {
     ),
     AppTabItem(
         icon: Icon(Icons.compress),
-        label: "Compile",
+        label: "Generate Bill",
         title: "Compile Transactions",
         path: compileBillTab,
         widget: CompileBillScreen()),
-    AppTabItem(
-        icon: Icon(Icons.generating_tokens),
-        label: "Generate",
-        title: "Generate Bill",
-        path: generateBillTab,
-        widget: GenerateBillScreen()),
     AppTabItem(
         icon: Icon(Icons.payment_sharp),
         label: "Bills",

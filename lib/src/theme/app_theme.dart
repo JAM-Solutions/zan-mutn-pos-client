@@ -17,8 +17,8 @@ final ThemeData defaultTheme = ThemeData(
     ),
     color: primaryColor,
     titleTextStyle: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 24
+      fontWeight: FontWeight.normal,
+      fontSize: 20
     ),
     elevation: 0
   ),

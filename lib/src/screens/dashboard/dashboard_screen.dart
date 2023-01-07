@@ -218,7 +218,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   //If user select add to cart from add item dialog
   // Get values from add item form and update cart state from cat provider
-  _addToCart() {
+  _addToCart() async {
     Map<String, dynamic> formValues = _addItemForm.currentState!.value;
     CartItem item = CartItem.fromJson(formValues);
     _cartProvider.addItem(item);
@@ -228,18 +228,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // Open tax payer dialog after confirmation
   //
   _collectCash() async {
+    await _addToCart();
     bool? confirmed = await _openTaxPayerDialog();
     if (confirmed == true) {
       //get tax payer details from taxpayer form
       var taxPayerValues = _taxPayerForm.currentState!.value;
-
-      List<CartItem> items = _cartProvider.cartItems;
-
       //Add last item to cart or single item when print single revenus source
       //Both multi item and single item added to card first before save and printed
-      Map<String, dynamic> lastItemValue = _addItemForm.currentState!.value;
-      CartItem lastCardItem = CartItem.fromJson(lastItemValue);
-      _cartProvider.addItem(lastCardItem);
+
+      List<CartItem> items = _cartProvider.cartItems;
 
       //Use current time stamp as transaction id
       DateTime t = DateTime.now();

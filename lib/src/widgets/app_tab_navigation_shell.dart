@@ -1,8 +1,10 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
@@ -51,82 +53,90 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
           ))
         ],
       ),
-      Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text(_currentTab.title),
-          centerTitle: true,
-        ),
-        body: Selector<AppStateProvider, User>(
-          selector: (context, state) => state.user!,
-          builder: (context, user, child) {
-            return Column(
-              children: [
-                Container(
-                  height: 100,
-                  margin: const EdgeInsets.symmetric(horizontal: 18),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
-                      )),
-                  child: Column(
-                    children: [
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              child: Text(
-                                user.firstName != null && user.lastName != null
-                                    ? '${user.firstName?.substring(0, 1)}${user.lastName?.substring(0, 1)}'
-                                    : 'AV',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            AppIconButton(
-                                onPressed: () {
-                                  authService.logout();
-                                }, icon: Icons.login_sharp)
-                          ],
-                        ),
-                      )),
-                      const Divider(
-                        height: 0,
-                        thickness: 1,
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                    child: Container(
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only()),
-                        margin: const EdgeInsets.symmetric(horizontal: 18),
-                        child: widget.child)),
+      Consumer<CartProvider>(
+        builder: (context, cartProvider, child) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              title: Text(_currentTab.title),
+              centerTitle: true,
+              actions: [
+                if (cartProvider.cartItems.isNotEmpty)
+                  Badge(
+                    badgeContent:
+                        Text(cartProvider.cartItems.length.toString()),
+                    padding: const EdgeInsets.all(6),
+                    position: BadgePosition.topStart(),
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.shopping_cart)),
+                  )
               ],
-            );
-          },
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _currentTabIndex,
-          items: [
-            ...AppRoutes.tabRoutes.map((e) {
-              Widget icon = e.label.contains('Cart') ? e.icon : e.icon;
-              return BottomNavigationBarItem(icon: icon, label: e.label);
-            })
-          ],
-          onTap: (int tabIndex) => _goToTab(context, tabIndex),
-        ),
+            ),
+            drawer: Drawer(
+              child: Column(
+                children: [],
+              ),
+            ),
+            body: Selector<AppStateProvider, User>(
+              selector: (context, state) => state.user!,
+              builder: (context, user, child) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Text(
+                              user.firstName != null && user.lastName != null
+                                  ? '${user.firstName?.substring(0, 1)}${user.lastName?.substring(0, 1)}'
+                                  : 'AV',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          AppIconButton(
+                              onPressed: () {
+                                authService.logout();
+                              },
+                              icon: Icons.login_sharp)
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Expanded(
+                        child: Container(
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(18),
+                                  topRight: Radius.circular(18),
+                                )),
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            child: widget.child)),
+                  ],
+                );
+              },
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _currentTabIndex,
+              items: [
+                ...AppRoutes.tabRoutes.map((e) {
+                  Widget icon = e.label.contains('Cart') ? e.icon : e.icon;
+                  return BottomNavigationBarItem(icon: icon, label: e.label);
+                })
+              ],
+              onTap: (int tabIndex) => _goToTab(context, tabIndex),
+            ),
+          );
+        },
       ),
     ]);
   }
