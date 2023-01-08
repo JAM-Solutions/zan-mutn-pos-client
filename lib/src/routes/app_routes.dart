@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
@@ -111,7 +112,7 @@ class AppRoutes {
                         transitionsBuilder:
                             (context, animation, secondaryAnimation, child) {
                           var begin = Offset(0.0,
-                              context.select<AppStateProvider, double>(
+                              context.select<TabProvider, double>(
                                   (value) => value.tabDx),
                               );
                           const end = Offset.zero;

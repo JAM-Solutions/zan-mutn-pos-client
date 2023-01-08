@@ -1,5 +1,4 @@
-
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 
 class AppStateProvider with ChangeNotifier {
@@ -7,7 +6,6 @@ class AppStateProvider with ChangeNotifier {
   bool sessionHasBeenFetched = false;
   bool configurationHasBeenLoaded = false;
   User? user;
-  double tabDx = 1.0; // To control tab navigation
 
   static final AppStateProvider _instance = AppStateProvider._();
   factory AppStateProvider() => _instance;
@@ -19,12 +17,6 @@ class AppStateProvider with ChangeNotifier {
       sessionHasBeenFetched = true;
       notifyListeners();
   }
-
-  void setTabDirection(double dir) {
-    tabDx = dir;
-    notifyListeners();
-  }
-
 
   void setAuthenticated(User loggedInUser)  {
     isAuthenticated = true;

@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 
 class CartProvider with ChangeNotifier {

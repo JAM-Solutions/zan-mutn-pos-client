@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_icon_button.dart';
 
@@ -24,19 +24,6 @@ class AppTabNavigationShell extends StatefulWidget {
 }
 
 class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
-  int _currentTabIndex = 0;
-  AppTabItem _currentTab = AppRoutes.tabRoutes.elementAt(0);
-
-  _goToTab(BuildContext context, int index) {
-    Provider.of<AppStateProvider>(context, listen: false)
-        .setTabDirection(_currentTabIndex < index ? 1.0 : -10.0);
-    setState(() {
-      _currentTabIndex = index;
-      _currentTab = AppRoutes.tabRoutes.elementAt(index);
-    });
-    context.go(_currentTab.path);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -53,25 +40,13 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
           ))
         ],
       ),
-      Consumer<CartProvider>(
-        builder: (context, cartProvider, child) {
+      Consumer2<TabProvider, CartProvider>(
+        builder: (context, tabProvider, cartProvider, child) {
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: Text(_currentTab.title),
+              title: Text(tabProvider.currentTab.title),
               centerTitle: true,
-              actions: [
-                if (cartProvider.cartItems.isNotEmpty)
-                  Badge(
-                    badgeContent:
-                        Text(cartProvider.cartItems.length.toString()),
-                    padding: const EdgeInsets.all(6),
-                    position: BadgePosition.topStart(),
-                    child: IconButton(
-                        onPressed: () =>_goToTab(context, 1),
-                        icon: const Icon(Icons.shopping_cart)),
-                  )
-              ],
             ),
             drawer: Drawer(
               child: Column(
@@ -126,14 +101,24 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
               },
             ),
             bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _currentTabIndex,
+              currentIndex: tabProvider.currentTabIndex,
+              type: BottomNavigationBarType.fixed,
               items: [
                 ...AppRoutes.tabRoutes.map((e) {
-                  Widget icon = e.label.contains('Cart') ? e.icon : e.icon;
+                  Widget icon = e.label.contains('Cart') &&
+                          cartProvider.cartItems.isNotEmpty
+                      ? Badge(
+                          badgeContent:
+                              Text(cartProvider.cartItems.length.toString()),
+                          padding: const EdgeInsets.all(6),
+                          position: BadgePosition.topEnd(top: -20, end: -16),
+                          child: e.icon,
+                        )
+                      : e.icon;
                   return BottomNavigationBarItem(icon: icon, label: e.label);
                 })
               ],
-              onTap: (int tabIndex) => _goToTab(context, tabIndex),
+              onTap: (int tabIndex) => tabProvider.gotToTab(context, tabIndex),
             ),
           );
         },
