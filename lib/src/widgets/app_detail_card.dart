@@ -19,6 +19,7 @@ class AppDetailCard extends StatelessWidget {
   final String? subTitle;
   final Map<String, dynamic>? data;
   final List<AppDetailColumn> columns;
+  final double? elevation;
   final Widget Function(Map<String, dynamic>? row)? actionBuilder;
 
   const AppDetailCard(
@@ -27,7 +28,7 @@ class AppDetailCard extends StatelessWidget {
       required this.columns,
       this.actionBuilder,
       required this.title,
-      this.subTitle})
+      this.subTitle, this.elevation})
       : super(key: key);
 
   static const TextStyle headerStyle = TextStyle(
@@ -40,7 +41,7 @@ class AppDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
+      elevation: elevation ?? 1,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -55,7 +56,9 @@ class AppDetailCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold),
                     ),
                     if (subTitle != null)
                       const SizedBox(
@@ -65,10 +68,6 @@ class AppDetailCard extends StatelessWidget {
                       Text(subTitle!, style: const TextStyle(fontSize: 11))
                   ],
                 ),
-                if (actionBuilder != null)
-                  SizedBox(
-                    child: actionBuilder!(data),
-                  ),
               ],
             ),
             const Divider(
@@ -98,7 +97,7 @@ class AppDetailCard extends StatelessWidget {
                         )),
                         SizedBox(
                             child: Text(
-                          formatValue(col.format, data![col.value]),
+                          formatValue(col.format, col.value),
                           style: cellStyle,
                         )),
                       ],
@@ -108,6 +107,10 @@ class AppDetailCard extends StatelessWidget {
                     )
                   ],
                 ),
+              ),
+            if (actionBuilder != null)
+              SizedBox(
+                child: actionBuilder!(data),
               ),
           ],
         ),

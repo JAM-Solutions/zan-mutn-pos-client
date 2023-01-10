@@ -185,26 +185,32 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
         } else if (_transactionSynced &&
             !_allTransactionsCompiled &&
             _unCompiled.isNotEmpty) {
-          return Column(
-            children: [
-              AppDetailCard(
-                title: 'Un compiled transactions',
-                data: {},
-                columns: [
-                  AppDetailColumn(
-                      header: 'Total Transactions', value: _unCompiled.length),
-                  AppDetailColumn(
-                      header: 'Total Amount',
-                      value: _unCompiled
-                          .map((e) => e.amount * e.quantity)
-                          .fold(0.0, (accum, subTotal) => accum + subTotal),
-                      format: FormatType.currency),
-                ],
-              ),
-              AppButton(
-                  onPress: () => _compileTransactions(),
-                  label: 'Compile Transactions')
-            ],
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            child: Column(
+              children: [
+                AppDetailCard(
+                  title: 'Un compiled transactions',
+                  elevation: 0,
+                  data: {},
+                  columns: [
+
+                    AppDetailColumn(
+                        header: 'Total Amount',
+                        value: _unCompiled
+                            .map((e) => e.amount * e.quantity)
+                            .fold(0.0, (accum, subTotal) => accum + subTotal),
+                      format: FormatType.currency
+                        ),
+                    AppDetailColumn(
+                        header: 'Total Transactions', value: _unCompiled.length),
+                  ],
+                ),
+                AppButton(
+                    onPress: () => _compileTransactions(),
+                    label: 'Compile Transactions')
+              ],
+            ),
           );
         } else if (_allTransactionsCompiled && !_allBillsGenerated) {
           return Padding(
@@ -217,6 +223,7 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
                         var item = _charges[idx];
                         return AppDetailCard(
                           title: '',
+                          elevation: 0,
                           data: item.toJson(),
                           columns: [
                             AppDetailColumn(
@@ -227,9 +234,9 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
                                 header: 'Total Transaction',
                                 value: item.transactions.length.toString()),
                           ],
-                          actionBuilder: (_) => TextButton(
-                            onPressed: () => _generateBill(item.uuid),
-                            child: Text('Generate Bill'),
+                          actionBuilder: (_) => AppButton(
+                            onPress: () => _generateBill(item.uuid),
+                            label:  'Generate Bill',
                           ),
                         );
                       },

@@ -1,24 +1,20 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
-import 'package:zanmutm_pos_client/src/models/financial_year.dart';
-import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
-import 'package:zanmutm_pos_client/src/models/user.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
-import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
-import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
+import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
+import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_integer.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_number.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 enum OnAddAction { cancel, collectCash, addToCart }
@@ -32,31 +28,21 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final _addItemForm = GlobalKey<FormBuilderState>();
-  final _taxPayerForm = GlobalKey<FormBuilderState>();
 
   List<RevenueSource> sources = List.empty(growable: true);
   List<RevenueSource> allSources = List.empty(growable: true);
   TextEditingController controller = TextEditingController();
   late CartProvider _cartProvider;
   late PosConfigProvider _configProvider;
-  late FinancialYear? _year;
-  late User? _user;
 
   @override
   void initState() {
     _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
     _configProvider.getBalance();
     _cartProvider = Provider.of(context, listen: false);
-    _user = Provider.of<AppStateProvider>(context,listen: false).user;
-    _loadYear();
     allSources = _configProvider.revenueSource;
     setState(() => sources = [...allSources]);
     super.initState();
-  }
-
-  ///Load financial year from api or db///
-  _loadYear() async {
-    _year = await financialYearService.fetchAndStore();
   }
 
   @override
@@ -115,14 +101,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //Filter revenue source when user type on search box or clear search
   _onSearch(String? searchVal) {
     if (searchVal != null && searchVal.isNotEmpty) {
-      var filtered = allSources.where(
-              (element) => element.name.toLowerCase().contains(searchVal.toLowerCase()));
+      var filtered = allSources.where((element) =>
+          element.name.toLowerCase().contains(searchVal.toLowerCase()));
       setState(() => sources = [...filtered]);
     } else {
       setState(() => sources = [...allSources]);
     }
   }
-
 
   ///Add item dialogi triggered by click revenue source
   _addItem(RevenueSource source) async {
@@ -175,34 +160,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
             );
           }),
           actions: <Widget>[
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // add to cart action if user want
-                // to continue with adding more revenue sources
-                Expanded(
-                  child: AppButton(
-                      label: 'Add to Cart',
-                      onPress: () {
-                        if (_addItemForm.currentState?.saveAndValidate() ==
-                            true) {
-                          Navigator.of(context).pop(OnAddAction.addToCart);
-                        }
-                      }),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                //Collect cash action if user want to collection
-                // cash for single revenue source
-                Expanded(
-                  child: AppButton(
-                      label: 'Collect Cash',
-                      onPress: () {
-                        if (_addItemForm.currentState?.saveAndValidate() ==
-                            true) {
-                          Navigator.of(context).pop(OnAddAction.collectCash);
-                        }
-                      }),
+                AppButton(
+                    label: 'Add to Cart',
+                    onPress: () {
+                      if (_addItemForm.currentState?.saveAndValidate() ==
+                          true) {
+                        Navigator.of(context).pop(OnAddAction.addToCart);
+                      }
+                    }),
+                Consumer<CartProvider>(
+                  builder: (context, provider, child) {
+                    if (provider.cartItems.isNotEmpty) {
+                      return ElevatedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Add & Checkout'),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Badge(
+                              badgeContent: Text(
+                                  cartProvider.cartItems.length.toString()),
+                              padding: const EdgeInsets.all(6),
+                              position:
+                                  BadgePosition.topEnd(top: -20, end: -16),
+                              child: const Icon(Icons.shopping_cart),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          if (_addItemForm.currentState?.saveAndValidate() ==
+                              true) {
+                            Navigator.of(context).pop(OnAddAction.collectCash);
+                          }
+                        },
+                      );
+                    }
+                    return AppButton(
+                        label: 'Collect Cash',
+                        onPress: () {
+                          if (_addItemForm.currentState?.saveAndValidate() ==
+                              true) {
+                            Navigator.of(context).pop(OnAddAction.collectCash);
+                          }
+                        });
+                  },
                 ),
               ],
             )
@@ -231,102 +237,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   //
   _collectCash() async {
     await _addToCart();
-    bool? confirmed = await _openTaxPayerDialog();
-    if (confirmed == true) {
-      //get tax payer details from taxpayer form
-      var taxPayerValues = _taxPayerForm.currentState!.value;
-      //Add last item to cart or single item when print single revenus source
-      //Both multi item and single item added to card first before save and printed
-
-      List<CartItem> items = _cartProvider.cartItems;
-
-      //Use current time stamp as transaction id
-      DateTime t = DateTime.now();
-      String transactionId = t.toIso8601String();
-
-      // Try printing receipt if fail it return print error
-      String? printError = await _printReceipt();
-
-      //For each cart items map then to PosTransaction object
-      List<PosTransaction> posTxns = items
-          .map((item) => PosTransaction.fromCashCollection(
-          transactionId,
-          transactionId,
-          t,
-          _configProvider.posConfiguration!.posDeviceId,
-          item,
-          _user!,
-          taxPayerValues,
-          _year!.id,
-          printError == null,
-          printError))
-          .toList();
-      try {
-        // Save all pos transactions
-        int result = await posTransactionService.saveAll(posTxns);
-        // If saved successfully clear cart items and show message
-        // If not show error message
-        if (result > 0) {
-          _cartProvider.clearItems();
-          _onSuccess('Successfully');
-        } else {
-          //TODO should it clear cart when faild to save all transactiosn
-          _onError('Something went wrong');
-        }
-      } catch (e) {
-        // Catch other errors
-        _onError(e.toString());
-      }
+    if (!mounted) return;
+    if(_cartProvider.cartItems.length > 1) {
+      Provider.of<TabProvider>(context,listen: false).gotToTab(context, 1);
+    } else {
+      await TaxPlayerDialog(context).collectCash(_onError, _onSuccess);
     }
-  }
-
-  // Dialog to capture tax payer detail of present
-  Future<bool?> _openTaxPayerDialog() async {
-    return showDialog<bool?>(
-      context: context,
-      barrierDismissible: true, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cart Item'),
-          content: SingleChildScrollView(
-            child: AppForm(
-              formKey: _taxPayerForm,
-              controls: [
-                AppInputText(
-                  fieldName: 'name',
-                  label: 'Name/TIN',
-                  validators: [
-                    FormBuilderValidators.required(
-                        errorText: 'Name is required'),
-                  ],
-                ),
-                const AppInputText(fieldName: 'address', label: 'Address'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                    child: AppButton(
-                        label: 'Print',
-                        onPress: () {
-                          if (_taxPayerForm.currentState?.saveAndValidate() ==
-                              true) {
-                            Navigator.of(context).pop(true);
-                          }
-                        }))
-              ],
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  //TODO implement printing of receipt as  per pos brand and return null if success and error string if failed
-  Future<String?> _printReceipt() async {
-    return 'No implementation';
   }
 
   _onSuccess(String message) {
@@ -337,5 +253,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
     AppMessages.showError(context, error);
     debugPrint(error);
   }
-
 }

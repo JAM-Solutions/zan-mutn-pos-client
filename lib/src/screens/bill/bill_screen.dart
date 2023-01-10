@@ -73,12 +73,13 @@ class _BillScreenState extends State<BillScreen> {
               itemBuilder: (BuildContext _, int index) {
                 var item = _bills[index];
                 return AppDetailCard(
+                  elevation: 0,
                     title: 'Bill',
                     data: item.toJson(),
                     columns: [
-                      AppDetailColumn(header: 'Amount', value: 'amount'),
+                      AppDetailColumn(header: 'Amount', value: item.amount),
                       AppDetailColumn(
-                          header: 'Control Number', value: 'controlNumber')
+                          header: 'Control Number', value: item.controlNumber)
                     ]);
               },
               separatorBuilder: (BuildContext _, int index) => const SizedBox(

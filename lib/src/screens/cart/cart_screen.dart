@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/models/cart_item.dart';
-import 'package:zanmutm_pos_client/src/models/financial_year.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
-import 'package:zanmutm_pos_client/src/models/revenue_source_config.dart';
-import 'package:zanmutm_pos_client/src/models/user.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
-import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
-import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
-import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
+import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_fetcher.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_integer.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_number.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 enum CartAction { cancel, collectCash, addToCart }
@@ -35,108 +18,12 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final _cartItemForm = GlobalKey<FormBuilderState>();
-  final _taxPayerForm = GlobalKey<FormBuilderState>();
-  late PosConfiguration? _posConfig;
-  late FinancialYear? _year;
-  late User? _user;
   late CartProvider _cartProvider;
-  RevenueSourceConfig? _revenueSourceConfig;
 
   @override
   void initState() {
     _cartProvider = Provider.of(context, listen: false);
-    _posConfig =
-        Provider.of<PosConfigProvider>(context, listen: false).posConfiguration;
-    _user = Provider.of<AppStateProvider>(context, listen: false).user;
-    _loadYear();
     super.initState();
-  }
-
-  _loadYear() async {
-    _year = await financialYearService.fetchAndStore();
-  }
-
-  _addToCart() {
-    Map<String, dynamic> formValues = _cartItemForm.currentState!.value;
-    CartItem item = CartItem.fromJson(formValues);
-    _cartProvider.addItem(item);
-  }
-
-  loadRevSourceConf(int revenueSourceId, StateSetter setDialogState) async {
-    try {
-      var revConfig = await revenueConfigService.getRevenueSource(
-          revenueSourceId, _user!.adminHierarchyId!, _year!.id);
-      setDialogState(() => _revenueSourceConfig = revConfig);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
-  _collectCash() async {
-    bool? confirmed = await _openTaxPayerDialog();
-    if (confirmed == true) {
-      var taxPayerValues = _taxPayerForm.currentState!.value;
-      List<CartItem> items = _cartProvider.cartItems;
-      DateTime t = DateTime.now();
-      String transactionId = t.toIso8601String();
-      String? printError = await _printReceipt();
-
-      List<PosTransaction> posTxns = items
-          .map((item) => PosTransaction.fromCashCollection(
-              transactionId,
-              transactionId,
-              t,
-              _posConfig!.posDeviceId,
-              item,
-              _user!,
-              taxPayerValues,
-              _year!.id,
-              printError == null,
-              printError))
-          .toList();
-      try {
-        int result = await posTransactionService.saveAll(posTxns);
-        if (result > 0) {
-          _cartProvider.clearItems();
-          _onSuccess('Successfully');
-        } else {
-          _onError('Something went wrong');
-        }
-      } catch (e) {
-        _onError(e.toString());
-      }
-    }
-  }
-
-  _onSuccess(String message) {
-    AppMessages.showSuccess(context, message);
-  }
-
-  _onError(String error) {
-    AppMessages.showError(context, error);
-    debugPrint(error);
-  }
-
-  //TODO
-  Future<String?> _printReceipt() async {
-    return 'No implementation';
-  }
-
-  _getTableHeader(String label, {double? width}) {
-    var h = Text(
-      label,
-      style: const TextStyle(fontSize: 11),
-    );
-    return DataColumn(label: h);
-  }
-
-  _getTableCell(String value, {double? width}) {
-    var h = Text(
-      value,
-      style: const TextStyle(fontSize: 11),
-    );
-    return DataCell(h);
   }
 
   @override
@@ -146,8 +33,8 @@ class _CartScreenState extends State<CartScreen> {
         var items = cartProvider.cartItems;
         return AppBaseTabScreen(
           floatingActionButton: FloatingActionButton(
-            onPressed: () => _addUpdateItem(null),
-            child: const Icon(Icons.add),
+            onPressed: () => _clearCart(),
+            child: const Icon(Icons.delete),
           ),
           child: items.isNotEmpty
               ? Column(
@@ -171,8 +58,8 @@ class _CartScreenState extends State<CartScreen> {
                           ]);
                         }).toList(),
                         DataRow(cells: [
-                          DataCell(Text("")),
-                          DataCell(Text("")),
+                          const DataCell(Text("")),
+                          const DataCell(Text("")),
                           const DataCell(Text(
                             "Total",
                             style: TextStyle(
@@ -206,137 +93,37 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  _addUpdateItem(CartItem? cartItem) async {
-    Map<String, dynamic> data = cartItem != null ? cartItem.toJson() : {};
-    var result = await showDialog<CartAction?>(
-      context: context,
-      barrierDismissible: true, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cart Item'),
-          content: StatefulBuilder(
-              builder: (BuildContext _, StateSetter setDialogState) {
-                RevenueSourceConfig? revenueSourceConfig;
-
-            return SingleChildScrollView(
-              child: AppForm(
-                initialValue: {
-                  ...data,
-                  'amount': data["amount"] != null && data['amount'] > 0.00
-                      ? data["amount"]
-                      : revenueSourceConfig?.unitCost ?? 0.00
-                },
-                formKey: _cartItemForm,
-                controls: [
-                  AppFetcher(
-                      table: 'revenue_sources',
-                      builder: (items, isLoading) {
-                        return AppInputDropDown(
-                          label: "Revenue Source",
-                          displayValue: 'name',
-                          items: items,
-                          name: 'revenueSource',
-                          onChange: (Map<String, dynamic> selectedSource) async {
-                            try {
-                              var revConfig = await revenueConfigService.getRevenueSource(
-                                  selectedSource['id'], _user!.adminHierarchyId!, _year!.id);
-                              setDialogState(() => revenueSourceConfig = revConfig);
-                            } catch (e) {
-                              debugPrint(e.toString());
-                            }
-                          },
-                          validators: [
-                            FormBuilderValidators.required(
-                                errorText: "Source is required"),
-                          ],
-                        );
-                      }),
-
-                  AppInputInteger(
-                    name: 'quantity',
-                    label: "Quantity",
-                    suffix: Text(revenueSourceConfig?.unitName ?? ''),
-                    validators: [
-                      FormBuilderValidators.required(
-                          errorText: "Quantity is required"),
-                    ],
-                  ),
-                  AppInputNumber(
-                    name: 'amount',
-                    label: "Amount",
-                    validators: [
-                      FormBuilderValidators.required(
-                          errorText: "Amount is required"),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          }),
-          actions: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                      label: 'Add to Cart',
-                      onPress: () {
-                        if (_cartItemForm.currentState?.saveAndValidate() ==
-                            true) {
-                          Navigator.of(context).pop(CartAction.addToCart);
-                        }
-                      }),
-                ),
-              ],
-            )
-          ],
-        );
-      },
-    );
-    if (result == CartAction.addToCart) {
-      _addToCart();
-    }
+  _clearCart() {
+    _cartProvider.clearItems();
   }
 
-  Future<bool?> _openTaxPayerDialog() async {
-    return showDialog<bool?>(
-      context: context,
-      barrierDismissible: true, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cart Item'),
-          content: SingleChildScrollView(
-            child: AppForm(
-              formKey: _taxPayerForm,
-              controls: [
-                AppInputText(
-                  fieldName: 'name',
-                  label: 'Name/TIN',
-                  validators: [
-                    FormBuilderValidators.required(
-                        errorText: 'Name is required'),
-                  ],
-                ),
-                const AppInputText(fieldName: 'address', label: 'Address'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
-              children: [
-                Expanded(
-                    child: AppButton(
-                        label: 'Print',
-                        onPress: () {
-                          if (_taxPayerForm.currentState?.saveAndValidate() ==
-                              true) {
-                            Navigator.of(context).pop(true);
-                          }
-                        }))
-              ],
-            )
-          ],
-        );
-      },
+  _collectCash() async {
+    if (!mounted) return;
+    await TaxPlayerDialog(context).collectCash(_onError, _onSuccess);
+  }
+
+  _onSuccess(String message) {
+    AppMessages.showSuccess(context, message);
+  }
+
+  _onError(String error) {
+    AppMessages.showError(context, error);
+    debugPrint(error);
+  }
+
+  _getTableHeader(String label, {double? width}) {
+    var h = Text(
+      label,
+      style: const TextStyle(fontSize: 11),
     );
+    return DataColumn(label: h);
+  }
+
+  _getTableCell(String value, {double? width}) {
+    var h = Text(
+      value,
+      style: const TextStyle(fontSize: 11),
+    );
+    return DataCell(h);
   }
 }
