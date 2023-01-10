@@ -47,39 +47,46 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double logoSize = MediaQuery.of(context).size.width / 2.5;
     return AppBaseScreen(
       isLoading: _isLoading,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.point_of_sale_outlined, size: 120, color: Theme.of(context).primaryColor,),
-           const SizedBox(height: 16,),
-            AppForm(
-              formKey: _loginForm,
-             controls: [
-               const AppInputHidden(
-                 fieldName: 'grant_type',
-                 value: 'password',),
-               AppInputText(
-                 fieldName: 'username',
-                 label: 'Email',
-                 validators: [
-                 FormBuilderValidators.required(
-                     errorText: "Email is required")
-               ],),
-               AppInputText(
-                 fieldName: 'password',
-                 label: 'Password',
-                 obscureText: true,
-                 validators: [
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                  width: logoSize,
+                  height: logoSize,
+                  image: const AssetImage('assets/images/logo.jpeg')),
+             const SizedBox(height: 16,),
+              AppForm(
+                formKey: _loginForm,
+               controls: [
+                 const AppInputHidden(
+                   fieldName: 'grant_type',
+                   value: 'password',),
+                 AppInputText(
+                   fieldName: 'username',
+                   label: 'Email',
+                   validators: [
                    FormBuilderValidators.required(
-                       errorText: "Password is required")
+                       errorText: "Email is required")
                  ],),
-                AppButton(onPress: _onSubmit, label: 'Login'),
-             ],
-              ),
-          ],
+                 AppInputText(
+                   fieldName: 'password',
+                   label: 'Password',
+                   obscureText: true,
+                   validators: [
+                     FormBuilderValidators.required(
+                         errorText: "Password is required")
+                   ],),
+                  AppButton(onPress: _onSubmit, label: 'Login'),
+               ],
+                ),
+            ],
+          ),
         ),
       ),
     );

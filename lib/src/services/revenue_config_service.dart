@@ -61,6 +61,7 @@ class RevenueConfigService {
           ...source.toJson(),
           'isMiscellaneous': source.isMiscellaneous ? 1 : 0,
           'isActive': source.isActive ? 1 : 0,
+          'penalty': source.penalty == true ? 1 : 0,
           'lastUpdate': dateFormat.format(DateTime.now())
         };
         await (existing.isNotEmpty

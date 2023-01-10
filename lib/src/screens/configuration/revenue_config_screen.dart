@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
@@ -24,23 +23,18 @@ class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
     if (_configProvider.revenueSource.isEmpty) {
       _loadRevenueSources();
     }
+    _loadRevenueSources();
     super.initState();
   }
 
   _loadRevenueSources() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
     try {
       var sources = await revenueConfigService.fetchAndStore();
       _configProvider.setRevenueSources(sources);
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
       AppMessages.showError(context, e.toString());
     }
   }

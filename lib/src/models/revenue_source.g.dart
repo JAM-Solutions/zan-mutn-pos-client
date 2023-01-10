@@ -14,6 +14,11 @@ RevenueSource _$RevenueSourceFromJson(Map<String, dynamic> json) =>
       json['gfsCode'] as String,
       json['isMiscellaneous'] as bool,
       json['isActive'] as bool,
+      json['penalty'] as bool?,
+      json['penaltyMode'] as String?,
+      (json['minimumAmount'] as num?)?.toDouble(),
+      (json['maximumAmount'] as num?)?.toDouble(),
+      json['unitName'] as String?,
     );
 
 Map<String, dynamic> _$RevenueSourceToJson(RevenueSource instance) =>
@@ -24,4 +29,9 @@ Map<String, dynamic> _$RevenueSourceToJson(RevenueSource instance) =>
       'gfsCode': instance.gfsCode,
       'isMiscellaneous': instance.isMiscellaneous,
       'isActive': instance.isActive,
+      'penalty': instance.penalty,
+      'penaltyMode': instance.penaltyMode,
+      'minimumAmount': instance.minimumAmount,
+      'maximumAmount': instance.maximumAmount,
+      'unitName': instance.unitName,
     };

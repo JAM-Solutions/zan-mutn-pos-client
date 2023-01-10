@@ -47,16 +47,19 @@ class AppRoutes {
               const ConfigurationScreen()),
       GoRoute(
         path: AppRoutes.posConfig,
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const PosConfigScreen(),
       ),
       GoRoute(
         path: AppRoutes.financialYear,
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const FinancialYearConfigScreen(),
       ),
       GoRoute(
         path: AppRoutes.revenueSource,
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const RevenueConfigScreen(),
       )
@@ -67,7 +70,7 @@ class AppRoutes {
     AppTabItem(
       icon: Icon(Icons.home),
       label: "Home",
-      title: "Dashboard",
+      title: "Home",
       path: dashboardTab,
       widget: DashboardScreen(),
     ),

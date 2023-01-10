@@ -1,14 +1,12 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/services/auth_service.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_icon_button.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_drawer.dart';
 
 /// This widget a wrapper for tabs
 /// that can be applied to all routed pages
@@ -48,43 +46,39 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
               title: Text(tabProvider.currentTab.title),
               centerTitle: true,
             ),
-            drawer: Drawer(
-              child: Column(
-                children: [],
-              ),
-            ),
+            drawer: const AppDrawer(),
             body: Selector<AppStateProvider, User>(
               selector: (context, state) => state.user!,
               builder: (context, user, child) {
                 return Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: Text(
-                              user.firstName != null && user.lastName != null
-                                  ? '${user.firstName?.substring(0, 1)}${user.lastName?.substring(0, 1)}'
-                                  : 'AV',
-                              style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          AppIconButton(
-                              onPressed: () {
-                                authService.logout();
-                              },
-                              icon: Icons.login_sharp)
-                        ],
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                    //   child: Row(
+                    //     crossAxisAlignment: CrossAxisAlignment.center,
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       CircleAvatar(
+                    //         backgroundColor: Colors.white,
+                    //         child: Text(
+                    //           user.firstName != null && user.lastName != null
+                    //               ? '${user.firstName?.substring(0, 1)}${user.lastName?.substring(0, 1)}'
+                    //               : 'AV',
+                    //           style: TextStyle(
+                    //               color: Theme.of(context).primaryColor,
+                    //               fontWeight: FontWeight.w600),
+                    //         ),
+                    //       ),
+                    //       AppIconButton(
+                    //           onPressed: () {
+                    //             authService.logout();
+                    //           },
+                    //           icon: Icons.login_sharp)
+                    //     ],
+                    //   ),
+                    // ),
                     const SizedBox(
-                      height: 8,
+                      height: 16,
                     ),
                     Expanded(
                         child: Container(

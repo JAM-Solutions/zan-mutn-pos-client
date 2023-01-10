@@ -43,8 +43,8 @@ class DbProvider {
 
     migrate() async {
       var db = await database;
-      //db.execute('DROP TABLE pos_transactions');
-      //db.execute("DELETE FROM migrations where version='1671622233'");
+   //   db.execute('DROP TABLE pos_transactions');
+   //   db.execute("DELETE FROM migrations where version='1673345371'");
       List<Map<String, dynamic>> executed = await db.query('migrations');
       List<String> versions = executed.map((e) => e['version'].toString()).toList();
       final manifestJson = await rootBundle.loadString('AssetManifest.json');
@@ -53,7 +53,15 @@ class DbProvider {
         final names = m.replaceFirst('migrations/', '').split('__');
         if (!versions.contains(names[0])) {
           String content = await rootBundle.loadString(m);
-           await db.execute(content);
+          final queries = content.split(';');
+          debugPrint(queries.toString());
+
+          for (var query in queries) {
+            query = query.trim();
+            if(query.isNotEmpty) {
+              await db.execute(query);
+            }
+          }
           var insert = {
             'version': names[0],
             'description':names[1].replaceFirst('.sql', ''),
