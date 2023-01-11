@@ -16,7 +16,6 @@ class ConfigurationScreen extends StatefulWidget {
 }
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
-
   late PosConfigProvider _configProvider;
   bool _posConfigIsLoading = false;
   bool _fyIsLoading = false;
@@ -30,44 +29,34 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   }
 
   _checkAndLoadConfigs() async {
-    if(_configProvider.posConfiguration == null) {
-      setState(() {
-        _posConfigIsLoading = true;
-      });
-      posConfigService
-          .fetchAndStore(_configProvider.deviceInfo!.id)
-          .then((value) {
-            setState(() {
-              _posConfigIsLoading = false;
-            });
-          _configProvider.setPosConfig(value);
+    if (_configProvider.posConfiguration == null) {
+      setState(() => _posConfigIsLoading = true);
+      posConfigService.fetchAndStore(_configProvider.deviceInfo!.id).then(
+          (value) {
+        setState(() => _posConfigIsLoading = false);
+        _configProvider.setPosConfig(value);
+      }, onError: (e) {
+        setState(() => _posConfigIsLoading = false);
       });
     }
     if (_configProvider.financialYear == null) {
-      setState(() {
-        _fyIsLoading = true;
-      });
-      financialYearService
-          .fetchAndStore()
-          .then((value) {
-            setState(() {
-              _fyIsLoading = false;
-            });
-       _configProvider.setFinancialYear(value);
+      setState(() => _fyIsLoading = true);
+      financialYearService.fetchAndStore().then((value) {
+        setState(() => _fyIsLoading = false);
+        _configProvider.setFinancialYear(value);
+      }, onError: (e) {
+        setState(() => _fyIsLoading = false);
       });
     }
     if (_configProvider.revenueSource.isEmpty) {
-      setState(() {
-        _revSourcesIsLoading = true;
-      });
+      setState(() => _revSourcesIsLoading = true);
       revenueConfigService.fetchAndStore().then((value) {
-        setState(() {
-          _revSourcesIsLoading = false;
-        });
+        setState(() => _revSourcesIsLoading = false);
         _configProvider.setRevenueSources(value);
+      }, onError: (e) {
+        setState(() => _revSourcesIsLoading = false);
       });
     }
-
   }
 
   @override
@@ -86,39 +75,46 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             ListTile(
               leading: const Icon(Icons.point_of_sale_outlined),
               title: const Text('Pos Configuration'),
-              subtitle: _posConfigIsLoading ? const LinearProgressIndicator() : Text(
-                  'Last update: ${appState.posConfiguration?.lastUpdate ?? ''}'),
+              subtitle: _posConfigIsLoading
+                  ? const LinearProgressIndicator()
+                  : Text(
+                      'Last update: ${appState.posConfiguration?.lastUpdate ?? ''}'),
               trailing: appState.posConfiguration != null
                   ? const Icon(Icons.verified, color: Colors.green)
-                  : null,
-              onTap: () =>
-                  context.push(AppRoutes.posConfig),
+                  : const Icon(
+                      Icons.warning_rounded,
+                      color: Colors.redAccent,
+                    ),
+              onTap: () => context.push(AppRoutes.posConfig),
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.calendar_month),
               title: const Text('Financial Year Configuration'),
-              subtitle: _fyIsLoading ? const LinearProgressIndicator() : Text(
-                  'Last update: ${appState.financialYear?.lastUpdate ?? ''}'),
+              subtitle: _fyIsLoading
+                  ? const LinearProgressIndicator()
+                  : Text(
+                      'Last update: ${appState.financialYear?.lastUpdate ?? ''}'),
               trailing: appState.financialYear != null
-                ? const Icon(Icons.verified, color: Colors.green)
-                : null,
-              onTap: () => context
-                  .push(AppRoutes.financialYear),
+                  ? const Icon(Icons.verified, color: Colors.green)
+                  : const Icon(
+                      Icons.warning_rounded,
+                      color: Colors.redAccent,
+                    ),
+              onTap: () => context.push(AppRoutes.financialYear),
             ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.monetization_on_outlined),
               title: const Text('Revenue Configuration'),
               trailing: Text(_configProvider.revenueSource.length.toString()),
-              subtitle: _revSourcesIsLoading ? const LinearProgressIndicator() : null,
-              onTap: () => context
-                  .push(AppRoutes.revenueSource),
+              subtitle:
+                  _revSourcesIsLoading ? const LinearProgressIndicator() : null,
+              onTap: () => context.push(AppRoutes.revenueSource),
             )
           ],
         ),
       );
     });
   }
-
 }
