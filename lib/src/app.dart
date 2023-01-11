@@ -42,13 +42,19 @@ class _AppState extends State<App> {
   }
 
   Future<void> initApp() async {
+    User? user = await authService.getSession();
+    if (user == null) {
+      if (!mounted) return;
+      context.go(AppRoutes.login);
+    } else {
+      _appState.sessionFetched(user);
+    }
     //Query and set device info
     DeviceInfoPlugin infoPlugin = DeviceInfoPlugin();
     AppDeviceInfo info = await DeviceInfoService().getInfo(infoPlugin);
     _configProvider.setDeviceInfo(info);
     //Query ang get user session
-    User? user = await authService.getSession();
-    _appState.sessionFetched(user);
+
     // Check if pos config fetched/exist from db
     PosConfiguration? posConfig = await posConfigService.queryFromDb(info.id);
     _configProvider.setPosConfig(posConfig);
