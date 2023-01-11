@@ -43,8 +43,7 @@ class _AppState extends State<App> {
 
   Future<void> initApp() async {
     User? user = await authService.getSession();
-    if (user == null) {
-      if (!mounted) return;
+    if (mounted && user == null) {
       context.go(AppRoutes.login);
     } else {
       _appState.sessionFetched(user);
