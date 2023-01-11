@@ -8,17 +8,19 @@ class AppStateProvider with ChangeNotifier {
   User? user;
 
   static final AppStateProvider _instance = AppStateProvider._();
+
   factory AppStateProvider() => _instance;
+
   AppStateProvider._();
 
-  void sessionFetched(User? sessionUser)  {
+  void sessionFetched(User? sessionUser) {
     user = sessionUser;
     isAuthenticated = sessionUser != null;
-      sessionHasBeenFetched = true;
-      notifyListeners();
+    sessionHasBeenFetched = true;
+    notifyListeners();
   }
 
-  void setAuthenticated(User loggedInUser)  {
+  void setAuthenticated(User loggedInUser) {
     isAuthenticated = true;
     sessionHasBeenFetched = true;
     user = loggedInUser;
@@ -35,7 +37,6 @@ class AppStateProvider with ChangeNotifier {
     configurationHasBeenLoaded = true;
     notifyListeners();
   }
-
 }
 
 final appStateProvider = AppStateProvider();
