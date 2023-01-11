@@ -65,7 +65,7 @@ class RevenueConfigService {
           'lastUpdate': dateFormat.format(DateTime.now())
         };
         await (existing.isNotEmpty
-            ? db.update(tableName, data)
+            ? db.update(tableName, data, where: 'gfsCode=?', whereArgs: [source.gfsCode])
             : db.insert(tableName, data));
       }
     } catch (e) {

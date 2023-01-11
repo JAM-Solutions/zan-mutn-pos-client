@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
@@ -33,19 +32,14 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
     if (deviceId == null) {
       AppMessages.showError(context, 'No device id found');
     }
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
     try {
-     PosConfiguration? config = await posConfigService.fetchAndStore(deviceId!);
-     _configProvider.setPosConfig(config);
-      setState(() {
-        _isLoading = false;
-      });
+      PosConfiguration? config =
+          await posConfigService.fetchAndStore(deviceId!);
+      _configProvider.setPosConfig(config);
+      setState(() => _isLoading = false);
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
       AppMessages.showError(context, e.toString());
     }
   }
@@ -54,11 +48,17 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
   Widget build(BuildContext context) {
     return Consumer<PosConfigProvider>(
       builder: (context, provider, child) {
+        var config = provider.posConfiguration;
+
         return AppBaseScreen(
             appBar: AppBar(
               title: const Text("Pos Configurations"),
             ),
             isLoading: _isLoading,
+            floatingAction: FloatingActionButton(
+              onPressed: () =>_loadConfig(),
+              child: const Icon(Icons.refresh),
+            ),
             child: Column(
               children: [
                 AppDetailCard(
@@ -69,16 +69,14 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
                       : null,
                   columns: [
                     AppDetailColumn(
-                        header: 'Device name', value: 'posDeviceName'),
-                    AppDetailColumn(header: 'Offline', value: 'offlineLimit'),
+                        header: 'Device name', value: config?.posDeviceName),
                     AppDetailColumn(
-                        header: 'Amount Limit', value: 'amountLimit'),
-                    AppDetailColumn(header: 'Last Update', value: 'lastUpdate'),
+                        header: 'Offline Limit', value: config?.offlineLimit),
+                    AppDetailColumn(
+                        header: 'Amount Limit', value: config?.amountLimit),
+                    AppDetailColumn(
+                        header: 'Last Update', value: config?.lastUpdate),
                   ],
-                  actionBuilder: (data) => IconButton(
-                      splashRadius: 24,
-                      onPressed: () => _loadConfig(),
-                      icon: const Icon(Icons.sync)),
                 ),
               ],
             ));

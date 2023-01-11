@@ -43,7 +43,9 @@ class PosTransactionService {
         result = await txn.insert(table, data);
       }
     });
-
+    debugPrint("Before call sync");
+    sync();
+    debugPrint("After call sync");
     return result;
   }
 
@@ -54,8 +56,6 @@ class PosTransactionService {
       'isPrinted': txn.isPrinted ? 1 : 0,
     };
     var result = await db.insert(table, data);
-    debugPrint(result.toString());
-
     return result;
   }
 
@@ -63,6 +63,8 @@ class PosTransactionService {
     var db = await DbProvider().database;
     List<Map<String, dynamic>> dbTransactions = await db.query(table);
     for (var txn in dbTransactions) {
+      debugPrint("send to api");
+      await Future.delayed(const Duration(seconds: 5));
       var resp = await Api().dio.post(api, data: {
         ...txn,
         'id': null,
@@ -76,6 +78,10 @@ class PosTransactionService {
     }
     var existing = await db.query(table);
     return existing.isEmpty;
+  }
+
+  Future<void> updateAmountLimits() async {
+
   }
 
   Future<List<PosTransaction>> getUnCompiled(String taxCollectorUuid) async {

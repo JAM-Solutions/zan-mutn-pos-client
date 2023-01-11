@@ -45,6 +45,10 @@ class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
       builder: (context, provider, child) {
         return AppBaseScreen(
             isLoading: _isLoading,
+            floatingAction: FloatingActionButton(
+              onPressed: () =>_loadRevenueSources(),
+              child: const Icon(Icons.refresh),
+            ),
             appBar: AppBar(
               title: const Text('Revenue Sources'),
             ),

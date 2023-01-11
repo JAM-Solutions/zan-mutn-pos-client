@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/models/bill.dart';
+import 'package:zanmutm_pos_client/src/models/format_type.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
@@ -45,12 +46,12 @@ class _BillScreenState extends State<BillScreen> {
     } on DeadlineExceededException {
       setState(() => {_posConnected = false, _isLoading = false});
     } catch (e) {
-      setState(() => {_isLoading = false, _error= e.toString()});
+      setState(() => {_isLoading = false, _error = e.toString()});
     }
   }
 
   _retry() async {
-    setState(() => {_isLoading = true, _error = null} );
+    setState(() => {_isLoading = true, _error = null});
     _loadPendingBills();
   }
 
@@ -73,13 +74,17 @@ class _BillScreenState extends State<BillScreen> {
               itemBuilder: (BuildContext _, int index) {
                 var item = _bills[index];
                 return AppDetailCard(
-                  elevation: 0,
+                    elevation: 0,
                     title: 'Bill',
                     data: item.toJson(),
                     columns: [
-                      AppDetailColumn(header: 'Amount', value: item.amount),
                       AppDetailColumn(
-                          header: 'Control Number', value: item.controlNumber)
+                          header: 'Amount',
+                          value: item.amount,
+                          format: FormatType.currency),
+                      AppDetailColumn(
+                          header: 'Control Number',
+                          value: item.controlNumber)
                     ]);
               },
               separatorBuilder: (BuildContext _, int index) => const SizedBox(
