@@ -3,6 +3,7 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class PosTransactionService {
@@ -44,7 +45,7 @@ class PosTransactionService {
       }
     });
     debugPrint("Before call sync");
-    sync();
+    _syncTransaction();
     debugPrint("After call sync");
     return result;
   }
@@ -77,12 +78,25 @@ class PosTransactionService {
       }
     }
     var existing = await db.query(table);
+    if(existing.isEmpty){
+      posStatusProvider.resetOfflineTime();
+    }
     return existing.isEmpty;
   }
 
-  Future<void> updateAmountLimits() async {
-
+  _syncTransaction() async {
+    try {
+      await posTransactionService.sync();
+    } on NoInternetConnectionException {
+      posStatusProvider.setOfflineTime();
+    } on DeadlineExceededException {
+      posStatusProvider.setOfflineTime();
+    } catch (e) {
+      posStatusProvider.setOfflineTime();
+      debugPrint(e.toString());
+    }
   }
+
 
   Future<List<PosTransaction>> getUnCompiled(String taxCollectorUuid) async {
     var resp = await Api().dio.get('$api/un-compiled/$taxCollectorUuid');

@@ -45,6 +45,11 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
             appBar: AppBar(
               title: Text(tabProvider.currentTab.title),
               centerTitle: true,
+              actions: [
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.translate_rounded))
+              ],
             ),
             drawer: const AppDrawer(),
             body: Selector<AppStateProvider, User>(
@@ -52,33 +57,8 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
               builder: (context, user, child) {
                 return Column(
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                    //   child: Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       CircleAvatar(
-                    //         backgroundColor: Colors.white,
-                    //         child: Text(
-                    //           user.firstName != null && user.lastName != null
-                    //               ? '${user.firstName?.substring(0, 1)}${user.lastName?.substring(0, 1)}'
-                    //               : 'AV',
-                    //           style: TextStyle(
-                    //               color: Theme.of(context).primaryColor,
-                    //               fontWeight: FontWeight.w600),
-                    //         ),
-                    //       ),
-                    //       AppIconButton(
-                    //           onPressed: () {
-                    //             authService.logout();
-                    //           },
-                    //           icon: Icons.login_sharp)
-                    //     ],
-                    //   ),
-                    // ),
                     const SizedBox(
-                      height: 16,
+                      height: 8,
                     ),
                     Expanded(
                         child: Container(

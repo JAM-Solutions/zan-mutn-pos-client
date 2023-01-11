@@ -7,10 +7,12 @@ import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_card.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_integer.dart';
@@ -34,6 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   TextEditingController controller = TextEditingController();
   late CartProvider _cartProvider;
   late PosConfigProvider _configProvider;
+  bool _gridView = true;
 
   @override
   void initState() {
@@ -47,56 +50,131 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PosConfigProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<PosConfigProvider, PosStatusProvider>(
+      builder: (context, configProvider, statusProvider, child) {
         return AppBaseTabScreen(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                controller: controller,
-                onChanged: (val) => _onSearch(val),
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(36),
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
-                    suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          controller.clear();
-                          _onSearch(null);
-                        })),
-              ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => setState(() => _gridView = !_gridView),
+              child: Icon(_gridView ? Icons.list_alt : Icons.grid_view),
             ),
-            // list of revenue sources
-            //on on tap open add item dialog
-            Expanded(
-                child: ListView.builder(
-                    itemCount: sources.length,
-                    itemBuilder: (BuildContext _, int index) {
-                      var item = sources[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Text(item.name.substring(0, 1)),
-                        ),
-                        title: Text(item.name),
-                        subtitle: Text(item.gfsCode),
-                        onTap: () => _addItem(item),
-                      );
-                    })),
-          ],
-        ));
+            child: Builder(builder: (context) {
+              var offlineLimit = configProvider.posConfiguration?.offlineLimit;
+              if (offlineLimit != null &&
+                  statusProvider.offlineTime >= offlineLimit) {
+                return const Center(
+                  child: Text(
+                      "You have reach offline time limit please connect pos and sync transactions"),
+                );
+              }
+              return Column(
+                children: [
+                  _buildDashboard(statusProvider.offlineTime),
+                  _buildSearchInput(),
+                  Expanded(
+                      child: _gridView ? _buildGridView() : _buildListView()),
+                ],
+              );
+            }));
       },
     );
   }
+
+  _buildDashboard(int offlineTime) => Container(
+        height: 100,
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildStatus(offlineTime, 'Total Collection'),
+            _buildStatus(offlineTime, 'Offline Amount'),
+            _buildStatus(offlineTime, 'Offline Time'),
+          ],
+        ),
+      );
+
+  _buildStatus(dynamic status, String name) => Expanded(
+      child: Card(
+          elevation: 4,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  status.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(name, style: const TextStyle(fontSize: 11)),
+              ],
+            ),
+          )));
+
+  _buildSearchInput() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+        child: TextFormField(
+          controller: controller,
+          onChanged: (val) => _onSearch(val),
+          style: const TextStyle(fontSize: 14),
+          decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).primaryColor)),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(36),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).primaryColor)),
+              suffixIcon: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    controller.clear();
+                    _onSearch(null);
+                  })),
+        ),
+      );
+
+  _buildAvatar(item) => CircleAvatar(
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Text(item.name.substring(0, 1)),
+      );
+
+  _buildListView() => ListView.builder(
+      itemCount: sources.length,
+      itemBuilder: (BuildContext _, int index) {
+        var item = sources[index];
+        return ListTile(
+          leading: _buildAvatar(item),
+          title: Text(item.name),
+          subtitle: Text(item.gfsCode),
+          onTap: () => _addItem(item),
+        );
+      });
+
+  _buildGridView() => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
+          children: sources
+              .map((item) => InkWell(
+                    onTap: () => _addItem(item),
+                    child: AppCard(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildAvatar(item),
+                        Text(item.name),
+                        Text(item.gfsCode)
+                      ],
+                    )),
+                  ))
+              .toList(),
+        ),
+      );
 
   //Filter revenue source when user type on search box or clear search
   _onSearch(String? searchVal) {
@@ -238,18 +316,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   _collectCash() async {
     await _addToCart();
     if (!mounted) return;
-    if(_cartProvider.cartItems.length > 1) {
-      Provider.of<TabProvider>(context,listen: false).gotToTab(context, 1);
+    if (_cartProvider.cartItems.length > 1) {
+      Provider.of<TabProvider>(context, listen: false).gotToTab(context, 1);
     } else {
       await TaxPlayerDialog(context).collectCash(_onError, _onSuccess);
     }
   }
 
   _onSuccess(String message) {
+    if (!mounted) return;
     AppMessages.showSuccess(context, message);
   }
 
   _onError(String error) {
+    if (!mounted) return;
     AppMessages.showError(context, error);
     debugPrint(error);
   }

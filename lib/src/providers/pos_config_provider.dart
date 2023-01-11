@@ -11,7 +11,8 @@ class PosConfigProvider with ChangeNotifier {
   AppDeviceInfo? deviceInfo;
   List<RevenueSource> revenueSource = List.empty(growable: false);
   double totalCollection = 0;
-  double offlineBalance  = 0;
+  double offlineAmountBalance  = 0;
+  double offlineTimeBalance  = 0;
 
   void setDeviceInfo(AppDeviceInfo info) {
     deviceInfo = info;
@@ -43,7 +44,7 @@ class PosConfigProvider with ChangeNotifier {
         .map((e) => e['quantity'] * e['amount'])
         .fold(0.0, (total, subTotal) => (total + subTotal));
     totalCollection = offlineAmount;
-    offlineBalance = posConfiguration?.offlineLimit != null ? posConfiguration!.offlineLimit-offlineAmount : 0.00;
+    offlineAmountBalance = posConfiguration?.offlineLimit != null ? posConfiguration!.offlineLimit-offlineAmount : 0.00;
     notifyListeners();
   }
 }

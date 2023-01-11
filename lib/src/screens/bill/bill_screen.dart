@@ -75,7 +75,7 @@ class _BillScreenState extends State<BillScreen> {
                 var item = _bills[index];
                 return AppDetailCard(
                     elevation: 0,
-                    title: 'Bill',
+                    title: (index+1).toString(),
                     data: item.toJson(),
                     columns: [
                       AppDetailColumn(
@@ -83,8 +83,15 @@ class _BillScreenState extends State<BillScreen> {
                           value: item.amount,
                           format: FormatType.currency),
                       AppDetailColumn(
-                          header: 'Control Number',
-                          value: item.controlNumber)
+                          header: 'Control Number', value: item.controlNumber),
+                      AppDetailColumn(
+                          header: 'Due time',
+                          value: item.dueTime?.toIso8601String(),
+                          format: FormatType.date),
+                      AppDetailColumn(
+                          header: 'Expire On',
+                          value: item.expireDate?.toIso8601String(),
+                          format: FormatType.date)
                     ]);
               },
               separatorBuilder: (BuildContext _, int index) => const SizedBox(

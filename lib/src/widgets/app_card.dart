@@ -8,7 +8,7 @@ class AppCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 1,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         child: child,

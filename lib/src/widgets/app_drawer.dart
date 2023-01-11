@@ -25,11 +25,11 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget appMenuItem(IconData iconData, String label, String route) => ListTile(
       leading: Icon(
         iconData,
-        color: Theme.of(context).primaryColorDark,
+        color: Theme.of(context).primaryColor,
       ),
       title: Text(
         label,
-        style: TextStyle(color: Theme.of(context).primaryColorDark),
+        style: TextStyle(color: Theme.of(context).primaryColor),
       ),
       onTap: () {
         Navigator.pop(context);
@@ -57,7 +57,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   const SizedBox(height: 4),
                   Text(
                     "${_user?.firstName} ${_user?.lastName ?? ''}",
-                    style: TextStyle(color: Theme.of(context).primaryColorDark),
+                    style: TextStyle(color: Theme.of(context).primaryColor),
                   ),
                   const SizedBox(height: 4),
                   Text(_user?.adminHierarchyName ?? '')
