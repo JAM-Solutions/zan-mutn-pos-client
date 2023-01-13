@@ -29,18 +29,12 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
   bool _allBillsGenerated = false;
 
   String? _error;
-
   List<PosCharge> _charges = List.empty();
-
-  late PosConfiguration? _posConfig;
   late User? _user;
-
   List<PosTransaction> _unCompiled = List.empty(growable: true);
 
   @override
   void initState() {
-    _posConfig =
-        Provider.of<PosConfigProvider>(context, listen: false).posConfiguration;
     _user = Provider.of<AppStateProvider>(context, listen: false).user;
     _syncAndLoad();
     super.initState();
@@ -116,9 +110,8 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
 
   _loadCharges() async {
     try {
-      User? user = Provider.of<AppStateProvider>(context, listen: false).user;
       List<PosCharge> charges =
-          await posChargeService.getPendingCharges(user!.taxCollectorUuid!);
+          await posChargeService.getPendingCharges(_user!.taxCollectorUuid!);
       setState(
           () => {_charges = charges, _allBillsGenerated = _charges.isEmpty});
     } on NoInternetConnectionException {
@@ -132,12 +125,12 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
     }
   }
 
-  _generateBill(String chargeUuid) async {
+  _generateBill() async {
     bool? confirmed = await AppMessages.appConfirm(
         context, 'Generate Bill', 'Are you sure you want to generate bill');
     if (confirmed == true) {
       try {
-        await posChargeService.createBill(chargeUuid);
+        await posChargeService.createBill(_user!.taxCollectorUuid!);
         _loadCharges();
       } catch (e) {
         debugPrint(e.toString());
@@ -235,7 +228,7 @@ class _CompileBillScreenState extends State<CompileBillScreen> {
                                 value: item.transactions.length.toString()),
                           ],
                           actionBuilder: (_) => AppButton(
-                            onPress: () => _generateBill(item.uuid),
+                            onPress: () => _generateBill(),
                             label:  'Generate Bill',
                           ),
                         );

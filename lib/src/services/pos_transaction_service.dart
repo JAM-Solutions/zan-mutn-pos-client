@@ -106,7 +106,7 @@ class PosTransactionService {
   Future<int?> compile(String taxCollectorUuid) async {
     var resp = await Api()
         .dio
-        .post('/pos-devices/$taxCollectorUuid/compile-transactions', data: {});
+        .post('$api/compile-transactions/$taxCollectorUuid', data: {});
     return resp.statusCode;
   }
 }

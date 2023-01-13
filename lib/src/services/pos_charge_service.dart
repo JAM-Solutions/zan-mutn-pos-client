@@ -15,8 +15,8 @@ class PosChargeService {
         .toList();
   }
 
-  Future<void> createBill(String chargeUuid) async {
-     await Api().dio.post('$api/create-bill/$chargeUuid');
+  Future<void> createBill(String taxCollectorUuid) async {
+     await Api().dio.post('$api/create-bill/$taxCollectorUuid');
   }
 }
 

@@ -135,9 +135,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 Text(name,
                     textAlign: TextAlign.center,
-                    style:
-                        const TextStyle(fontSize: 10, color: Colors.blueGrey,
-                        )),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: Colors.blueGrey,
+                    )),
               ],
             ),
           )));
@@ -195,18 +196,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
       );
 
+  _buildTitle(RevenueSource item) => Text(
+        item.name,
+        style: const TextStyle(
+            fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.bold),
+      );
+
+  _buildSubTitle(RevenueSource item) => Text(
+        '${currency.format(item.unitCost ?? 0)}/${item.unitName ?? ''}',
+        style: const TextStyle(fontSize: 12, color: Colors.blueGrey),
+      );
+
   _buildListView() => ListView.separated(
         itemCount: sources.length,
         itemBuilder: (BuildContext _, int index) {
           var item = sources[index];
           return ListTile(
             leading: _buildAvatar(item),
-            title: Text(item.name),
-            // subtitle: Text(item.gfsCode),
-            trailing: Text(
-              '${currency.format(item.unitCost ?? 0)}/${item.unitName ?? ''}',
-              style: const TextStyle(fontSize: 11),
-            ),
+            title: _buildTitle(item),
+            trailing: _buildSubTitle(item),
             onTap: () => _addItem(item),
           );
         },
@@ -231,22 +239,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           const SizedBox(
                             height: 4,
                           ),
-                          Text(
-                            item.name,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              color: Colors.blueGrey,
-                              fontWeight: FontWeight.bold
-                            ),
-                          ),
+                          _buildTitle(item),
                           const SizedBox(
                             height: 2,
                           ),
-                          Text(
-                            '${currency.format(item.unitCost ?? 0)}/${item.unitName ?? ''}',
-                            style: const TextStyle(fontSize: 11,                               color: Colors.blueGrey
-                            ),
-                          )
+                          _buildSubTitle(item)
                         ],
                       )),
                 ))
@@ -308,7 +305,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     validators: [
                       FormBuilderValidators.required(
                           errorText: "Amount is required"),
+                      FormBuilderValidators.min(source.unitCost ?? 500,
+                          errorText: 'Minimum is ${source.unitCost ?? 500}')
                     ],
+                    onChanged: (val) => calcSubTotal(),
                   ),
                   AppInputInteger(
                     name: 'quantity',
