@@ -125,9 +125,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text(
                   status.toString(),
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      overflow: TextOverflow.ellipsis,
+                      color: Colors.blueGrey),
                 ),
                 const SizedBox(
                   height: 4,
@@ -135,7 +136,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Text(name,
                     textAlign: TextAlign.center,
                     style:
-                        const TextStyle(fontSize: 10, color: Colors.blueGrey)),
+                        const TextStyle(fontSize: 10, color: Colors.blueGrey,
+                        )),
               ],
             ),
           )));
@@ -232,7 +234,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Text(
                             item.name,
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 15,
+                              color: Colors.blueGrey,
+                              fontWeight: FontWeight.bold
                             ),
                           ),
                           const SizedBox(
@@ -240,7 +244,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           Text(
                             '${currency.format(item.unitCost ?? 0)}/${item.unitName ?? ''}',
-                            style: const TextStyle(fontSize: 11),
+                            style: const TextStyle(fontSize: 11,                               color: Colors.blueGrey
+                            ),
                           )
                         ],
                       )),

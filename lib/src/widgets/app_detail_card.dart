@@ -57,7 +57,6 @@ class AppDetailCard extends StatelessWidget {
                       title,
                       style: const TextStyle(
                           fontSize: 16,
-                          fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold),
                     ),
                     if (subTitle != null)

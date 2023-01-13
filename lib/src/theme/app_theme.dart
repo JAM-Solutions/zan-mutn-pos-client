@@ -7,7 +7,7 @@ const Color dangerColor =  Colors.red;
 final ThemeData defaultTheme = ThemeData(
   primaryColor: primaryColor,
   secondaryHeaderColor: Colors.tealAccent,
-  fontFamily: 'OpenSans',
+  fontFamily: 'Roboto',
   textTheme: const TextTheme(
     headline1: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
   ),
@@ -52,13 +52,11 @@ final ThemeData defaultTheme = ThemeData(
       color:  Colors.blueGrey,
       fontSize: 12,
       overflow: TextOverflow.clip,
-        fontFamily: 'Roboto'
     ),
     selectedLabelStyle: TextStyle(
         color: primaryColor,
       fontSize: 12,
       fontWeight: FontWeight.bold,
-      fontFamily: 'Roboto'
     ),
     selectedItemColor: primaryColor,
     selectedIconTheme: IconThemeData(
