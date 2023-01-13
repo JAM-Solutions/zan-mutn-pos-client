@@ -86,11 +86,12 @@ class TaxPlayerDialog {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Cart Item'),
+          title: const Text('Receipt'),
           content: SingleChildScrollView(
             child: AppForm(
               formKey: _taxPayerForm,
               controls: [
+                Text('Summary here'),
                 AppInputText(
                   fieldName: 'name',
                   label: 'Name/TIN',

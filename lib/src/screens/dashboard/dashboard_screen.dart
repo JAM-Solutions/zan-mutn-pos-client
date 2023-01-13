@@ -10,6 +10,8 @@ import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
+import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
+import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_card.dart';
@@ -40,12 +42,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void initState() {
+    Provider.of<PosStatusProvider>(context, listen: false).loadStatus();
     _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    _configProvider.getBalance();
     _cartProvider = Provider.of(context, listen: false);
     allSources = _configProvider.revenueSource;
     setState(() => sources = [...allSources]);
     super.initState();
+  }
+
+  _syncTransactions() async {
+    try {
+      await posTransactionService.sync();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -59,16 +69,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: Builder(builder: (context) {
               var offlineLimit = configProvider.posConfiguration?.offlineLimit;
+              var amountLimit = configProvider.posConfiguration?.amountLimit;
+
               if (offlineLimit != null &&
                   statusProvider.offlineTime >= offlineLimit) {
-                return const Center(
-                  child: Text(
-                      "You have reach offline time limit please connect pos and sync transactions"),
-                );
+                return _buildSync('Time', currency.format(offlineLimit));
+              }
+              if (amountLimit != null &&
+                  statusProvider.totalCollection >= amountLimit) {
+                return _buildSync('Amount', currency.format(amountLimit));
               }
               return Column(
                 children: [
-                  _buildDashboard(statusProvider.offlineTime),
+                  _buildDashboard(
+                      offlineLimit,
+                      amountLimit,
+                      statusProvider.totalCollection,
+                      statusProvider.offlineTime),
                   _buildSearchInput(),
                   Expanded(
                       child: _gridView ? _buildGridView() : _buildListView()),
@@ -79,19 +96,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  _buildDashboard(int offlineTime) => Container(
-        height: 100,
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildStatus(offlineTime, 'Total Collection'),
-            _buildStatus(offlineTime, 'Offline Amount'),
-            _buildStatus(offlineTime, 'Offline Time'),
-          ],
-        ),
-      );
+  _buildDashboard(double? offlineLimit, double? amountLimit,
+      double totalCollection, int offLineTime) {
+    return Container(
+      height: 100,
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildStatus(currency.format(totalCollection), 'Offline Collection'),
+          _buildStatus(currency.format((amountLimit ?? 0) - totalCollection),
+              'Offline Amount Balance'),
+          _buildStatus(currency.format((offlineLimit ?? 0) - offLineTime),
+              'Offline Time(hr)'),
+        ],
+      ),
+    );
+  }
 
   _buildStatus(dynamic status, String name) => Expanded(
       child: Card(
@@ -103,12 +125,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text(
                   status.toString(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor),
                 ),
-                Text(name, style: const TextStyle(fontSize: 11)),
+                const SizedBox(
+                  height: 4,
+                ),
+                Text(name,
+                    textAlign: TextAlign.center,
+                    style:
+                        const TextStyle(fontSize: 10, color: Colors.black87)),
               ],
             ),
           )));
+
+  _buildSync(String limit, String value) => Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.warning_rounded,
+              size: 48,
+            ),
+            Text(
+              'You have reach offline amount $limit of $value please connect pos and sync transactions',
+              textAlign: TextAlign.center,
+            ),
+            AppButton(onPress: () => _syncTransactions(), label: 'Synchronize')
+          ],
+        ),
+      );
 
   _buildSearchInput() => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
@@ -141,7 +189,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Text(item.name.substring(0, 1)),
       );
 
-  _buildListView() => ListView.builder(
+  _buildListView() => ListView.separated(
       itemCount: sources.length,
       itemBuilder: (BuildContext _, int index) {
         var item = sources[index];
@@ -151,7 +199,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           subtitle: Text(item.gfsCode),
           onTap: () => _addItem(item),
         );
-      });
+      }, separatorBuilder: (BuildContext context, int index) {
+        return const Divider();
+  },);
 
   _buildGridView() => Padding(
         padding: const EdgeInsets.all(8.0),
@@ -325,6 +375,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   _onSuccess(String message) {
     if (!mounted) return;
+    Provider.of<PosStatusProvider>(context, listen: false).loadStatus();
     AppMessages.showSuccess(context, message);
   }
 
