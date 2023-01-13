@@ -105,11 +105,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildStatus(currency.format(totalCollection), 'Offline Collection'),
+          _buildStatus(currency.format(totalCollection), 'Collection\n(Tsh)'),
           _buildStatus(currency.format((amountLimit ?? 0) - totalCollection),
-              'Offline Amount Balance'),
+              'Amount Balance\n(Tsh)'),
           _buildStatus(currency.format((offlineLimit ?? 0) - offLineTime),
-              'Offline Time(hr)'),
+              'Time Balance\n(min)'),
         ],
       ),
     );
@@ -135,7 +135,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Text(name,
                     textAlign: TextAlign.center,
                     style:
-                        const TextStyle(fontSize: 10, color: Colors.black87)),
+                        const TextStyle(fontSize: 10, color: Colors.blueGrey)),
               ],
             ),
           )));
@@ -185,45 +185,67 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
 
   _buildAvatar(item) => CircleAvatar(
-        backgroundColor: Theme.of(context).primaryColor,
-        child: Text(item.name.substring(0, 1)),
+        backgroundColor: Colors.blueGrey,
+        child: Text(
+          item.name.substring(0, 1),
+          style: const TextStyle(
+              fontWeight: FontWeight.normal, color: Colors.white, fontSize: 18),
+        ),
       );
 
   _buildListView() => ListView.separated(
-      itemCount: sources.length,
-      itemBuilder: (BuildContext _, int index) {
-        var item = sources[index];
-        return ListTile(
-          leading: _buildAvatar(item),
-          title: Text(item.name),
-          subtitle: Text(item.gfsCode),
-          onTap: () => _addItem(item),
-        );
-      }, separatorBuilder: (BuildContext context, int index) {
-        return const Divider();
-  },);
+        itemCount: sources.length,
+        itemBuilder: (BuildContext _, int index) {
+          var item = sources[index];
+          return ListTile(
+            leading: _buildAvatar(item),
+            title: Text(item.name),
+            // subtitle: Text(item.gfsCode),
+            trailing: Text(
+              '${currency.format(item.unitCost ?? 0)}/${item.unitName ?? ''}',
+              style: const TextStyle(fontSize: 11),
+            ),
+            onTap: () => _addItem(item),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return const Divider();
+        },
+      );
 
-  _buildGridView() => Padding(
+  _buildGridView() => GridView(
         padding: const EdgeInsets.all(8.0),
-        child: GridView(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          children: sources
-              .map((item) => InkWell(
-                    onTap: () => _addItem(item),
-                    child: AppCard(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildAvatar(item),
-                        Text(item.name),
-                        Text(item.gfsCode)
-                      ],
-                    )),
-                  ))
-              .toList(),
-        ),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2, crossAxisSpacing: 4, mainAxisSpacing: 4),
+        children: sources
+            .map((item) => InkWell(
+                  onTap: () => _addItem(item),
+                  child: Card(
+                      elevation: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildAvatar(item),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            '${currency.format(item.unitCost ?? 0)}/${item.unitName ?? ''}',
+                            style: const TextStyle(fontSize: 11),
+                          )
+                        ],
+                      )),
+                ))
+            .toList(),
       );
 
   //Filter revenue source when user type on search box or clear search
@@ -243,6 +265,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
+        double subTotal = 0;
         return AlertDialog(
           title: ListTile(
             dense: true,
@@ -256,29 +279,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           content: StatefulBuilder(
               builder: (BuildContext _, StateSetter setDialogState) {
+            calcSubTotal() {
+              _addItemForm.currentState?.save();
+              var formVal = _addItemForm.currentState?.value;
+              setDialogState(() => subTotal = formVal != null
+                  ? ((formVal['amount'] ?? 0) * (formVal['quantity'] ?? 0))
+                  : 0.0);
+            }
+
             return SingleChildScrollView(
               child: AppForm(
-                initialValue: {},
+                initialValue: {'amount': source.unitCost ?? 0.00},
                 formKey: _addItemForm,
                 controls: [
                   AppInputHidden(
                     fieldName: 'revenueSource',
                     value: source.toJson(),
                   ),
-                  AppInputInteger(
-                    name: 'quantity',
-                    label: "Quantity",
-                    validators: [
-                      FormBuilderValidators.required(
-                          errorText: "Quantity is required"),
-                    ],
-                  ),
                   AppInputNumber(
                     name: 'amount',
                     label: "Amount",
+                    enabled: !(source.unitCost != null && source.unitCost! > 0),
                     validators: [
                       FormBuilderValidators.required(
                           errorText: "Amount is required"),
+                    ],
+                  ),
+                  AppInputInteger(
+                    name: 'quantity',
+                    label: "Quantity",
+                    suffix:
+                        source.unitName != null ? Text(source.unitName!) : null,
+                    validators: [
+                      FormBuilderValidators.required(
+                          errorText: "Quantity is required"),
+                      FormBuilderValidators.min(1, errorText: 'Minimum 1')
+                    ],
+                    onChanged: (val) => calcSubTotal(),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text(
+                        "Sub Total: ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(currency.format(subTotal))
                     ],
                   ),
                   AppInputHidden(
@@ -356,7 +402,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // Get values from add item form and update cart state from cat provider
   _addToCart() async {
     Map<String, dynamic> formValues = _addItemForm.currentState!.value;
-    CartItem item = CartItem.fromJson(formValues);
+    RevenueItem item = RevenueItem.fromJson(formValues);
     _cartProvider.addItem(item);
   }
 
@@ -364,12 +410,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // Open tax payer dialog after confirmation
   //
   _collectCash() async {
-    await _addToCart();
-    if (!mounted) return;
-    if (_cartProvider.cartItems.length > 1) {
-      Provider.of<TabProvider>(context, listen: false).gotToTab(context, 1);
+    if (_cartProvider.cartItems.isNotEmpty) {
+      await _addToCart();
+      if (mounted) {
+        Provider.of<TabProvider>(context, listen: false).gotToTab(context, 1);
+      }
     } else {
-      await TaxPlayerDialog(context).collectCash(_onError, _onSuccess);
+      Map<String, dynamic> formValues = _addItemForm.currentState!.value;
+      RevenueItem item = RevenueItem.fromJson(formValues);
+      await TaxPlayerDialog(context).collectCash([item], _onError, _onSuccess);
     }
   }
 

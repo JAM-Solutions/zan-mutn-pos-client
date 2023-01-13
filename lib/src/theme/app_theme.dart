@@ -44,12 +44,12 @@ final ThemeData defaultTheme = ThemeData(
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     showUnselectedLabels: true,
     unselectedIconTheme: IconThemeData(
-        color: Color(0xFF000000),
+        color:  Colors.blueGrey,
          size: 18
     ),
-    unselectedItemColor: Color(0xFF000000),
+    unselectedItemColor:  Colors.blueGrey,
     unselectedLabelStyle: TextStyle(
-      color: Color(0xFF000000),
+      color:  Colors.blueGrey,
       fontSize: 12,
       overflow: TextOverflow.clip,
         fontFamily: 'Roboto'

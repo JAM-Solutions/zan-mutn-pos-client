@@ -7,6 +7,7 @@ import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/screens/cart/collection_summary_table.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
@@ -20,21 +21,19 @@ class TaxPlayerDialog {
 
   TaxPlayerDialog(this.context);
 
-  collectCash(Function onError, Function onSuccess) async {
+  collectCash( List<RevenueItem> items, Function onError, Function onSuccess) async {
     var configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    var cartProvider = Provider.of<CartProvider>(context, listen: false);
+    var cartProvider_ = Provider.of<CartProvider>(context, listen: false);
     var user = Provider.of<AppStateProvider>(context, listen: false).user;
     var year = await financialYearService.fetchAndStore();
 
-    bool? confirmed = await openDialog();
+    bool? confirmed = await openDialog(items);
     // bool? confirmed = await _openTaxPayerDialog();
     if (confirmed == true) {
       //get tax payer details from taxpayer form
       var taxPayerValues = _taxPayerForm.currentState!.value;
       //Add last item to cart or single item when print single revenus source
       //Both multi item and single item added to card first before save and printed
-
-      List<CartItem> items = cartProvider.cartItems;
 
       //Use current time stamp as transaction id
       DateTime t = DateTime.now();
@@ -63,7 +62,7 @@ class TaxPlayerDialog {
         // If saved successfully clear cart items and show message
         // If not show error message
         if (result > 0) {
-          cartProvider.clearItems();
+          cartProvider_.clearItems();
           onSuccess('Successfully');
         } else {
           //TODO should it clear cart when faild to save all transactiosn
@@ -80,7 +79,7 @@ class TaxPlayerDialog {
     return 'No implementation';
   }
 
-  Future<bool?> openDialog() {
+  Future<bool?> openDialog(List<RevenueItem> items) {
     return showDialog<bool?>(
       context: context,
       barrierDismissible: true, // user must tap button!
@@ -88,37 +87,51 @@ class TaxPlayerDialog {
         return AlertDialog(
           title: const Text('Receipt'),
           content: SingleChildScrollView(
-            child: AppForm(
-              formKey: _taxPayerForm,
-              controls: [
-                Text('Summary here'),
-                AppInputText(
-                  fieldName: 'name',
-                  label: 'Name/TIN',
-                  validators: [
-                    FormBuilderValidators.required(
-                        errorText: 'Name is required'),
-                  ],
-                ),
-                const AppInputText(fieldName: 'address', label: 'Address'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            Row(
+            reverse: true,
+            child: Column(
               children: [
-                Expanded(
-                    child: AppButton(
+                CollectionSummaryTable(items: items,),
+                AppForm(
+                  formKey: _taxPayerForm,
+                  controls: [
+                    AppInputText(
+                      fieldName: 'name',
+                      label: 'Name/TIN',
+                      validators: [
+                        FormBuilderValidators.required(
+                            errorText: 'Name is required'),
+                      ],
+                    ),
+                    const AppInputText(fieldName: 'address', label: 'Address'),
+
+                    AppButton(
                         label: 'Print',
                         onPress: () {
                           if (_taxPayerForm.currentState?.saveAndValidate() ==
                               true) {
                             Navigator.of(context).pop(true);
                           }
-                        }))
+                        })
+                  ],
+                ),
               ],
-            )
-          ],
+            ),
+          ),
+          // actions: <Widget>[
+          //   Row(
+          //     children: [
+          //       Expanded(
+          //           child: AppButton(
+          //               label: 'Print',
+          //               onPress: () {
+          //                 if (_taxPayerForm.currentState?.saveAndValidate() ==
+          //                     true) {
+          //                   Navigator.of(context).pop(true);
+          //                 }
+          //               }))
+          //     ],
+          //   )
+          // ],
         );
       },
     );

@@ -13,6 +13,9 @@ class AppInputNumber extends StatelessWidget {
   final String label;
   final List<String? Function(double?)> validators;
   final num? initialValue;
+  final bool enabled;
+  final Function? onChanged;
+
 
   const AppInputNumber(
       {super.key,
@@ -20,7 +23,9 @@ class AppInputNumber extends StatelessWidget {
       this.displayValue = 'name',
       required this.label,
       this.validators = const [],
-      this.initialValue});
+      this.initialValue,
+        this.enabled = true,
+        this.onChanged});
 
   _toDouble(String value) {
     String asNumber = value.replaceAll(RegExp('[^0-9]'), '');
@@ -36,8 +41,10 @@ class AppInputNumber extends StatelessWidget {
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
           return TextFormField(
+            textAlign: TextAlign.end,
               style: const TextStyle(fontSize: 14),
               inputFormatters: [AppNumberFormatter()],
+              enabled: enabled,
               decoration: InputDecoration(
                 label: Text(label),
                 errorText: field.errorText,
@@ -47,6 +54,9 @@ class AppInputNumber extends StatelessWidget {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 field.didChange(value.isNotEmpty ? _toDouble(value) : 0.00);
+                if(onChanged != null) {
+                  onChanged!(field.value);
+                }
               },
 
               );

@@ -50,7 +50,7 @@ class PosTransaction {
       String receiptNumber,
       DateTime transactionDate,
       int posDeviceId,
-      CartItem cartItem,
+      RevenueItem cartItem,
       User user,
       Map<String, dynamic> payerDetail,
       int financialYearId,

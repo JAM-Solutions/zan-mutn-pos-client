@@ -9,6 +9,7 @@ class AppInputInteger extends StatelessWidget {
   final Widget? suffix;
   final List<String? Function(int?)> validators;
   final num? initialValue;
+  final Function? onChanged;
 
   const AppInputInteger(
       {super.key,
@@ -17,7 +18,7 @@ class AppInputInteger extends StatelessWidget {
       required this.label,
       this.validators = const [],
       this.initialValue,
-        this.suffix});
+        this.suffix, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +27,7 @@ class AppInputInteger extends StatelessWidget {
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
           return TextFormField(
+              textAlign: TextAlign.end,
               decoration: InputDecoration(
                   errorText: field.errorText,
                   label: Text(
@@ -37,6 +39,9 @@ class AppInputInteger extends StatelessWidget {
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 field.didChange(value.isNotEmpty ? int.parse(value) : 0);
+                if(onChanged != null) {
+                  onChanged!(field.value);
+                }
               });
         }));
   }

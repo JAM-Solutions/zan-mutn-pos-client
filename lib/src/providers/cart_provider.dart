@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 
 class CartProvider with ChangeNotifier {
-   List<CartItem> cartItems = List.empty(growable: true);
+   List<RevenueItem> cartItems = List.empty(growable: true);
 
-   void addItem(CartItem item) {
+   void addItem(RevenueItem item) {
      cartItems.add(item);
      notifyListeners();
    }
 
-   void removeItem(CartItem item) {
+   void removeItem(RevenueItem item) {
      cartItems.remove(item);
      notifyListeners();
    }

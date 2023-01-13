@@ -13,6 +13,7 @@ class RevenueSource {
   final bool? penalty;
   final String? penaltyMode;
   final double? minimumAmount;
+  final double? unitCost;
   final double? maximumAmount;
   final String? unitName;
 
@@ -27,7 +28,8 @@ class RevenueSource {
       this.penaltyMode,
       this.minimumAmount,
       this.maximumAmount,
-      this.unitName);
+      this.unitName,
+      this.unitCost);
 
   factory RevenueSource.fromJson(Map<String, dynamic> json) =>
       _$RevenueSourceFromJson({
