@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: logoSize,
                     height: logoSize,
                     image: const AssetImage('assets/images/logo.jpeg')),
-               const SizedBox(height: 16,),
+               const SizedBox(height: 2,),
+                const Text('ZAN-MUTM-POS', style: TextStyle(color: Colors.blueGrey, fontSize: 18, fontWeight: FontWeight.bold),),
+                Text(dotenv.env['AP_BUILD_MODE'] ?? 'No'),
+                const SizedBox(height: 2,),
                 AppForm(
                   formKey: _loginForm,
                  controls: [
