@@ -21,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _loginForm = GlobalKey<FormBuilderState>();
   bool _isLoading = false;
+  bool _showPassword = false;
   late AppStateProvider _authProvider;
 
   @override
@@ -78,7 +79,15 @@ class _LoginScreenState extends State<LoginScreen> {
                    AppInputText(
                      fieldName: 'password',
                      label: 'Password',
-                     obscureText: true,
+                     obscureText: !_showPassword,
+                     suffixIcon: IconButton(
+                       onPressed: () {
+                         setState(() => _showPassword = !_showPassword);
+                       },
+                       icon: Icon(_showPassword
+                           ? Icons.remove_red_eye_sharp
+                           : Icons.remove_red_eye_outlined),
+                     ),
                      validators: [
                        FormBuilderValidators.required(
                            errorText: "Password is required")

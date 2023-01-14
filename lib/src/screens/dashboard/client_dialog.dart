@@ -108,6 +108,7 @@ class TaxPlayerDialog {
           'Total ${currency.format(items.map((e) => e.quantity * e.amount).fold(0.0, (acc, next) => acc + next))}',
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));
       await SunmiPrinter.lineWrap(2); // Jump 2 lines
+    //  await SunmiPrinter.cut();
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);
       return null;

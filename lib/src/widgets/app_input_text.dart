@@ -8,6 +8,7 @@ class AppInputText extends StatelessWidget {
   final String label;
   final List<String? Function(String?)> validators;
   final bool obscureText;
+  final Widget? suffixIcon;
 
   const AppInputText(
       {super.key,
@@ -15,7 +16,7 @@ class AppInputText extends StatelessWidget {
       this.displayValue = 'name',
       required this.label,
       this.validators = const [],
-      this.obscureText = false});
+      this.obscureText = false, this.suffixIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,9 @@ class AppInputText extends StatelessWidget {
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
           return TextFormField(
+
               decoration: InputDecoration(
+                suffixIcon: suffixIcon,
                 label: Text(label),
                 errorText: field.errorText,
               ),
