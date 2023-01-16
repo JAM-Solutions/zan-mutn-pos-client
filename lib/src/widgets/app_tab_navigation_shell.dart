@@ -7,6 +7,7 @@ import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_drawer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// This widget a wrapper for tabs
 /// that can be applied to all routed pages
@@ -22,6 +23,13 @@ class AppTabNavigationShell extends StatefulWidget {
 }
 
 class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
+
+  _switchLang() {
+    Locale current = Localizations.localeOf(context);
+    context.read<AppStateProvider>().switchLang(Locale.fromSubtags(
+        languageCode: current.languageCode == 'en' ? 'sw' : 'en'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -47,7 +55,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
               centerTitle: true,
               actions: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () => _switchLang(),
                     icon: const Icon(Icons.translate_rounded))
               ],
             ),

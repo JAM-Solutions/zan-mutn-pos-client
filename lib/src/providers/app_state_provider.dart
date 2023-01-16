@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 
@@ -6,6 +8,7 @@ class AppStateProvider with ChangeNotifier {
   bool sessionHasBeenFetched = false;
   bool configurationHasBeenLoaded = false;
   User? user;
+  Locale locale = const Locale.fromSubtags(languageCode: 'sw');
 
   static final AppStateProvider _instance = AppStateProvider._();
 
@@ -17,6 +20,11 @@ class AppStateProvider with ChangeNotifier {
     user = sessionUser;
     isAuthenticated = sessionUser != null;
     sessionHasBeenFetched = true;
+    notifyListeners();
+  }
+
+  void switchLang(Locale locale_) {
+    locale = locale_;
     notifyListeners();
   }
 

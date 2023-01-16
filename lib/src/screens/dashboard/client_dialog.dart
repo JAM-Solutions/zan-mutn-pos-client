@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -74,7 +71,6 @@ class TaxPlayerDialog {
           cartProvider_.clearItems();
           onSuccess('Successfully');
         } else {
-          //TODO should it clear cart when faild to save all transactiosn
           onError('Something went wrong');
         }
       } catch (e) {
@@ -103,7 +99,7 @@ class TaxPlayerDialog {
             '${item.revenueSource.name}   ${item.quantity} x ${currency.format(item.amount)}',
             style: SunmiStyle(align: SunmiPrintAlign.RIGHT));
       }
-      await SunmiPrinter.printText('---------------------------------');
+      await SunmiPrinter.printText('--------------------------------');
       await SunmiPrinter.printText(
           'Total ${currency.format(items.map((e) => e.quantity * e.amount).fold(0.0, (acc, next) => acc + next))}',
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));

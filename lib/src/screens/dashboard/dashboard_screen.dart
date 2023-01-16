@@ -14,7 +14,7 @@ import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_integer.dart';
@@ -105,7 +105,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildStatus(currency.format(totalCollection), 'Collection\n(Tsh)'),
+          _buildStatus(currency.format(totalCollection), AppLocalizations.of(context)!.collection),
           _buildStatus(currency.format((amountLimit ?? 0) - totalCollection),
               'Amount Balance\n(Tsh)'),
           _buildStatus(currency.format((offlineLimit ?? 0) - offLineTime),

@@ -1,5 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -16,6 +17,7 @@ import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
 import 'package:zanmutm_pos_client/src/screens/splash/splash_screen.dart';
 import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'models/device_info.dart';
 import 'models/user.dart';
@@ -79,9 +81,15 @@ class _AppState extends State<App> {
                 routeInformationParser: _router.routeInformationParser,
                 routerDelegate: _router.routerDelegate,
                 title: 'Zan-Mutm POS',
+                locale: provider.locale,
                 localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
                   FormBuilderLocalizations.delegate,
                 ],
+                supportedLocales: AppLocalizations.supportedLocales,
                 theme: defaultTheme,
               )
             : const SplashScreen();
