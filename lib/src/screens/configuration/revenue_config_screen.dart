@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/models/user.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
@@ -16,10 +18,12 @@ class RevenueConfigScreen extends StatefulWidget {
 class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
   bool _isLoading = false;
   late PosConfigProvider _configProvider;
+  late User? user;
 
   @override
   void initState() {
     _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
+    user = Provider.of<AppStateProvider>(context, listen: false).user;
     if (_configProvider.revenueSource.isEmpty) {
       _loadRevenueSources();
     }
@@ -30,7 +34,7 @@ class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
   _loadRevenueSources() async {
     setState(() => _isLoading = true);
     try {
-      var sources = await revenueConfigService.fetchAndStore();
+      var sources = await revenueConfigService.fetchAndStore(user!.taxCollectorUuid!);
       _configProvider.setRevenueSources(sources);
       setState(() => _isLoading = false);
     } catch (e) {

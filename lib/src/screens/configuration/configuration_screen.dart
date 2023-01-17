@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/models/user.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
@@ -17,6 +19,7 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
   late PosConfigProvider _configProvider;
+  late User? user;
   bool _posConfigIsLoading = false;
   bool _fyIsLoading = false;
   bool _revSourcesIsLoading = false;
@@ -24,6 +27,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   @override
   void initState() {
     _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
+    user = Provider.of<AppStateProvider>(context,listen: false).user;
     _checkAndLoadConfigs();
     super.initState();
   }
@@ -50,7 +54,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
     }
     if (_configProvider.revenueSource.isEmpty) {
       setState(() => _revSourcesIsLoading = true);
-      revenueConfigService.fetchAndStore().then((value) {
+      revenueConfigService.fetchAndStore(user!.taxCollectorUuid!).then((value) {
         setState(() => _revSourcesIsLoading = false);
         _configProvider.setRevenueSources(value);
       }, onError: (e) {

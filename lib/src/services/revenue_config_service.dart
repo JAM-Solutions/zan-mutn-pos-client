@@ -16,10 +16,10 @@ class RevenueConfigService {
   final String tableName = 'revenue_sources';
   final String resource = '/revenue-sources';
 
-  Future<List<RevenueSource>> fetchAndStore() async {
+  Future<List<RevenueSource>> fetchAndStore(String taxCollectorUuid) async {
     List<RevenueSource> sources = List.empty(growable: true);
     try {
-      var resp = await Api().dio.get("$resource/by-collector");
+      var resp = await Api().dio.get("$resource/by-collector/$taxCollectorUuid");
       if (resp.data != null && resp.data['data'] != null) {
         sources = (resp.data['data'] as List<dynamic>)
             .map((e) => RevenueSource.fromJson(e))
@@ -54,9 +54,8 @@ class RevenueConfigService {
   Future<void> storeToDb(List<RevenueSource> sources) async {
     try {
       var db = await DbProvider().database;
+      db.delete(tableName);
       for (var source in sources) {
-        var existing = await db.query(tableName,
-            where: 'gfsCode=?', whereArgs: [source.gfsCode], limit: 1);
         var data = {
           ...source.toJson(),
           'isMiscellaneous': source.isMiscellaneous ? 1 : 0,
@@ -64,9 +63,7 @@ class RevenueConfigService {
           'penalty': source.penalty == true ? 1 : 0,
           'lastUpdate': dateFormat.format(DateTime.now())
         };
-        await (existing.isNotEmpty
-            ? db.update(tableName, data, where: 'gfsCode=?', whereArgs: [source.gfsCode])
-            : db.insert(tableName, data));
+        db.insert(tableName, data);
       }
     } catch (e) {
       throw ValidationException(e.toString());
