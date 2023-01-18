@@ -7,6 +7,7 @@ import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum CartAction { cancel, collectCash, addToCart }
 
@@ -19,11 +20,18 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   late CartProvider _cartProvider;
+  late AppLocalizations? language;
 
   @override
   void initState() {
     _cartProvider = Provider.of(context, listen: false);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    language = AppLocalizations.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -38,10 +46,12 @@ class _CartScreenState extends State<CartScreen> {
           ),
           child: items.isNotEmpty
               ? SingleChildScrollView(
-                child: Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      CollectionSummaryTable(items: items,),
+                      CollectionSummaryTable(
+                        items: items,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 32),
@@ -49,14 +59,17 @@ class _CartScreenState extends State<CartScreen> {
                             onPress: () {
                               _collectCash();
                             },
-                            label: 'Print Receipt'),
+                            label:
+                                '${language?.print ?? 'Print'} ${language?.receipt ?? 'Receipt'}'),
                       ),
-                      const SizedBox(height: 80,)
+                      const SizedBox(
+                        height: 80,
+                      )
                     ],
                   ),
-              )
-              : const Center(
-                  child: Text("Cart is Empty"),
+                )
+              : Center(
+                  child: Text(language?.isEmpty ?? "No item"),
                 ),
         );
       },
@@ -81,5 +94,4 @@ class _CartScreenState extends State<CartScreen> {
     AppMessages.showError(context, error);
     debugPrint(error);
   }
-
 }

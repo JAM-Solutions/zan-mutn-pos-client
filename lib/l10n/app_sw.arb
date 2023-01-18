@@ -3,8 +3,17 @@
     "collection":"Makusanyo\n(TSh)",
     "amountBalance":"Salio la Fedha\n(TSh)",
     "timeBalance":"Salio la Mda\n(min)",
-    "homeTab": "Nyumabani",
+    "homeTab": "Nyumbani",
     "cartTab": "Mkokoteni",
     "generateTab": "Tengeneza Bili",
-    "billsTab": "Bili"
+    "billsTab": "Bili",
+    "revenue": "Chanzo",
+    "quantity": "Idadi",
+    "amount": "Bei",
+    "subTotal": "Jumla Ndogo",
+    "total": "Jumla",
+    "print": "Print",
+    "receipt": "Risit",
+    "isEmpty": "Hakuna kitu"
+
 }
