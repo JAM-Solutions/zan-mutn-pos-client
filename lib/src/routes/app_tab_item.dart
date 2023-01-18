@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class AppTabItem {
-
+class AppTabRoute {
   final String label;
-  final String title;
+  final String pageTitle;
   final Icon icon;
   final String path;
-  final Widget widget;
-  final List<GoRoute>? childRoutes;
+  final Widget page;
 
-  const  AppTabItem(  {required this.widget,required this.label,required this.title, required this.icon, required this.path, this.childRoutes});
+  const AppTabRoute(
+      {required this.page,
+      required this.label,
+      required this.pageTitle,
+      required this.icon,
+      required this.path});
 }

@@ -1,13 +1,14 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
+import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_drawer.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// This widget a wrapper for tabs
 /// that can be applied to all routed pages
@@ -23,6 +24,13 @@ class AppTabNavigationShell extends StatefulWidget {
 }
 
 class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
+  late AppLocalizations? language;
+
+  @override
+  void didChangeDependencies() {
+    language = AppLocalizations.of(context);
+    super.didChangeDependencies();
+  }
 
   _switchLang() {
     Locale current = Localizations.localeOf(context);
@@ -51,7 +59,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
           return Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: Text(tabProvider.currentTab.title),
+              title: Text(_translateTabTitle(tabProvider.currentTab)),
               centerTitle: true,
               actions: [
                 IconButton(
@@ -86,7 +94,7 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
               currentIndex: tabProvider.currentTabIndex,
               type: BottomNavigationBarType.fixed,
               items: [
-                ...AppRoutes.tabRoutes.map((e) {
+                ...appRoute.getTabRoutes().map((e) {
                   Widget icon = e.label.contains('Cart') &&
                           cartProvider.cartItems.isNotEmpty
                       ? Badge(
@@ -97,7 +105,8 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
                           child: e.icon,
                         )
                       : e.icon;
-                  return BottomNavigationBarItem(icon: icon, label: e.label);
+                  return BottomNavigationBarItem(
+                      icon: icon, label: _translateTabLabel(e));
                 })
               ],
               onTap: (int tabIndex) => tabProvider.gotToTab(context, tabIndex),
@@ -106,5 +115,35 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
         },
       ),
     ]);
+  }
+
+  _translateTabLabel(AppTabRoute tab) {
+    switch (tab.path) {
+      case AppRoute.dashboardTab:
+        return language?.homeTab ?? tab.label;
+      case AppRoute.cartTab:
+        return language?.cartTab ?? tab.label;
+      case AppRoute.generateBillTab:
+        return language?.generateTab ?? tab.label;
+      case AppRoute.billTab:
+        return language?.billsTab ?? tab.label;
+      default:
+        return tab.label;
+    }
+  }
+
+  _translateTabTitle(AppTabRoute tab) {
+    switch (tab.path) {
+      case AppRoute.dashboardTab:
+        return language?.homeTab ?? tab.pageTitle;
+      case AppRoute.cartTab:
+        return language?.cartTab ?? tab.pageTitle;
+      case AppRoute.generateBillTab:
+        return language?.generateTab ?? tab.pageTitle;
+      case AppRoute.billTab:
+        return language?.billsTab ?? tab.pageTitle;
+      default:
+        return tab.pageTitle;
+    }
   }
 }

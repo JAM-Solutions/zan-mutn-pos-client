@@ -1,5 +1,5 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +38,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   TextEditingController controller = TextEditingController();
   late CartProvider _cartProvider;
   late PosConfigProvider _configProvider;
+  late AppLocalizations? language;
+
   bool _gridView = true;
 
   @override
@@ -48,6 +50,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     allSources = _configProvider.revenueSource;
     setState(() => sources = [...allSources]);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    language = AppLocalizations.of(context);
+    super.didChangeDependencies();
   }
 
   _syncTransactions() async {
@@ -105,11 +113,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildStatus(currency.format(totalCollection), AppLocalizations.of(context)!.collection),
+          _buildStatus(currency.format(totalCollection),
+              language?.collection ?? 'Collection'),
           _buildStatus(currency.format((amountLimit ?? 0) - totalCollection),
-              'Amount Balance\n(Tsh)'),
+              language?.amountBalance ?? 'Amount Balance'),
           _buildStatus(currency.format((offlineLimit ?? 0) - offLineTime),
-              'Time Balance\n(min)'),
+              language?.timeBalance ?? 'Time Balance'),
         ],
       ),
     );

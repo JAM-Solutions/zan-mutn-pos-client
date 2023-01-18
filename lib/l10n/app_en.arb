@@ -1,4 +1,10 @@
 {
     "appTitle": "Zan Mutim",
-    "collection":"Collection\n(TSh)"
+    "collection":"Collection\n(TSh)",
+    "amountBalance":"Amount Balance\n(TSh)",
+    "timeBalance":"Time Balance\n(min)",
+    "homeTab": "Home",
+    "cartTab": "Cart",
+    "generateTab": "Generate Bill",
+    "billsTab": "Bills"
 }

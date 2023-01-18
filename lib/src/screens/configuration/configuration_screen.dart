@@ -71,7 +71,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
           title: const Text('Configurations'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.go(AppRoutes.dashboardTab),
+            onPressed: () => context.go(AppRoute.dashboardTab),
           ),
         ),
         child: ListView(
@@ -89,7 +89,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                       Icons.warning_rounded,
                       color: Colors.redAccent,
                     ),
-              onTap: () => context.push(AppRoutes.posConfig),
+              onTap: () => context.push(AppRoute.posConfig),
             ),
             const Divider(),
             ListTile(
@@ -105,7 +105,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                       Icons.warning_rounded,
                       color: Colors.redAccent,
                     ),
-              onTap: () => context.push(AppRoutes.financialYear),
+              onTap: () => context.push(AppRoute.financialYear),
             ),
             const Divider(),
             ListTile(
@@ -114,7 +114,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               trailing: Text(_configProvider.revenueSource.length.toString()),
               subtitle:
                   _revSourcesIsLoading ? const LinearProgressIndicator() : null,
-              onTap: () => context.push(AppRoutes.revenueSource),
+              onTap: () => context.push(AppRoute.revenueSource),
             )
           ],
         ),

@@ -3,11 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/models/format_type.dart';
 import 'package:zanmutm_pos_client/src/models/pos_charge.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_charge_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
@@ -15,14 +13,14 @@ import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
-class CompileBillScreen extends StatefulWidget {
-  const CompileBillScreen({Key? key}) : super(key: key);
+class GenerateBillScreen extends StatefulWidget {
+  const GenerateBillScreen({Key? key}) : super(key: key);
 
   @override
-  State<CompileBillScreen> createState() => _CompileBillScreenState();
+  State<GenerateBillScreen> createState() => _GenerateBillScreenState();
 }
 
-class _CompileBillScreenState extends State<CompileBillScreen> {
+class _GenerateBillScreenState extends State<GenerateBillScreen> {
   bool _posConnected = true;
   bool _transactionSynced = false;
   bool _allTransactionsCompiled = false;

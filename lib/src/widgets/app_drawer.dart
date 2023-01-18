@@ -73,11 +73,11 @@ class _AppDrawerState extends State<AppDrawer> {
               child: Column(
             children: [
               appMenuItem(
-                  Icons.settings, 'Pos Configuration', AppRoutes.posConfig),
+                  Icons.settings, 'Pos Configuration', AppRoute.posConfig),
               appMenuItem(Icons.money, 'Revenue Source Config',
-                  AppRoutes.revenueSource),
+                  AppRoute.revenueSource),
               appMenuItem(Icons.calendar_month, 'Financial year',
-                  AppRoutes.financialYear),
+                  AppRoute.financialYear),
             ],
           )),
           ListTile(

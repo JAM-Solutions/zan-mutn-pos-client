@@ -1,4 +1,10 @@
 {
     "appTitle": "Zani mitimu",
-    "collection":"Makusanyo\n(TSh)"
+    "collection":"Makusanyo\n(TSh)",
+    "amountBalance":"Salio la Fedha\n(TSh)",
+    "timeBalance":"Salio la Mda\n(min)",
+    "homeTab": "Nyumabani",
+    "cartTab": "Mkokoteni",
+    "generateTab": "Tengeneza Bili",
+    "billsTab": "Bili"
 }
