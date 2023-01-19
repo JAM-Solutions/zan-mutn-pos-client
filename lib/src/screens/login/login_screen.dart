@@ -50,7 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     double logoSize = MediaQuery.of(context).size.width / 2.5;
-    return AppBaseScreen(
+    return Consumer<AppStateProvider>(
+  builder: (context, provider, child) {
+  return AppBaseScreen(
       isLoading: _isLoading,
       child: SingleChildScrollView(
         child: Padding(
@@ -65,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     image: const AssetImage('assets/images/logo.jpeg')),
                const SizedBox(height: 2,),
                 const Text('ZAN-MUTM-POS', style: TextStyle(color: Colors.blueGrey, fontSize: 18, fontWeight: FontWeight.bold),),
-                Text(dotenv.env['AP_BUILD_MODE'] ?? 'No'),
+                Text(provider.currentVersion ?? ''),
                 const SizedBox(height: 2,),
                 AppForm(
                   formKey: _loginForm,
@@ -105,5 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  },
+);
   }
 }
