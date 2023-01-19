@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
@@ -14,11 +13,9 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  late User? _user;
 
   @override
   void initState() {
-    _user = context.read<AppStateProvider>().user;
     super.initState();
   }
 
@@ -39,52 +36,62 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width / 3;
-    return Drawer(
-        backgroundColor: Colors.white,
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 48),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return Consumer<AppStateProvider>(
+      builder: (context, provider, child) {
+        var user = provider.user;
+        return Drawer(
+            backgroundColor: Colors.white,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image(
-                      // height: width,
-                      width: width,
-                      image: const AssetImage('assets/images/logo.jpeg')),
-                  const SizedBox(height: 4),
-                  Text(
-                    "${_user?.firstName} ${_user?.lastName ?? ''}",
-                    style: TextStyle(color: Theme.of(context).primaryColor),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 48),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image(
+                              width: width,
+                              image:
+                                  const AssetImage('assets/images/logo.jpeg')),
+                          const SizedBox(height: 4),
+                          Text(
+                            "${user?.firstName} ${user?.lastName ?? ''}",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(user?.adminHierarchyName ?? ''),
+                          Text(provider.currentVersion ?? '')
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(_user?.adminHierarchyName ?? '')
-                ],
-              ),
-            ),
-          ),
-          const Divider(),
-          const SizedBox(
-            height: 16,
-          ),
-          Expanded(
-              child: Column(
-            children: [
-              appMenuItem(
-                  Icons.settings, 'Pos Configuration', AppRoute.posConfig),
-              appMenuItem(Icons.money, 'Revenue Source Config',
-                  AppRoute.revenueSource),
-              appMenuItem(Icons.calendar_month, 'Financial year',
-                  AppRoute.financialYear),
-            ],
-          )),
-          ListTile(
-            title: const Text("Logout"),
-            leading: const Icon(Icons.logout_sharp),
-            onTap: () => authService.logout(),
-          ),
-        ]));
+                  const Divider(),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Expanded(
+                      child: Column(
+                    children: [
+                      appMenuItem(Icons.settings, 'Pos Configuration',
+                          AppRoute.posConfig),
+                      appMenuItem(Icons.money, 'Revenue Source Config',
+                          AppRoute.revenueSource),
+                      appMenuItem(Icons.calendar_month, 'Financial year',
+                          AppRoute.financialYear),
+                      appMenuItem(
+                          Icons.update, 'App Update', AppRoute.appUpdate),
+                    ],
+                  )),
+                  ListTile(
+                    title: const Text("Logout"),
+                    leading: const Icon(Icons.logout_sharp),
+                    onTap: () => authService.logout(),
+                  ),
+                ]));
+      },
+    );
   }
 }

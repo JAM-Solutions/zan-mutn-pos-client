@@ -2,6 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
@@ -39,7 +40,6 @@ class _AppState extends State<App> {
     _appState = Provider.of<AppStateProvider>(context, listen: false);
     _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
     initApp();
-
     super.initState();
   }
 
@@ -50,14 +50,16 @@ class _AppState extends State<App> {
     } else {
       _appState.sessionFetched(user);
     }
-    //Query and set device info
-    DeviceInfoPlugin infoPlugin = DeviceInfoPlugin();
-    AppDeviceInfo info = await DeviceInfoService().getInfo(infoPlugin);
-    _configProvider.setDeviceInfo(info);
-    //Query ang get user session
+    //Load and set device info
+    final DeviceInfoPlugin infoPlugin = DeviceInfoPlugin();
+    final AppDeviceInfo deviceInfo = await DeviceInfoService().getInfo(infoPlugin);
+    _configProvider.setDeviceInfo(deviceInfo);
+
+    //Query and set app info. ie version
+    _appState.loadAppVersion();
 
     // Check if pos config fetched/exist from db
-    PosConfiguration? posConfig = await posConfigService.queryFromDb(info.id);
+    PosConfiguration? posConfig = await posConfigService.queryFromDb(deviceInfo.id);
     _configProvider.setPosConfig(posConfig);
     FinancialYear? year = await financialYearService.queryFromDb();
     _configProvider.setFinancialYear(year);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/app.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
@@ -12,6 +13,7 @@ import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await DbProvider().migrate();
   runApp(MultiProvider(
       providers: [
@@ -21,5 +23,5 @@ Future<void> main() async {
         ChangeNotifierProvider<CartProvider>(create: (_) => cartProvider),
         ChangeNotifierProvider<PosStatusProvider>(create: (_) => posStatusProvider),
       ],
-    child: App(),));
+    child: const App(),));
 }
