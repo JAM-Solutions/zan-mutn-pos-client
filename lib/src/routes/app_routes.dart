@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
@@ -13,9 +15,10 @@ import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_scre
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/configuration/pos_config_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/update/app_update_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
+
+import '../screens/pos_config/pos_config_screen.dart';
 
 class AppRoute {
   static final AppRoute _instance = AppRoute._();
@@ -28,7 +31,6 @@ class AppRoute {
   static const String dashboardTab = "/";
   static const String cartTab = "/cart";
 
-  // static const String compileBillTab = "/compile-bill";
   static const String generateBillTab = "/generate-bill";
   static const String cashCollection = "/cart";
   static const String billTab = "/bill";
@@ -71,7 +73,8 @@ class AppRoute {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const RevenueConfigScreen(),
-      ),GoRoute(
+      ),
+      GoRoute(
         path: AppRoute.appUpdate,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
@@ -133,9 +136,14 @@ class AppRoute {
         //Check login state and configuration and redirect to login or
         // config if user not authenticated or no config loaded
         redirect: (context, state) {
-          var appState = Provider.of<AppStateProvider>(context, listen: false);
-          var posConfigState =
-              Provider.of<PosConfigProvider>(context, listen: false);
+          var appState = context.read<AppStateProvider>();
+          var posConfigState = context.read<PosConfigurationProvider>();
+          var fyState = context.read<FinancialYearProvider>();
+          var revenueState = context.read<RevenueSourceProvider>();
+          bool configured = posConfigState.posConfiguration != null &&
+              fyState.financialYear != null &&
+              revenueState.revenueSource.isNotEmpty;
+
           final loggedIn = appState.isAuthenticated;
           //If user is
           final isLoginRoute = state.subloc == AppRoute.login;
@@ -147,7 +155,7 @@ class AppRoute {
           //If is state is not logged in return login
           if (!loggedIn) {
             return isLoginRoute ? null : AppRoute.login;
-          } else if (loggedIn && posConfigState.posConfiguration == null) {
+          } else if (loggedIn && !configured) {
             return isConfigRoute ? null : AppRoute.config;
           } else if (isLoginRoute && loggedIn) {
             return '/';

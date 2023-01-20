@@ -61,7 +61,5 @@ class AuthService {
     appStateProvider.userLoggedOut();
   }
 
-
-
 }
 final authService = AuthService();

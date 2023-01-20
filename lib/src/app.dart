@@ -1,25 +1,19 @@
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:zanmutm_pos_client/src/models/financial_year.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
-import 'package:zanmutm_pos_client/src/services/device_info_service.dart';
-import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
-import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
 import 'package:zanmutm_pos_client/src/screens/splash/splash_screen.dart';
-import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/theme/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'models/device_info.dart';
 import 'models/user.dart';
 
 class App extends StatefulWidget {
@@ -32,38 +26,36 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final GoRouter _router = AppRoute().getRoutes();
   late AppStateProvider _appState;
-  late PosConfigProvider _configProvider;
+  late DeviceInfoProvider _deviceInfoProvider;
+  late PosConfigurationProvider _posConfigurationProvider;
+  late FinancialYearProvider _financialYearProvider;
+  late RevenueSourceProvider _revenueSourceProvider;
 
   @override
   void initState() {
     super.initState();
     _appState = context.read<AppStateProvider>();
-    _configProvider = context.read<PosConfigProvider>();
+    _deviceInfoProvider = context.read<DeviceInfoProvider>();
+    _posConfigurationProvider = context.read<PosConfigurationProvider>();
+    _financialYearProvider = context.read<FinancialYearProvider>();
+    _revenueSourceProvider = context.read<RevenueSourceProvider>();
     initApp();
   }
 
   Future<void> initApp() async {
+    if (!mounted) return;
     User? user = await authService.getSession();
-    if (mounted && user == null) {
+    if (user == null) {
       _appState.userLoggedOut();
     } else {
       _appState.sessionFetched(user);
     }
-    //Load and set device info
-    final DeviceInfoPlugin infoPlugin = DeviceInfoPlugin();
-    final AppDeviceInfo deviceInfo = await DeviceInfoService().getInfo(infoPlugin);
-    _configProvider.setDeviceInfo(deviceInfo);
-
-    //Query and set app info. ie version
     _appState.loadAppVersion();
-
-    // Check if pos config fetched/exist from db
-    PosConfiguration? posConfig = await posConfigService.queryFromDb(deviceInfo.id);
-    _configProvider.setPosConfig(posConfig);
-    FinancialYear? year = await financialYearService.queryFromDb();
-    _configProvider.setFinancialYear(year);
-    List<RevenueSource> sources = await revenueConfigService.queryFromDb();
-    _configProvider.setRevenueSources(sources);
+    await _deviceInfoProvider.loadDevice();
+    await _posConfigurationProvider
+        .loadPosConfig(_deviceInfoProvider.deviceInfo);
+    await _financialYearProvider.loadFinancialYear();
+    await _revenueSourceProvider.loadRevenueSource(user?.taxCollectorUuid);
     _appState.setConfigLoaded();
   }
 

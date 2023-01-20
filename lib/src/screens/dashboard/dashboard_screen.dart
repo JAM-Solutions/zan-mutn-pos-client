@@ -6,8 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
@@ -37,17 +38,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<RevenueSource> allSources = List.empty(growable: true);
   TextEditingController controller = TextEditingController();
   late CartProvider _cartProvider;
-  late PosConfigProvider _configProvider;
   late AppLocalizations? language;
 
   bool _gridView = true;
 
   @override
   void initState() {
-    Provider.of<PosStatusProvider>(context, listen: false).loadStatus();
-    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
+    context.read<PosStatusProvider>().loadStatus();
     _cartProvider = Provider.of(context, listen: false);
-    allSources = _configProvider.revenueSource;
+    allSources = context.read<RevenueSourceProvider>().revenueSource;
     setState(() => sources = [...allSources]);
     super.initState();
   }
@@ -68,7 +67,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<PosConfigProvider, PosStatusProvider>(
+    return Consumer2<PosConfigurationProvider, PosStatusProvider>(
       builder: (context, configProvider, statusProvider, child) {
         return AppBaseTabScreen(
             floatingActionButton: FloatingActionButton(

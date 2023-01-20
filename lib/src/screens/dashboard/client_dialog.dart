@@ -10,9 +10,9 @@ import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/cart/collection_summary_table.dart';
-import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
@@ -28,10 +28,10 @@ class TaxPlayerDialog {
 
   collectCash(
       List<RevenueItem> items, Function onError, Function onSuccess) async {
-    var configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    var cartProvider_ = Provider.of<CartProvider>(context, listen: false);
-    var user = Provider.of<AppStateProvider>(context, listen: false).user;
-    var year = await financialYearService.fetchAndStore();
+    var configProvider = context.read<PosConfigurationProvider>();
+    var cartProvider_ = context.read<CartProvider>();
+    var user = context.read<AppStateProvider>().user;
+    var year = context.read<FinancialYearProvider>().financialYear;
 
     bool? confirmed = await openDialog(items);
     // bool? confirmed = await _openTaxPayerDialog();
@@ -85,10 +85,12 @@ class TaxPlayerDialog {
     if (connected == true) {
       await SunmiPrinter.startTransactionPrint(true);
       try {
-        Uint8List bytes = (await rootBundle.load('assets/images/logo.jpeg')).buffer.asUint8List();
+        Uint8List bytes = (await rootBundle.load('assets/images/logo.jpeg'))
+            .buffer
+            .asUint8List();
         await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
         await SunmiPrinter.printImage(bytes);
-      } catch(e) {
+      } catch (e) {
         debugPrint(e.toString());
       }
       await SunmiPrinter.lineWrap(1); // Jump 2 lines
@@ -104,7 +106,7 @@ class TaxPlayerDialog {
           'Total ${currency.format(items.map((e) => e.quantity * e.amount).fold(0.0, (acc, next) => acc + next))}',
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));
       await SunmiPrinter.lineWrap(2); // Jump 2 lines
-    //  await SunmiPrinter.cut();
+      //  await SunmiPrinter.cut();
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);
       return null;

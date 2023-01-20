@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/models/device_info.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
-import 'package:zanmutm_pos_client/src/services/pos_config_service.dart';
-import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 
 class ConfigurationScreen extends StatefulWidget {
@@ -18,107 +19,87 @@ class ConfigurationScreen extends StatefulWidget {
 }
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
-  late PosConfigProvider _configProvider;
-  late User? user;
-  bool _posConfigIsLoading = false;
-  bool _fyIsLoading = false;
-  bool _revSourcesIsLoading = false;
+  User? _user;
+  AppDeviceInfo? _device;
 
   @override
   void initState() {
-    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    user = Provider.of<AppStateProvider>(context,listen: false).user;
-    _checkAndLoadConfigs();
     super.initState();
+    _user = context.read<AppStateProvider>().user;
+    _device = context.read<DeviceInfoProvider>().deviceInfo;
+    Future.delayed(Duration.zero, () => _loadAllConfigs());
   }
 
-  _checkAndLoadConfigs() async {
-    if (_configProvider.posConfiguration == null) {
-      setState(() => _posConfigIsLoading = true);
-      posConfigService.fetchAndStore(_configProvider.deviceInfo!.id).then(
-          (value) {
-        setState(() => _posConfigIsLoading = false);
-        _configProvider.setPosConfig(value);
-      }, onError: (e) {
-        setState(() => _posConfigIsLoading = false);
-      });
-    }
-    if (_configProvider.financialYear == null) {
-      setState(() => _fyIsLoading = true);
-      financialYearService.fetchAndStore().then((value) {
-        setState(() => _fyIsLoading = false);
-        _configProvider.setFinancialYear(value);
-      }, onError: (e) {
-        setState(() => _fyIsLoading = false);
-      });
-    }
-    if (_configProvider.revenueSource.isEmpty) {
-      setState(() => _revSourcesIsLoading = true);
-      revenueConfigService.fetchAndStore(user!.taxCollectorUuid!).then((value) {
-        setState(() => _revSourcesIsLoading = false);
-        _configProvider.setRevenueSources(value);
-      }, onError: (e) {
-        setState(() => _revSourcesIsLoading = false);
-      });
-    }
+  _loadAllConfigs() {
+    context.read<PosConfigurationProvider>().loadPosConfig(_device);
+    context.read<FinancialYearProvider>().loadFinancialYear();
+    context
+        .read<RevenueSourceProvider>()
+        .loadRevenueSource(_user?.taxCollectorUuid);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PosConfigProvider>(builder: (context, appState, child) {
-      return AppBaseScreen(
-        appBar: AppBar(
-          title: const Text('Configurations'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.go(AppRoute.dashboardTab),
+    return Consumer3<PosConfigurationProvider, FinancialYearProvider,
+        RevenueSourceProvider>(
+      builder:
+          (context, posConfigProvider, fyProvider, revSourceProvider, child) {
+        return AppBaseScreen(
+          appBar: AppBar(
+            title: const Text('Configurations'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.go(AppRoute.dashboardTab),
+            ),
           ),
-        ),
-        child: ListView(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.point_of_sale_outlined),
-              title: const Text('Pos Configuration'),
-              subtitle: _posConfigIsLoading
-                  ? const LinearProgressIndicator()
-                  : Text(
-                      'Last update: ${appState.posConfiguration?.lastUpdate ?? ''}'),
-              trailing: appState.posConfiguration != null
-                  ? const Icon(Icons.verified, color: Colors.green)
-                  : const Icon(
-                      Icons.warning_rounded,
-                      color: Colors.redAccent,
-                    ),
-              onTap: () => context.push(AppRoute.posConfig),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.calendar_month),
-              title: const Text('Financial Year Configuration'),
-              subtitle: _fyIsLoading
-                  ? const LinearProgressIndicator()
-                  : Text(
-                      'Last update: ${appState.financialYear?.lastUpdate ?? ''}'),
-              trailing: appState.financialYear != null
-                  ? const Icon(Icons.verified, color: Colors.green)
-                  : const Icon(
-                      Icons.warning_rounded,
-                      color: Colors.redAccent,
-                    ),
-              onTap: () => context.push(AppRoute.financialYear),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.monetization_on_outlined),
-              title: const Text('Revenue Configuration'),
-              trailing: Text(_configProvider.revenueSource.length.toString()),
-              subtitle:
-                  _revSourcesIsLoading ? const LinearProgressIndicator() : null,
-              onTap: () => context.push(AppRoute.revenueSource),
-            )
-          ],
-        ),
-      );
-    });
+          child: ListView(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.point_of_sale_outlined),
+                title: const Text('Pos Configuration'),
+                subtitle: posConfigProvider.posConfigIsLoading
+                    ? const LinearProgressIndicator()
+                    : Text(
+                        'Last update: ${posConfigProvider.posConfiguration?.lastUpdate ?? ''}'),
+                trailing: posConfigProvider.posConfiguration != null
+                    ? const Icon(Icons.verified, color: Colors.green)
+                    : const Icon(
+                        Icons.warning_rounded,
+                        color: Colors.redAccent,
+                      ),
+                onTap: () => context.push(AppRoute.posConfig),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.calendar_month),
+                title: const Text('Financial Year Configuration'),
+                subtitle: fyProvider.fyIsLoading
+                    ? const LinearProgressIndicator()
+                    : Text(
+                        'Last update: ${fyProvider.financialYear?.lastUpdate ?? ''}'),
+                trailing: fyProvider.financialYear != null
+                    ? const Icon(Icons.verified, color: Colors.green)
+                    : const Icon(
+                        Icons.warning_rounded,
+                        color: Colors.redAccent,
+                      ),
+                onTap: () => context.push(AppRoute.financialYear),
+              ),
+              const Divider(),
+              ListTile(
+                leading: const Icon(Icons.monetization_on_outlined),
+                title: const Text('Revenue Configuration'),
+                trailing:
+                    Text(revSourceProvider.revenueSource.length.toString()),
+                subtitle: revSourceProvider.revSourcesIsLoading
+                    ? const LinearProgressIndicator()
+                    : null,
+                onTap: () => context.push(AppRoute.revenueSource),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 }

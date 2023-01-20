@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
-import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
+import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_table.dart';
 
 class RevenueConfigScreen extends StatefulWidget {
@@ -16,41 +14,32 @@ class RevenueConfigScreen extends StatefulWidget {
 }
 
 class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
-  bool _isLoading = false;
-  late PosConfigProvider _configProvider;
   late User? user;
 
   @override
   void initState() {
-    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    user = Provider.of<AppStateProvider>(context, listen: false).user;
-    if (_configProvider.revenueSource.isEmpty) {
-      _loadRevenueSources();
-    }
-    _loadRevenueSources();
     super.initState();
+    user = context.read<AppStateProvider>().user;
+    _loadRevenueSources();
+    if (context.read<RevenueSourceProvider>().revenueSource.isEmpty) {
+      Future.delayed(Duration.zero, () => _loadRevenueSources());
+    }
   }
 
   _loadRevenueSources() async {
-    setState(() => _isLoading = true);
-    try {
-      var sources = await revenueConfigService.fetchAndStore(user!.taxCollectorUuid!);
-      _configProvider.setRevenueSources(sources);
-      setState(() => _isLoading = false);
-    } catch (e) {
-      setState(() => _isLoading = false);
-      AppMessages.showError(context, e.toString());
-    }
+    context
+        .read<RevenueSourceProvider>()
+        .loadRevenueSource(user?.taxCollectorUuid);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PosConfigProvider>(
+    return Consumer<RevenueSourceProvider>(
       builder: (context, provider, child) {
         return AppBaseScreen(
-            isLoading: _isLoading,
+            isLoading: provider.revSourcesIsLoading,
             floatingAction: FloatingActionButton(
-              onPressed: () =>_loadRevenueSources(),
+              onPressed: () => _loadRevenueSources(),
               child: const Icon(Icons.refresh),
             ),
             appBar: AppBar(

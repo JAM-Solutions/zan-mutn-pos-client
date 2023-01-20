@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/models/financial_year.dart';
+import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
 import 'package:zanmutm_pos_client/src/models/format_type.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
-import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
+import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 class FinancialYearConfigScreen extends StatefulWidget {
   const FinancialYearConfigScreen({Key? key}) : super(key: key);
@@ -17,65 +15,55 @@ class FinancialYearConfigScreen extends StatefulWidget {
 }
 
 class _FinancialYearConfigScreenState extends State<FinancialYearConfigScreen> {
-  bool _isLoading = false;
-  late PosConfigProvider _configProvider;
-
   @override
   void initState() {
-    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    if (_configProvider.financialYear == null) {
-      _loadFinancialYear();
-    }
     super.initState();
+    if (context.read<FinancialYearProvider>().financialYear == null) {
+      Future.delayed(Duration.zero,() => _loadFinancialYear());
+    }
   }
 
   _loadFinancialYear() async {
-    setState(() => _isLoading = true);
-    try {
-      FinancialYear? year = await FinancialYearService().fetchAndStore();
-      _configProvider.setFinancialYear(year);
-      setState(() => _isLoading = false);
-    } catch (e) {
-      setState(() => _isLoading = false);
-      AppMessages.showError(context, e.toString());
-    }
+    context.read<FinancialYearProvider>().loadFinancialYear();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PosConfigProvider>(
+    return Consumer<FinancialYearProvider>(
       builder: (context, provider, child) {
         var fy = provider.financialYear;
-        return AppBaseScreen(
-            isLoading: _isLoading,
-            floatingAction: FloatingActionButton(
-              onPressed: () => _loadFinancialYear(),
-              child: const Icon(Icons.refresh),
-            ),
-            appBar: AppBar(
-              title: const Text('Financial Year Configuration'),
-            ),
-            child: Column(
-              children: [
-                AppDetailCard(
-                  title: "Financial Year",
-                  data: provider.financialYear != null
-                      ? provider.financialYear!.toJson()
-                      : null,
-                  columns: [
-                    AppDetailColumn(header: 'Name', value: fy?.name),
-                    AppDetailColumn(
-                        header: 'startDate',
-                        value: fy?.startDate,
-                        format: FormatType.date),
-                    AppDetailColumn(
-                        header: 'End date',
-                        value: fy?.endDate,
-                        format: FormatType.date),
-                  ],
-                ),
-              ],
-            ));
+        return MessageListener<FinancialYearProvider>(
+          child: AppBaseScreen(
+              isLoading: provider.fyIsLoading,
+              floatingAction: FloatingActionButton(
+                onPressed: () => _loadFinancialYear(),
+                child: const Icon(Icons.refresh),
+              ),
+              appBar: AppBar(
+                title: const Text('Financial Year Configuration'),
+              ),
+              child: Column(
+                children: [
+                  AppDetailCard(
+                    title: "Financial Year",
+                    data: provider.financialYear != null
+                        ? provider.financialYear!.toJson()
+                        : null,
+                    columns: [
+                      AppDetailColumn(header: 'Name', value: fy?.name),
+                      AppDetailColumn(
+                          header: 'startDate',
+                          value: fy?.startDate,
+                          format: FormatType.date),
+                      AppDetailColumn(
+                          header: 'End date',
+                          value: fy?.endDate,
+                          format: FormatType.date),
+                    ],
+                  ),
+                ],
+              )),
+        );
       },
     );
   }

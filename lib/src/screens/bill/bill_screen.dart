@@ -6,7 +6,7 @@ import 'package:zanmutm_pos_client/src/models/format_type.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_config_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/services/bill_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
@@ -29,9 +29,8 @@ class _BillScreenState extends State<BillScreen> {
 
   @override
   void initState() {
-    _posConfig =
-        Provider.of<PosConfigProvider>(context, listen: false).posConfiguration;
-    user = Provider.of<AppStateProvider>(context, listen: false).user;
+    _posConfig = context.read<PosConfigurationProvider>().posConfiguration;
+    user = context.read<AppStateProvider>().user;
     _loadPendingBills();
     super.initState();
   }
@@ -75,7 +74,7 @@ class _BillScreenState extends State<BillScreen> {
                 var item = _bills[index];
                 return AppDetailCard(
                     elevation: 0,
-                    title: (index+1).toString(),
+                    title: (index + 1).toString(),
                     data: item.toJson(),
                     columns: [
                       AppDetailColumn(
