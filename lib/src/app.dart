@@ -2,7 +2,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
@@ -37,10 +36,10 @@ class _AppState extends State<App> {
 
   @override
   void initState() {
-    _appState = Provider.of<AppStateProvider>(context, listen: false);
-    _configProvider = Provider.of<PosConfigProvider>(context, listen: false);
-    initApp();
     super.initState();
+    _appState = context.read<AppStateProvider>();
+    _configProvider = context.read<PosConfigProvider>();
+    initApp();
   }
 
   Future<void> initApp() async {

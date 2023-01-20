@@ -28,7 +28,8 @@ class AppBaseScreen extends StatelessWidget {
             padding: padding ?? const EdgeInsets.all(16.0),
             child: child,
           ),
-          isLoading! ? const CircularProgressIndicator() : Container(),
+          if(isLoading == true)
+          const CircularProgressIndicator()
         ],
       ),
       floatingActionButton: floatingAction,
