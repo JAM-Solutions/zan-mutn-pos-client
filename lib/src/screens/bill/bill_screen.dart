@@ -1,13 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/api/api.dart';
-import 'package:zanmutm_pos_client/src/models/bill.dart';
+import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
 import 'package:zanmutm_pos_client/src/models/format_type.dart';
-import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
-import 'package:zanmutm_pos_client/src/models/user.dart';
-import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
-import 'package:zanmutm_pos_client/src/services/bill_service.dart';
+import 'package:zanmutm_pos_client/src/providers/bill_provider.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
@@ -20,89 +15,70 @@ class BillScreen extends StatefulWidget {
 }
 
 class _BillScreenState extends State<BillScreen> {
-  List<Bill> _bills = List.empty(growable: true);
-  bool _posConnected = true;
-  bool _isLoading = false;
-  late PosConfiguration? _posConfig;
-  late User? user;
-  String? _error;
-
   @override
   void initState() {
-    _posConfig = context.read<PosConfigurationProvider>().posConfiguration;
-    user = context.read<AppStateProvider>().user;
-    _loadPendingBills();
     super.initState();
-  }
-
-  _loadPendingBills() async {
-    try {
-      var result = await billService.getPendingBills(user!.taxPayerUuid!);
-      setState(() => {_bills = result, _isLoading = false});
-    } on NoInternetConnectionException {
-      setState(() => {_posConnected = false, _isLoading = false});
-      return false;
-    } on DeadlineExceededException {
-      setState(() => {_posConnected = false, _isLoading = false});
-    } catch (e) {
-      setState(() => {_isLoading = false, _error = e.toString()});
-    }
-  }
-
-  _retry() async {
-    setState(() => {_isLoading = true, _error = null});
-    _loadPendingBills();
+    Future.delayed(
+        Duration.zero, () => context.read<BillProvider>().loadPendingBills());
   }
 
   @override
   Widget build(BuildContext context) {
-    return AppBaseTabScreen(child: Builder(builder: (_) {
-      if (_error != null || !_posConnected) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(_error ?? 'No Internet connection'),
-              AppButton(onPress: () => _retry(), label: 'Retry')
-            ],
-          ),
+    return Consumer<BillProvider>(
+      builder: (context, provider, child) {
+        return MessageListener<BillProvider>(
+          child: AppBaseTabScreen(child: Builder(builder: (_) {
+            if (provider.retryError != null || !provider.posIsConnected) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(provider.retryError ?? 'No Internet connection'),
+                    AppButton(onPress: () => provider.retry(), label: 'Retry')
+                  ],
+                ),
+              );
+            } else {
+              if (provider.bills.isNotEmpty) {
+                return ListView.separated(
+                    itemBuilder: (BuildContext _, int index) {
+                      var item = provider.bills[index];
+                      return AppDetailCard(
+                          elevation: 0,
+                          title: (index + 1).toString(),
+                          data: item.toJson(),
+                          columns: [
+                            AppDetailColumn(
+                                header: 'Amount',
+                                value: item.amount,
+                                format: FormatType.currency),
+                            AppDetailColumn(
+                                header: 'Control Number',
+                                value: item.controlNumber),
+                            AppDetailColumn(
+                                header: 'Due time',
+                                value: item.dueTime?.toIso8601String(),
+                                format: FormatType.date),
+                            AppDetailColumn(
+                                header: 'Expire On',
+                                value: item.expireDate?.toIso8601String(),
+                                format: FormatType.date)
+                          ]);
+                    },
+                    separatorBuilder: (BuildContext _, int index) =>
+                        const SizedBox(
+                          height: 4,
+                        ),
+                    itemCount: provider.bills.length);
+              } else {
+                return const Center(
+                  child: Text("No pending bills found"),
+                );
+              }
+            }
+          })),
         );
-      } else {
-        if (_bills.isNotEmpty) {
-          return ListView.separated(
-              itemBuilder: (BuildContext _, int index) {
-                var item = _bills[index];
-                return AppDetailCard(
-                    elevation: 0,
-                    title: (index + 1).toString(),
-                    data: item.toJson(),
-                    columns: [
-                      AppDetailColumn(
-                          header: 'Amount',
-                          value: item.amount,
-                          format: FormatType.currency),
-                      AppDetailColumn(
-                          header: 'Control Number', value: item.controlNumber),
-                      AppDetailColumn(
-                          header: 'Due time',
-                          value: item.dueTime?.toIso8601String(),
-                          format: FormatType.date),
-                      AppDetailColumn(
-                          header: 'Expire On',
-                          value: item.expireDate?.toIso8601String(),
-                          format: FormatType.date)
-                    ]);
-              },
-              separatorBuilder: (BuildContext _, int index) => const SizedBox(
-                    height: 4,
-                  ),
-              itemCount: _bills.length);
-        } else {
-          return const Center(
-            child: Text("No pending bills found"),
-          );
-        }
-      }
-    }));
+      },
+    );
   }
 }
