@@ -8,7 +8,7 @@ import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
-import 'package:zanmutm_pos_client/src/screens/cart/collection_summary_table.dart';
+import 'package:zanmutm_pos_client/src/screens/revenue_collection/collection_summary_table.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';

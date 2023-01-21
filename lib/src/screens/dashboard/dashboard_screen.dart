@@ -4,7 +4,7 @@ import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
-import 'package:zanmutm_pos_client/src/screens/dashboard/revenue_items.dart';
+import 'package:zanmutm_pos_client/src/screens/revenue_collection/revenue_items.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';

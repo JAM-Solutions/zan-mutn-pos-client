@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
-import 'package:zanmutm_pos_client/src/screens/dashboard/add_revenue_item_dialog.dart';
+import 'package:zanmutm_pos_client/src/screens/revenue_collection/add_revenue_item_dialog.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class RevenueItems extends StatelessWidget {

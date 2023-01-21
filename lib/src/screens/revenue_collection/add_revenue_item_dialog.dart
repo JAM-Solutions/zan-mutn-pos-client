@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
-import 'package:zanmutm_pos_client/src/screens/dashboard/collect_cash_dialog.dart';
+import 'package:zanmutm_pos_client/src/screens/revenue_collection/collect_cash_dialog.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
