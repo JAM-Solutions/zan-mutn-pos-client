@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
+import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class PosStatusProvider with ChangeNotifier {
@@ -57,6 +58,17 @@ class PosStatusProvider with ChangeNotifier {
         .fold(0.0, (total, subTotal) => (total + subTotal));
     totalCollection = offlineAmount;
     notifyListeners();
+  }
+
+  syncTransactions() async {
+    try {
+     bool synced =  await posTransactionService.sync();
+     if(synced) {
+       resetOfflineTime();
+     }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
 

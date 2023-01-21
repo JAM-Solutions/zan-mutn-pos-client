@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
@@ -6,6 +7,7 @@ import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class ConfigService {
   static final ConfigService _instance = ConfigService._();
+
   factory ConfigService() => _instance;
   final String tableName = 'pos_configurations';
 
@@ -19,7 +21,7 @@ class ConfigService {
     if (result.isNotEmpty) {
       PosConfiguration posConfiguration =
           PosConfiguration.fromJson(result.single);
-       return posConfiguration;
+      return posConfiguration;
     } else {
       return null;
     }
@@ -29,20 +31,30 @@ class ConfigService {
   /// Store to database
   /// Update State
   Future<PosConfiguration?> fetchAndStore(String posDeviceNumber) async {
-    PosConfiguration config;
-    var resp = await Api()
-        .dio
-        .get("/pos-configurations/$posDeviceNumber/configurations");
-    if (resp.data != null && resp.data['data'] != null) {
-       config = PosConfiguration.fromJson({
-        ...resp.data['data'],
-        'posDeviceNumber': posDeviceNumber,
-        'lastUpdate': dateFormat.format(DateTime.now())
-      });
-       await storeToDb(config);
-       return config;
-    } else {
-      throw ValidationException("No POS config found for this POS");
+    try {
+      var resp = await Api()
+          .dio
+          .get("/pos-configurations/$posDeviceNumber/configurations");
+      if (resp.data != null && resp.data['data'] != null) {
+        PosConfiguration config = PosConfiguration.fromJson({
+          ...resp.data['data'],
+          'posDeviceNumber': posDeviceNumber,
+          'lastUpdate': dateFormat.format(DateTime.now())
+        });
+        await storeToDb(config);
+        return config;
+      } else {
+        return null;
+      }
+    } on NoInternetConnectionException {
+      var fromDb = await queryFromDb(posDeviceNumber);
+      return fromDb;
+    } on DeadlineExceededException {
+      var fromDb = await queryFromDb(posDeviceNumber);
+      return fromDb;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -51,9 +63,12 @@ class ConfigService {
     var db = await DbProvider().database;
     var data = config.toJson();
     var existing = await db.query(tableName,
-        where: 'posDeviceNumber=?', whereArgs: [config.posDeviceNumber], limit: 1);
-    var result =
-        await (existing.isNotEmpty ? db.update(tableName, data) : db.insert(tableName, data));
+        where: 'posDeviceNumber=?',
+        whereArgs: [config.posDeviceNumber],
+        limit: 1);
+    var result = await (existing.isNotEmpty
+        ? db.update(tableName, data)
+        : db.insert(tableName, data));
     return result;
   }
 }

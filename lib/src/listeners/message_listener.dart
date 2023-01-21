@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
   final Widget child;
@@ -34,13 +33,55 @@ class MessageListener<T extends MessageNotifierMixin> extends StatelessWidget {
 
   void _handleError(BuildContext context, String error) {
     if (ModalRoute.of(context)!.isCurrent) {
-      AppMessages.showError(context, error);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          duration: const Duration(seconds: 30),
+          backgroundColor: Colors.red,
+          action: SnackBarAction(
+            label: "CLOSE",
+            onPressed: () =>
+                ScaffoldMessenger.of(context).hideCurrentSnackBar(),
+          ),
+          content: Row(
+            children: [
+              Flexible(
+                child: RichText(
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                      text: error,
+                      style: const TextStyle(fontWeight: FontWeight.w500)),
+                ),
+              )
+            ],
+          ),
+        ));
       Provider.of<T>(context, listen: false).clearError();
     }
   }
 
   void _handleInfo(BuildContext context, String info) {
     if (ModalRoute.of(context)!.isCurrent) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          duration: const Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          content: Row(
+            children: [
+              Flexible(
+                child: RichText(
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                      text: info,
+                      style: const TextStyle(fontWeight: FontWeight.w500)),
+                ),
+              )
+            ],
+          ),
+        ));
       Provider.of<T>(context, listen: false).clearInfo();
     }
   }

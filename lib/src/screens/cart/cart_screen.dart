@@ -3,10 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/cart/collection_summary_table.dart';
-import 'package:zanmutm_pos_client/src/screens/dashboard/client_dialog.dart';
+import 'package:zanmutm_pos_client/src/screens/dashboard/collect_cash_dialog.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum CartAction { cancel, collectCash, addToCart }
@@ -82,16 +81,8 @@ class _CartScreenState extends State<CartScreen> {
 
   _collectCash() async {
     if (!mounted) return;
-    await TaxPlayerDialog(context)
-        .collectCash(_cartProvider.cartItems, _onError, _onSuccess);
+    await CollectCashDialog(context)
+        .collectCash(_cartProvider.cartItems);
   }
 
-  _onSuccess(String message) {
-    AppMessages.showSuccess(context, message);
-  }
-
-  _onError(String error) {
-    AppMessages.showError(context, error);
-    debugPrint(error);
-  }
 }

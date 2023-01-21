@@ -44,9 +44,6 @@ class PosTransactionService {
         result = await txn.insert(table, data);
       }
     });
-    debugPrint("Before call sync");
-    _syncTransaction();
-    debugPrint("After call sync");
     return result;
   }
 
@@ -76,25 +73,8 @@ class PosTransactionService {
       }
     }
     var existing = await db.query(table);
-    if(existing.isEmpty){
-      posStatusProvider.resetOfflineTime();
-    }
     return existing.isEmpty;
   }
-
-  _syncTransaction() async {
-    try {
-      await posTransactionService.sync();
-    } on NoInternetConnectionException {
-      posStatusProvider.setOfflineTime();
-    } on DeadlineExceededException {
-      posStatusProvider.setOfflineTime();
-    } catch (e) {
-      posStatusProvider.setOfflineTime();
-      debugPrint(e.toString());
-    }
-  }
-
 
   Future<List<PosTransaction>> getUnCompiled(String taxCollectorUuid) async {
     var resp = await Api().dio.get('$api/un-compiled/$taxCollectorUuid');
