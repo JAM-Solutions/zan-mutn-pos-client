@@ -1,6 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/generate_bill_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
@@ -31,5 +32,9 @@ final appProviders = [
   ChangeNotifierProxyProvider<RevenueSourceProvider, RevenueCollectionProvider>(
       create: (_) => RevenueCollectionProvider(_.read<PosStatusProvider>()),
       update: (_, revProvider, dashProvider) =>
-          dashProvider!..update(revProvider))
+          dashProvider!..update(revProvider)),
+  ChangeNotifierProxyProvider<AppStateProvider, GenerateBillProvider>(
+      create: (_) => GenerateBillProvider(),
+      update: (_, userProvider, generateBillProvider) =>
+          generateBillProvider!..update(userProvider.user?.taxCollectorUuid))
 ];
