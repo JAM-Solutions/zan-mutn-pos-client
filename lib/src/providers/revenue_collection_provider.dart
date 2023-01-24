@@ -13,12 +13,15 @@ import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin {
   List<RevenueSource> _filteredSources = List.empty(growable: true);
   List<RevenueSource> _allSources = List.empty(growable: true);
   final PosStatusProvider posStatusProvider;
+  final posTransactionService = getIt<PosTransactionService>();
+
   String? _searchVal;
 
   RevenueCollectionProvider(this.posStatusProvider);

@@ -21,9 +21,9 @@ class CollectionSummaryTable extends StatelessWidget {
       ...items.map((e) {
         return DataRow(cells: [
           _getTableCell(e.revenueSource.name),
-          _getTableCell(e.quantity.toString(), width: 50),
-          _getTableCell(currency.format(e.amount), width: 50),
-          _getTableCell(currency.format(e.amount * e.quantity), width: 50),
+          _getTableCell(e.quantity.toString()),
+          _getTableCell(currency.format(e.amount)),
+          _getTableCell(currency.format(e.amount * e.quantity)),
         ]);
       }).toList(),
       DataRow(cells: [

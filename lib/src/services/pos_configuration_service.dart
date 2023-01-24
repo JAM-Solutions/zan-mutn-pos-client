@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
-import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
-class ConfigService {
-  static final ConfigService _instance = ConfigService._();
+class PosConfigurationService {
 
-  factory ConfigService() => _instance;
   final String tableName = 'pos_configurations';
-
-  ConfigService._();
 
   /// Get Pos config from local db
   Future<PosConfiguration?> queryFromDb(String posDeviceNumber) async {
@@ -73,4 +68,4 @@ class ConfigService {
   }
 }
 
-final posConfigService = ConfigService();
+//final posConfigService = ConfigService();

@@ -25,7 +25,7 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
   }
 
   _loadConfig() {
-    context.read<PosConfigurationProvider>().loadPosConfig(_deviceInfo);
+    context.read<PosConfigurationProvider>().fetchPosConfig(_deviceInfo);
   }
 
   @override
@@ -57,7 +57,7 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
                     ],
                     actionBuilder: (data) => IconButton(
                         splashRadius: 24,
-                        onPressed: () => provider.loadPosConfig(_deviceInfo),
+                        onPressed: () => provider.fetchPosConfig(_deviceInfo),
                         icon: const Icon(Icons.sync)),
                   ),
                 ],

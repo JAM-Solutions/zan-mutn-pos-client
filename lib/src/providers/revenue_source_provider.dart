@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/services/revenue_config_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class RevenueSourceProvider extends ChangeNotifier with MessageNotifierMixin {
   bool _revSourcesIsLoading = false;
   List<RevenueSource> _revenueSource = List.empty(growable: false);
+  final revenueSourceService = getIt<RevenueSourceService>();
 
   bool get revSourcesIsLoading => _revSourcesIsLoading;
   set revSourcesIsLoading(bool val) {
@@ -20,13 +22,25 @@ class RevenueSourceProvider extends ChangeNotifier with MessageNotifierMixin {
   }
 
   loadRevenueSource(String? taxCollectorUuid) async {
+    try {
+      if(taxCollectorUuid == null) {
+        return;
+      }
+      revenueSource = await  revenueSourceService.queryFromDb(taxCollectorUuid);
+    } catch(e) {
+      debugPrint(e.toString());
+    }
+  }
+
+
+    fetchRevenueSource(String? taxCollectorUuid) async {
     revSourcesIsLoading = true;
     try {
       if(taxCollectorUuid == null) {
         notifyError('No tax collector uuid');
         return;
       }
-      revenueSource = await  revenueConfigService.fetchAndStore(taxCollectorUuid);
+      revenueSource = await  revenueSourceService.fetchAndStore(taxCollectorUuid);
       revSourcesIsLoading = false;
     } catch(e) {
       debugPrint(e.toString());

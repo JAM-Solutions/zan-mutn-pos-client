@@ -3,9 +3,10 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/bill.dart';
 import 'package:zanmutm_pos_client/src/services/bill_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class BillProvider extends ChangeNotifier with MessageNotifierMixin {
-
+ final billService = getIt<BillService>();
   List<Bill> _bills = List.empty(growable: true);
   bool _posIsConnected = true;
   bool _isLoading = false;

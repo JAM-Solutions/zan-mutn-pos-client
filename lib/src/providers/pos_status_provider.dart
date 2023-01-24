@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class PosStatusProvider with ChangeNotifier {
+
+  final posTransactionService = getIt<PosTransactionService>();
 
   DateTime? lastOffline;
   int offlineTime = 0;
@@ -71,5 +74,3 @@ class PosStatusProvider with ChangeNotifier {
     }
   }
 }
-
-final posStatusProvider = PosStatusProvider();

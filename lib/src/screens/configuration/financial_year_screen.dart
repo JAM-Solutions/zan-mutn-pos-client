@@ -24,7 +24,7 @@ class _FinancialYearConfigScreenState extends State<FinancialYearConfigScreen> {
   }
 
   _loadFinancialYear() async {
-    context.read<FinancialYearProvider>().loadFinancialYear();
+    context.read<FinancialYearProvider>().fetchFinancialYear();
   }
 
   @override

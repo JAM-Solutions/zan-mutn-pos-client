@@ -6,13 +6,7 @@ import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source_config.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
-class RevenueConfigService {
-  static final RevenueConfigService _instance = RevenueConfigService._();
-
-  factory RevenueConfigService() => _instance;
-
-  RevenueConfigService._();
-
+class RevenueSourceService {
   final String tableName = 'revenue_sources';
   final String resource = '/revenue-sources';
 
@@ -29,7 +23,7 @@ class RevenueConfigService {
         return sources;
       }
     } on NoInternetConnectionException {
-      sources = await queryFromDb();
+      sources = await queryFromDb(taxCollectorUuid);
       return sources;
     } catch (e) {
       debugPrint(e.toString());
@@ -39,7 +33,7 @@ class RevenueConfigService {
   }
 
   /// Get Pos config from local db
-  Future<List<RevenueSource>> queryFromDb() async {
+  Future<List<RevenueSource>> queryFromDb(String taxCollectorUuid) async {
     try {
       var db = await DbProvider().database;
       var result =
@@ -54,7 +48,7 @@ class RevenueConfigService {
   Future<void> storeToDb(List<RevenueSource> sources) async {
     try {
       var db = await DbProvider().database;
-      db.delete(tableName);
+      await db.delete(tableName);
       for (var source in sources) {
         var data = {
           ...source.toJson(),
@@ -83,5 +77,3 @@ class RevenueConfigService {
     }
   }
 }
-
-final revenueConfigService = RevenueConfigService();

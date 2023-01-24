@@ -9,9 +9,6 @@ import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
 class AuthService {
-  static final AuthService _instance = AuthService._();
-  factory AuthService() => _instance;
-  AuthService._();
 
   final String authenticationApi= "/authenticate";
 
@@ -62,4 +59,3 @@ class AuthService {
   }
 
 }
-final authService = AuthService();

@@ -2,6 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/bill_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/currency_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/generate_bill_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
@@ -24,8 +25,9 @@ final appProviders = [
       create: (_) => RevenueSourceProvider()),
   ChangeNotifierProvider<DeviceInfoProvider>(
       create: (_) => DeviceInfoProvider()),
-  ChangeNotifierProvider<CartProvider>(create: (_) => cartProvider),
-  ChangeNotifierProvider<PosStatusProvider>(create: (_) => posStatusProvider),
+  ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider()),
+  ChangeNotifierProvider<PosStatusProvider>(create: (_) => PosStatusProvider()),
+  ChangeNotifierProvider<CurrencyProvider>(create: (_) => CurrencyProvider()),
   ChangeNotifierProvider<LoginProvider>(
     create: (_) => LoginProvider(),
     lazy: true,
@@ -41,5 +43,5 @@ final appProviders = [
   ChangeNotifierProxyProvider<AppStateProvider, BillProvider>(
       create: (_) => BillProvider(),
       update: (_, userProvider, generateBillProvider) =>
-      generateBillProvider!..update(userProvider.user?.taxPayerUuid))
+          generateBillProvider!..update(userProvider.user?.taxPayerUuid))
 ];

@@ -31,11 +31,11 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   }
 
   _loadAllConfigs() {
-    context.read<PosConfigurationProvider>().loadPosConfig(_device);
-    context.read<FinancialYearProvider>().loadFinancialYear();
+    context.read<PosConfigurationProvider>().fetchPosConfig(_device);
+    context.read<FinancialYearProvider>().fetchFinancialYear();
     context
         .read<RevenueSourceProvider>()
-        .loadRevenueSource(_user?.taxCollectorUuid);
+        .fetchRevenueSource(_user?.taxCollectorUuid);
   }
 
   @override

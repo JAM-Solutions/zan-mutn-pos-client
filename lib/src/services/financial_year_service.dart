@@ -6,9 +6,6 @@ import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class FinancialYearService {
-  static final FinancialYearService _instance = FinancialYearService._();
-  factory FinancialYearService() => _instance;
-  FinancialYearService._();
 
   final String dbName = 'financial_years';
 
@@ -21,11 +18,9 @@ class FinancialYearService {
         return year;
       }
     } on NoInternetConnectionException {
-      var fromDb = await queryFromDb();
-      return fromDb;
+      return null;
     } on DeadlineExceededException {
-      var fromDb = await queryFromDb();
-      return fromDb;
+      return null;
     } catch (e) {
       debugPrint(e.toString());
       throw ValidationException(e.toString());
@@ -67,4 +62,4 @@ class FinancialYearService {
   }
 }
 
-final financialYearService = FinancialYearService();
+//final financialYearService = FinancialYearService();

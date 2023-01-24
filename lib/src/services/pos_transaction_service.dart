@@ -3,16 +3,9 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class PosTransactionService {
-  static final PosTransactionService _instance = PosTransactionService._();
-
-  factory PosTransactionService() => _instance;
-
-  PosTransactionService._();
-
   final String table = 'pos_transactions';
   final String api = '/pos-transactions';
 
@@ -90,5 +83,3 @@ class PosTransactionService {
     return resp.statusCode;
   }
 }
-
-final posTransactionService = PosTransactionService();

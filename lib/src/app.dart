@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/currency_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
@@ -11,6 +12,7 @@ import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/screens/splash/splash_screen.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/theme/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,6 +32,7 @@ class _AppState extends State<App> {
   late PosConfigurationProvider _posConfigurationProvider;
   late FinancialYearProvider _financialYearProvider;
   late RevenueSourceProvider _revenueSourceProvider;
+  late CurrencyProvider _currencyProvider;
 
   @override
   void initState() {
@@ -39,12 +42,14 @@ class _AppState extends State<App> {
     _posConfigurationProvider = context.read<PosConfigurationProvider>();
     _financialYearProvider = context.read<FinancialYearProvider>();
     _revenueSourceProvider = context.read<RevenueSourceProvider>();
+    _revenueSourceProvider = context.read<RevenueSourceProvider>();
+    _currencyProvider = context.read<CurrencyProvider>();
     initApp();
   }
 
   Future<void> initApp() async {
     if (!mounted) return;
-    User? user = await authService.getSession();
+    User? user = await getIt<AuthService>().getSession();
     if (user == null) {
       _appState.userLoggedOut();
     } else {
@@ -56,6 +61,7 @@ class _AppState extends State<App> {
         .loadPosConfig(_deviceInfoProvider.deviceInfo);
     await _financialYearProvider.loadFinancialYear();
     await _revenueSourceProvider.loadRevenueSource(user?.taxCollectorUuid);
+    await _currencyProvider.loadCurrencies();
     _appState.setConfigLoaded();
   }
 

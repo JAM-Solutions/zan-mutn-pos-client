@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class AppDrawer extends StatefulWidget {
   const AppDrawer({super.key});
@@ -82,13 +83,15 @@ class _AppDrawerState extends State<AppDrawer> {
                       appMenuItem(Icons.calendar_month, 'Financial year',
                           AppRoute.financialYear),
                       appMenuItem(
+                          Icons.currency_exchange_rounded, 'Currency', AppRoute.currency),
+                      appMenuItem(
                           Icons.update, 'App Update', AppRoute.appUpdate),
                     ],
                   )),
                   ListTile(
                     title: const Text("Logout"),
                     leading: const Icon(Icons.logout_sharp),
-                    onTap: () => authService.logout(),
+                    onTap: () => getIt<AuthService>().logout(),
                   ),
                 ]));
       },

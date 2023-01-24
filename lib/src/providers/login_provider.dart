@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class LoginProvider extends ChangeNotifier with MessageNotifierMixin {
   bool _isLoading = false;
   bool _showPassword = false;
+ final loginService = getIt<AuthService>();
 
   bool get showPassword => _showPassword;
 
@@ -24,7 +26,7 @@ class LoginProvider extends ChangeNotifier with MessageNotifierMixin {
   Future<User?> login(Map<String, dynamic> payload) async {
     isLoading = true;
     try {
-      User user = await authService.login(payload);
+      User user = await loginService.login(payload);
       isLoading = false;
       return user;
     } catch (e) {
