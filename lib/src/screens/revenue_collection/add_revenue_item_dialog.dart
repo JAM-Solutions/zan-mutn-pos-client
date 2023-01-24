@@ -74,7 +74,7 @@ class AddRevenueItemDialog {
 
             return SingleChildScrollView(
               child: AppForm(
-                initialValue: {'amount': source.unitCost ?? 0.00},
+                initialValue: {'amount': source.unitCost ?? 0.00, 'quantity': 1},
                 formKey: _addItemForm,
                 controls: [
                   AppInputHidden(
@@ -95,6 +95,7 @@ class AddRevenueItemDialog {
                   ),
                   AppInputInteger(
                     name: 'quantity',
+                    initialValue: 1,
                     label: "Quantity",
                     suffix:
                         source.unitName != null ? Text(source.unitName!) : null,
