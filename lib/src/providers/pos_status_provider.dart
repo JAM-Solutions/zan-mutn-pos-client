@@ -21,7 +21,7 @@ class PosStatusProvider with ChangeNotifier {
       offlineTime = 0;
     } else {
       Duration diff = now_.difference(lastOffline!);
-      offlineTime = offlineTime + diff.inSeconds;
+      offlineTime = offlineTime + diff.inMinutes;
       lastOffline = now_;
     }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,26 +33,27 @@ class PosStatusProvider with ChangeNotifier {
   resetOfflineTime() async {
     lastOffline = null;
     offlineTime = 0;
+    notifyListeners();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove(AppConst.lastOffline);
-    prefs.remove(AppConst.offlineTime);
-    loadStatus();
+    await prefs.remove(AppConst.lastOffline);
+    await prefs.remove(AppConst.offlineTime);
+    loadTotalCollection();
   }
 
   void loadStatus()  {
-    _loadTotalCollection();
+    loadTotalCollection();
     _loadOfflineTime();
   }
 
   void _loadOfflineTime()  async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    offlineTime =  prefs.getInt(AppConst.offlineTime) ?? 0;
+    offlineTime =   prefs.getInt(AppConst.offlineTime) ?? 0;
     final String? lastOfLine_ = prefs.getString(AppConst.lastOffline);
     lastOffline = lastOfLine_ != null ? DateTime.parse(lastOfLine_) : null;
     notifyListeners();
   }
 
-  void _loadTotalCollection() async{
+  void loadTotalCollection() async{
     var db = await DbProvider().database;
     List<Map<String, dynamic>> dbTransactions =
     await db.query('pos_transactions');

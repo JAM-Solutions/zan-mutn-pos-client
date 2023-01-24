@@ -152,14 +152,17 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
   _backGroundSyncTransaction() async {
     try {
       await posTransactionService.sync();
+      posStatusProvider.resetOfflineTime();
     } on NoInternetConnectionException {
       posStatusProvider.setOfflineTime();
+      posStatusProvider.loadTotalCollection();
     } on DeadlineExceededException {
       posStatusProvider.setOfflineTime();
+      posStatusProvider.loadTotalCollection();
     } catch (e) {
       posStatusProvider.setOfflineTime();
+      posStatusProvider.loadTotalCollection();
       debugPrint(e.toString());
     }
-    posStatusProvider.loadStatus();
   }
 }

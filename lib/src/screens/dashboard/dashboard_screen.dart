@@ -52,11 +52,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                 if (offlineLimit != null &&
                     statusProvider.offlineTime >= offlineLimit) {
-                  return _buildSync('Time', currency.format(offlineLimit));
+                  return _buildSync('Time', currency.format(offlineLimit), 'min');
                 }
                 if (amountLimit != null &&
                     statusProvider.totalCollection >= amountLimit) {
-                  return _buildSync('Amount', currency.format(amountLimit));
+                  return _buildSync('Amount', currency.format(amountLimit), 'Tsh');
                 }
                 return Column(
                   children: [
@@ -122,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           )));
 
-  _buildSync(String limit, String value) => Padding(
+  _buildSync(String limit, String value, String type) => Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -132,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               size: 48,
             ),
             Text(
-              'You have reach offline amount $limit of $value please connect pos and sync transactions',
+              'You have reach Offline $limit limit of $value $type please connect pos and sync transactions',
               textAlign: TextAlign.center,
             ),
             AppButton(
