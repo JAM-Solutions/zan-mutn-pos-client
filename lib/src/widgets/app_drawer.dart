@@ -82,6 +82,8 @@ class _AppDrawerState extends State<AppDrawer> {
                           AppRoute.revenueSource),
                       appMenuItem(Icons.calendar_month, 'Financial year',
                           AppRoute.financialYear),
+                          appMenuItem(Icons.house, 'Household',
+                          AppRoute.houseHold),
                       appMenuItem(
                           Icons.currency_exchange_rounded, 'Currency', AppRoute.currency),
                       appMenuItem(

@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -146,11 +145,9 @@ class AddRevenueItemDialog {
                               width: 16,
                             ),
                             Badge(
-                              badgeContent: Text(
+                              label: Text(
                                   cartProvider.cartItems.length.toString()),
                               padding: const EdgeInsets.all(6),
-                              position:
-                                  BadgePosition.topEnd(top: -20, end: -16),
                               child: const Icon(Icons.shopping_cart),
                             ),
                           ],

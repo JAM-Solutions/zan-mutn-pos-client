@@ -43,5 +43,5 @@ final appProviders = [
   ChangeNotifierProxyProvider<AppStateProvider, BillProvider>(
       create: (_) => BillProvider(),
       update: (_, userProvider, generateBillProvider) =>
-          generateBillProvider!..update(userProvider.user?.taxPayerUuid))
+          generateBillProvider!..update(userProvider.user?.taxPayerUuid)),
 ];
