@@ -33,7 +33,7 @@ class CollectCashDialog {
     if (confirmed == true) {
       //get tax payer details from taxpayer form
       var taxPayerValues = _taxPayerForm.currentState!.value;
-      bool success =await taxCollectionProvider.saveTransaction(items, configProvider.posConfiguration?.id, user, year, taxPayerValues);
+      bool success =await taxCollectionProvider.saveTransaction(items, configProvider.posConfiguration?.posDeviceId, user, year, taxPayerValues);
       if(success) {
         cartProvider_.clearItems();
       }
