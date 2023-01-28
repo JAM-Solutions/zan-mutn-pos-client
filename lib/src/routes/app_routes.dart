@@ -75,7 +75,7 @@ class AppRoute {
         path: AppRoute.houseHold,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
-            const Buildings(),
+            const buildingsScreen(),
       ),
       GoRoute(
         path: AppRoute.revenueSource,

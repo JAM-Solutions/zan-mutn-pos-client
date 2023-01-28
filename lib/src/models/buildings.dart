@@ -5,11 +5,11 @@ part 'buildings.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Buildings {
   final String houseNumber;
-  final int building_category_id;
+  final int buildingCategoryid;
   final String location;
   final String status;
 
-  Buildings(this.houseNumber, this.building_category_id, this.location, this.status);
+  Buildings(this.houseNumber, this.buildingCategoryid, this.location, this.status);
 
   factory Buildings.fromJson(Map<String, dynamic> json) =>
       _$BuildingsFromJson(json);

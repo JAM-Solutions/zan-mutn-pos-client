@@ -4,11 +4,15 @@ import 'package:zanmutm_pos_client/src/models/buildings.dart';
 class BuildingsService {
   final String api = '/solid-waste-buildings';
   final String tableName = 'solid_waste_buildings';
-  Future<List<Buildings>> gethousenumber(String houseNumber) async {
+  Future<Buildings?> gethousenumber(String houseNumber) async {
     var resp = await Api().dio.get('$api/get-house-number/$houseNumber');
-    return (resp.data['data'] as List<dynamic>)
-        ?.map((e) => Buildings.fromJson(e))
-        ?.toList() ?? [];
+    var houseHold = resp.data['data'];
+
+    return houseHold != null ? Buildings.fromJson(houseHold) : null;
   }
 
+  Future registerHouse(payload) async {
+    var response = await Api().dio.post('$api', 
+    data: payload);
+  }
 }

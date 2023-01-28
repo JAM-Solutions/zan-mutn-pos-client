@@ -15,7 +15,7 @@ Buildings _$BuildingsFromJson(Map<String, dynamic> json) => Buildings(
 
 Map<String, dynamic> _$BuildingsToJson(Buildings instance) => <String, dynamic>{
       'houseNumber': instance.houseNumber,
-      'building_category_id': instance.building_category_id,
+      'building_category_id': instance.buildingCategoryid,
       'location': instance.location,
       'status': instance.status
     };
