@@ -32,9 +32,9 @@ set building(Buildings? val) {
     try {
       building = await  buildingsService.gethousenumber(houseNumber);
       fyIsLoading = false;
+      notifyListeners();
     } catch(e) {
       fyIsLoading = false;
-    //  notifyError(e.toString());
     }
   }
 
