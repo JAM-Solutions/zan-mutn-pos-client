@@ -6,14 +6,14 @@ import 'package:zanmutm_pos_client/src/services/bill_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class BillProvider extends ChangeNotifier with MessageNotifierMixin {
- final billService = getIt<BillService>();
+  final billService = getIt<BillService>();
   List<Bill> _bills = List.empty(growable: true);
   bool _posIsConnected = true;
   bool _isLoading = false;
   String? _retryError;
   String? taxPayerUuid;
 
-  void update(String? taxPayerUuid) {
+  void update(String? taxPayerUuid) {                                                                                                                                                                                                                                                                                                                                                                                                               
     this.taxPayerUuid = taxPayerUuid;
   }
 
@@ -23,7 +23,7 @@ class BillProvider extends ChangeNotifier with MessageNotifierMixin {
     notifyListeners();
   }
 
-  bool get posIsConnected =>_posIsConnected;
+  bool get posIsConnected => _posIsConnected;
   set posIsConnected(bool val) {
     _posIsConnected = val;
     notifyListeners();
@@ -35,7 +35,7 @@ class BillProvider extends ChangeNotifier with MessageNotifierMixin {
     notifyListeners();
   }
 
-  String? get retryError=> _retryError;
+  String? get retryError => _retryError;
   set retryError(String? val) {
     _retryError = val;
     notifyListeners();

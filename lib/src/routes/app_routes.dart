@@ -15,10 +15,10 @@ import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_scre
 import 'package:zanmutm_pos_client/src/screens/currency/currency_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/buildings/buildings.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/update/app_update_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
-
 import '../screens/pos_config/pos_config_screen.dart';
 
 class AppRoute {
@@ -39,6 +39,7 @@ class AppRoute {
   static const String config = "/configs";
   static const String posConfig = "/pos-config";
   static const String financialYear = "/financial-year";
+  static const String houseHold = "/house-Hold";
   static const String revenueSource = "/revenue-sources";
   static const String currency = "/currencies";
   static const String appUpdate = "/app-update";
@@ -69,6 +70,12 @@ class AppRoute {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const FinancialYearConfigScreen(),
+      ),
+      GoRoute(
+        path: AppRoute.houseHold,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (BuildContext context, GoRouterState state) =>
+            const buildingsScreen(),
       ),
       GoRoute(
         path: AppRoute.revenueSource,

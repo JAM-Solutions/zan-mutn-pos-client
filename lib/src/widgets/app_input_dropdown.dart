@@ -23,12 +23,12 @@ class AppInputDropDown<T extends dynamic> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilderField<Map<String, dynamic>>(
+    return FormBuilderField<int>(
         name: name,
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
           return DropdownButtonFormField<int>(
-            value: field.value != null ? field.value!['id'] : null,
+            value: field.value,
             decoration:
                 InputDecoration(
                     label: isLoading ? Text("Loading $label..") : Text(label),
@@ -43,7 +43,7 @@ class AppInputDropDown<T extends dynamic> extends StatelessWidget {
             }).toList(),
             onChanged: (value) {
               if (value != null) {
-                field.didChange(items.firstWhere((e) => e['id'] == value));
+                field.didChange( value);
               }
               if (onChange != null) {
                 onChange!(field.value);
