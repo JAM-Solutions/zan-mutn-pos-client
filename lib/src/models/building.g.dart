@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'buildings.dart';
+part of 'building.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Buildings _$BuildingsFromJson(Map<String, dynamic> json) => Buildings(
+Building _$BuildingFromJson(Map<String, dynamic> json) => Building(
       json['houseNumber'] as String,
-      json['building_category_id'] as int,
+      json['buildingCategoryId'] as int,
       json['location'] as String,
-      json['status'] as String
+      json['status'] as String,
     );
 
-Map<String, dynamic> _$BuildingsToJson(Buildings instance) => <String, dynamic>{
+Map<String, dynamic> _$BuildingToJson(Building instance) => <String, dynamic>{
       'houseNumber': instance.houseNumber,
-      'building_category_id': instance.buildingCategoryid,
+      'buildingCategoryId': instance.buildingCategoryId,
       'location': instance.location,
-      'status': instance.status
+      'status': instance.status,
     };

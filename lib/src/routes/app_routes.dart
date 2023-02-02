@@ -15,7 +15,7 @@ import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_scre
 import 'package:zanmutm_pos_client/src/screens/currency/currency_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_screen.dart';
-import 'package:zanmutm_pos_client/src/screens/buildings/buildings.dart';
+import 'package:zanmutm_pos_client/src/screens/buildings/building_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/update/app_update_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
@@ -75,7 +75,7 @@ class AppRoute {
         path: AppRoute.houseHold,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
-            const buildingsScreen(),
+            const BuildingsScreen(),
       ),
       GoRoute(
         path: AppRoute.revenueSource,

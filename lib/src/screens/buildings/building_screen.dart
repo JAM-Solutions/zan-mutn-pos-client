@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
-import 'package:zanmutm_pos_client/src/models/buildings.dart';
+import 'package:zanmutm_pos_client/src/models/building.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/building_provider.dart';
 import 'package:zanmutm_pos_client/src/services/buildings_service.dart';
@@ -18,22 +18,22 @@ import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_table.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_visibility.dart';
 
-class buildingsScreen extends StatefulWidget {
-  const buildingsScreen({super.key});
+class BuildingsScreen extends StatefulWidget {
+  const BuildingsScreen({super.key});
 
   @override
-  State<buildingsScreen> createState() => _buildingsScreenState();
+  State<BuildingsScreen> createState() => _BuildingsScreenState();
 }
 
-class _buildingsScreenState extends State<buildingsScreen> {
-  searchHousenumber(houseNumber) {
-    Future.delayed(Duration.zero, () => _loadHousenumber(houseNumber));
+class _BuildingsScreenState extends State<BuildingsScreen> {
+  searchHouseNumber(houseNumber) {
+    Future.delayed(Duration.zero, () => _loadHouseNumber(houseNumber));
   }
 
   var buildingIds;
-  _loadHousenumber(String houseNumber) async {
-    Buildings building = (await getIt<BuildingsService>()
-        .gethousenumber(houseNumber)) as Buildings;
+  _loadHouseNumber(String houseNumber) async {
+    Building? building = (await getIt<BuildingsService>()
+        .gethousenumber(houseNumber));
     debugPrint(buildingIds.toString());
     if (building == null) {
       setState(() {
@@ -105,7 +105,7 @@ class _buildingsScreenState extends State<buildingsScreen> {
                     IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () {
-                          searchHousenumber(houseNumber.text);
+                          searchHouseNumber(houseNumber.text);
                         })
                   ],
                 ),

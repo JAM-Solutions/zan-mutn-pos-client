@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
-import 'package:zanmutm_pos_client/src/models/buildings.dart';
+import 'package:zanmutm_pos_client/src/models/building.dart';
 import 'package:zanmutm_pos_client/src/services/buildings_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class BuildingProvider extends ChangeNotifier {
   bool _fyIsLoading = false;
-  Buildings? _building;
-  List<Buildings> _buildings = List.empty(growable: true);
+  Building? _building;
+  List<Building> _buildings = List.empty(growable: true);
   final buildingsService = getIt<BuildingsService>();
-  
-  List<Buildings> get buildings => _buildings;
 
-  set buildings(List<Buildings> val) {
+  List<Building> get buildings => _buildings;
+
+  set buildings(List<Building> val) {
     _buildings = val;
     notifyListeners();
   }
@@ -20,7 +20,7 @@ class BuildingProvider extends ChangeNotifier {
     _fyIsLoading = val;
     notifyListeners();
   }
-set building(Buildings? val) {
+set building(Building? val) {
     _building = val;
     notifyListeners();
   }

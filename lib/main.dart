@@ -7,7 +7,6 @@ import 'package:zanmutm_pos_client/src/db/db.dart';
 import 'package:zanmutm_pos_client/src/providers/providers.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 
-
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
