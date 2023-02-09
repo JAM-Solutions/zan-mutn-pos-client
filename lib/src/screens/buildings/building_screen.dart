@@ -10,6 +10,7 @@ import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_card.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_container.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_fetcher.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
@@ -26,39 +27,78 @@ class BuildingsScreen extends StatefulWidget {
 }
 
 class _BuildingsScreenState extends State<BuildingsScreen> {
+  Building? _building;
   searchHouseNumber(houseNumber) {
     Future.delayed(Duration.zero, () => _loadHouseNumber(houseNumber));
   }
 
   var buildingIds;
   _loadHouseNumber(String houseNumber) async {
-    Building? building = (await getIt<BuildingsService>()
-        .gethousenumber(houseNumber));
+    Building? building =
+        (await getIt<BuildingsService>().gethousenumber(houseNumber));
     debugPrint(buildingIds.toString());
     if (building == null) {
       setState(() {
         register = true;
         view = false;
+        _building = building;
       });
     } else {
       setState(() {
         register = false;
         view = true;
+        _building = building;
       });
     }
   }
 
+  final List<Map<String, dynamic>> _genderList = [
+    {'id': 1, 'name': 'Male'},
+    {'id': 2, 'name': 'Female'}
+  ];
+  final List<Map<String, dynamic>> _frequencyList = [
+    {'id': 1, 'name': 'WEEKLY'},
+    {'id': 2, 'name': 'MONTHLY'},
+    {'id': 3, 'name': 'QUATERLY'},
+    {'id': 4, 'name': 'SEMI_ANNUALY'},
+    {'id': 5, 'name': 'ANNUALY'}
+  ];
+  final List<Map<String, dynamic>> _categoryList = [
+    {'id': 1, 'name': 'INDIVIDUAL'},
+    {'id': 2, 'name': 'COMPANY'}
+  ];
+
   void _onPressed() {
     var payload = formkey.currentState?.value;
     BuildingsService().registerHouse(payload);
+    setState(() {
+      register = false;
+      _household = true;
+      Navigator.pop(context);
+    });
+  }
+
+  void onPressed() {
+    var payload = householdformkey.currentState?.value;
+    BuildingsService().registerHousehold(payload);
+    setState(() {
+      register = false;
+      _household = true;
+      Navigator.pop(context);
+    });
   }
 
   final _formKey = GlobalKey<FormBuilderState>();
   final formkey = GlobalKey<FormBuilderState>();
+  final householdformkey = GlobalKey<FormBuilderState>();
   final TextEditingController houseNumber = TextEditingController();
   bool register = false;
   bool view = false;
   bool showStreet = false;
+  bool _household = false;
+  bool showindividual = false;
+  bool showcompany = false;
+  bool all = false;
   var adminIds = 0;
   var adminHierarchyId;
   @override
@@ -110,8 +150,9 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                   ],
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 16,
                 ),
+                //register
                 AppVisibility(
                   visible: register,
                   child: AppCard(
@@ -168,22 +209,183 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                     ),
                   ),
                 ),
+                //house hold reg
+                AppVisibility(
+                  visible: _household,
+                  child: AppCard(
+                      child: AppForm(
+                    formKey: householdformkey,
+                    controls: [
+                      AppInputDropDown(
+                        items: _categoryList,
+                        name: 'category',
+                        label: 'Category',
+                        onChange: (value) {
+                          if (value == 1) {
+                            setState(() {
+                              showindividual = true;
+                              showcompany = false;
+                              all = true;
+                            });
+                          } else if (value == 2) {
+                            setState(() {
+                              showcompany = true;
+                              showindividual = false;
+                              all = true;
+                            });
+                          }
+                        },
+                      ),
+                      AppVisibility(
+                          visible: showcompany,
+                          child: const AppInputText(
+                              fieldName: 'tin', label: 'TIN')),
+                      AppVisibility(
+                          visible: showcompany,
+                          child: const AppInputText(
+                              fieldName: 'companyName', label: 'Company Name')),
+                      AppVisibility(
+                          visible: showindividual,
+                          child: const AppInputText(
+                              fieldName: 'nin', label: 'NIN')),
+                      AppVisibility(
+                        visible: showindividual,
+                        child: const AppInputText(
+                            fieldName: 'firstName', label: 'First Name'),
+                      ),
+                      AppVisibility(
+                        visible: showindividual,
+                        child: const AppInputText(
+                            fieldName: 'middleName', label: 'Middle Name'),
+                      ),
+                      AppVisibility(
+                        visible: showindividual,
+                        child: const AppInputText(
+                            fieldName: 'lastName', label: 'Last Name'),
+                      ),
+                      AppVisibility(
+                        visible: showindividual,
+                        child: AppInputDropDown(
+                            items: _genderList,
+                            name: 'gender',
+                            label: 'Gender'),
+                      ),
+                      AppVisibility(
+                          visible: showindividual,
+                          child: const AppInputText(
+                              fieldName: 'mobileNumber',
+                              label: 'Phone Number')),
+                      AppVisibility(
+                          visible: all,
+                          child: const AppInputText(
+                              fieldName: 'email', label: 'Email')),
+                      AppVisibility(
+                        visible: all,
+                        child: const AppInputText(
+                            fieldName: 'address', label: 'Address'),
+                      ),
+                      const AppInputHidden(
+                        fieldName: 'active',
+                        value: 'true',
+                      ),
+                      AppVisibility(
+                        visible: all,
+                        child: AppFetcher(
+                            api:
+                                '/admin-hierarchies/children/$adminHierarchyId',
+                            builder: (items, isloaidng) => AppInputDropDown(
+                                items: items,
+                                name: 'adminHierarchyId',
+                                label: 'Sheia')),
+                      ),
+                      AppVisibility(
+                        visible: all,
+                        child: AppFetcher(
+                            api: '/tax-payer-statuses',
+                            builder: (items, isloaidng) => AppInputDropDown(
+                                items: items,
+                                displayValue: 'description',
+                                name: 'status',
+                                label: 'Taxpayer Status')),
+                      ),
+                      AppVisibility(
+                        visible: all,
+                        child: AppFetcher(
+                            api: '/solid-waste-payment-modes',
+                            builder: (items, isloaidng) => AppInputDropDown(
+                                items: items,
+                                name: 'paymentModeId',
+                                label: 'Payment Mode')),
+                      ),
+                      AppVisibility(
+                        visible: all,
+                        child: AppInputDropDown(
+                            items: _frequencyList,
+                            name: 'paymentFrequencey',
+                            label: 'Payment Frequencey'),
+                      ),
+                      AppInputHidden(
+                        fieldName: 'houseNumber',
+                        value: houseNumber.text.toString(),
+                      ),
+                      AppVisibility(
+                        visible: all,
+                        child: const AppInputText(
+                            fieldName: 'location', label: 'Location'),
+                      ),
+                      AppVisibility(
+                        visible: all,
+                        child: AppFetcher(
+                            api: '/solid-waste-building-categories',
+                            builder: (items, isloaidng) => AppInputDropDown(
+                                items: items,
+                                name: 'buildingCategoryId',
+                                label: 'Building Category')),
+                      ),
+                      AppButton(
+                          onPress: () {
+                            if (householdformkey.currentState!
+                                .saveAndValidate()) {
+                              onPressed();
+                            }
+                          },
+                          label: 'Register Household Details')
+                    ],
+                  )),
+                ),
+                //diplay
                 AppVisibility(
                     visible: view,
-                    child: AppCard(
-                      elevation: 3,
-                        child: AppContainer(
-                          height: MediaQuery.of(context).size.height / 2,
-                          child: AppTable(
-                              data: provider.buildings
-                                  .map((e) => e.toJson())
-                                  .toList(),
-                              columns: [
-                            AppTableColumn(header: 'House Number', value: 'houseNumber'),
-                            AppTableColumn(header: 'Location', value: 'location'),
-                            AppTableColumn(header: 'Status', value: 'status')
-                          ]),
-                        )))
+                    child: AppContainer(
+                      height: MediaQuery.of(context).size.height / 2,
+                      child: AppDetailCard(
+                        columns: [
+                          AppDetailColumn(
+                              header: 'Building Number',
+                              value: _building?.houseNumber),
+                          AppDetailColumn(
+                              header: 'Building Location',
+                              value: _building?.location),
+                          AppDetailColumn(
+                              header: 'Building Status',
+                              value: _building?.status),
+                        ],
+                        data: {},
+                        title: "House Hold",
+                        actionBuilder: (row) => Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _household = true;
+                                    view = false;
+                                  });
+                                },
+                                icon: Icon(Icons.add_home_sharp))
+                          ],
+                        ),
+                      ),
+                    ))
               ],
             ),
           ));
