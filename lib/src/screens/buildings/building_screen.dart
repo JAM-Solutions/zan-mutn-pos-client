@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/building.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/building_provider.dart';
+import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/buildings_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
@@ -376,13 +378,8 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                         actionBuilder: (row) => Row(
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _household = true;
-                                    view = false;
-                                  });
-                                },
-                                icon: Icon(Icons.add_home_sharp))
+                                onPressed: () =>context.push(AppRoute.addHouseHold, extra: _building!),
+                                icon: const Icon(Icons.add_home_sharp))
                           ],
                         ),
                       ),
