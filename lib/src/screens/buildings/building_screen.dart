@@ -120,6 +120,7 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
               children: [
                 Row(
                   children: [
+                   SizedBox(width: 20,),
                     Expanded(
                       child: Form(
                         key: _formKey,
@@ -159,14 +160,14 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                     child: AppForm(
                       formKey: formkey,
                       controls: [
-                        const AppInputText(
-                            fieldName: 'houseNumber', label: 'House Number'),
                         const AppInputHidden(
                           fieldName: 'status',
                           value: 'IN_USE',
                         ),
                         const AppInputHidden(
                             fieldName: 'active', value: 'true'),
+                        const AppInputText(
+                            fieldName: 'houseNumber', label: 'House Number'),
                         AppFetcher(
                             api:
                                 '/admin-hierarchies/children/$adminHierarchyId',
@@ -181,7 +182,7 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                         AppVisibility(
                           visible: showStreet,
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 20),
+                            padding: const EdgeInsets.only(bottom: 0),
                             child: AppFetcher(
                                 api: '/admin-hierarchies/children/$adminIds',
                                 builder: (items, isloaidng) => AppInputDropDown(
