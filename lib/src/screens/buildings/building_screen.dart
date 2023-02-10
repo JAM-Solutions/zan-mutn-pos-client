@@ -18,7 +18,7 @@ import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_table.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_visibility.dart';
 
 class BuildingsScreen extends StatefulWidget {
@@ -73,11 +73,8 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
   void _onPressed() {
     var payload = formkey.currentState?.value;
     BuildingsService().registerHouse(payload);
-    setState(() {
-      register = false;
-      _household = true;
-      Navigator.pop(context);
-    });
+    var houseNumber = formkey.currentState?.value['houseNumber'];
+    searchHouseNumber(houseNumber);
   }
 
   void onPressed() {
@@ -85,8 +82,7 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
     BuildingsService().registerHousehold(payload);
     setState(() {
       register = false;
-      _household = true;
-      Navigator.pop(context);
+      _household = false;
     });
   }
 
@@ -122,7 +118,9 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
               children: [
                 Row(
                   children: [
-                   SizedBox(width: 20,),
+                    const SizedBox(
+                      width: 20,
+                    ),
                     Expanded(
                       child: Form(
                         key: _formKey,
@@ -378,7 +376,9 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                         actionBuilder: (row) => Row(
                           children: [
                             IconButton(
-                                onPressed: () =>context.push(AppRoute.addHouseHold, extra: _building!),
+                                onPressed: () => context.push(
+                                    AppRoute.addHouseHold,
+                                    extra: _building!),
                                 icon: const Icon(Icons.add_home_sharp))
                           ],
                         ),
