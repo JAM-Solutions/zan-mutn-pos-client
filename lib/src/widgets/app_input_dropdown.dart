@@ -23,11 +23,11 @@ class AppInputDropDown<T extends dynamic> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormBuilderField<int>(
+    return FormBuilderField<T>(
         name: name,
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
-          return DropdownButtonFormField<int>(
+          return DropdownButtonFormField<T>(
             value: field.value,
             decoration:
                 InputDecoration(
@@ -35,7 +35,7 @@ class AppInputDropDown<T extends dynamic> extends StatelessWidget {
                     errorText: field.errorText,
                 ),
             items: items.map((dynamic value) {
-              return DropdownMenuItem<int>(
+              return DropdownMenuItem<T>(
                 value: value['id'],
                 child: Text(value[displayValue],
                     style: const TextStyle(fontSize: 14)),

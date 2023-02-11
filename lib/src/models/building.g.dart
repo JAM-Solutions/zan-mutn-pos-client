@@ -11,6 +11,7 @@ Building _$BuildingFromJson(Map<String, dynamic> json) => Building(
       json['buildingCategoryId'] as int,
       json['location'] as String,
       json['status'] as String,
+      json['id'] as int
     );
 
 Map<String, dynamic> _$BuildingToJson(Building instance) => <String, dynamic>{
@@ -18,4 +19,5 @@ Map<String, dynamic> _$BuildingToJson(Building instance) => <String, dynamic>{
       'buildingCategoryId': instance.buildingCategoryId,
       'location': instance.location,
       'status': instance.status,
+      'id': instance.id
     };

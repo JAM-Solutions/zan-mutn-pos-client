@@ -18,7 +18,6 @@ import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_visibility.dart';
 
 class BuildingsScreen extends StatefulWidget {
@@ -69,12 +68,17 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
     {'id': 1, 'name': 'INDIVIDUAL'},
     {'id': 2, 'name': 'COMPANY'}
   ];
+  final List<Map<String, dynamic>> frequency = [
+    {'id': 1, 'name': 'WEEKLY'},
+    {'id': 2, 'name': 'MONTHLY'}
+  ];
 
   void _onPressed() {
     var payload = formkey.currentState?.value;
     BuildingsService().registerHouse(payload);
     var houseNumber = formkey.currentState?.value['houseNumber'];
     searchHouseNumber(houseNumber);
+    formkey.currentState!.dispose();
   }
 
   void onPressed() {
