@@ -8,8 +8,10 @@ class Building {
   final int buildingCategoryId;
   final String location;
   final String status;
+  final int id;
 
-  Building(this.houseNumber, this.buildingCategoryId, this.location, this.status);
+  Building(
+      this.houseNumber, this.buildingCategoryId, this.location, this.status, this.id);
 
   factory Building.fromJson(Map<String, dynamic> json) =>
       _$BuildingFromJson(json);

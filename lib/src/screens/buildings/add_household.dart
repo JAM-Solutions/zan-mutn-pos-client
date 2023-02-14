@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/building.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/services/buildings_service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
@@ -10,7 +13,6 @@ import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_dropdown.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_text.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_visibility.dart';
 
 class AddHouseHoldScreen extends StatefulWidget {
   final Building building;
@@ -30,6 +32,7 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
       register = false;
       _household = true;
       Navigator.pop(context);
+      formkey.currentState!.dispose();
     });
   }
 
@@ -38,15 +41,12 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
     {'id': 2, 'name': 'Female'}
   ];
   final List<Map<String, dynamic>> _frequencyList = [
-    {'id': 1, 'name': 'WEEKLY'},
-    {'id': 2, 'name': 'MONTHLY'},
-    {'id': 3, 'name': 'QUATERLY'},
-    {'id': 4, 'name': 'SEMI_ANNUALY'},
-    {'id': 5, 'name': 'ANNUALY'}
+    {'id': 'WEEKLY', 'name': 'WEEKLY'},
+    {'id': 'MONTHLY', 'name': 'MONTHLY'},
   ];
   final List<Map<String, dynamic>> _categoryList = [
-    {'id': 1, 'name': 'INDIVIDUAL'},
-    {'id': 2, 'name': 'COMPANY'}
+    {'id': 'INDIVIDUAL', 'name': 'INDIVIDUAL'},
+    {'id': 'COMPANY', 'name': 'COMPANY'}
   ];
   void onPressed() {
     var payload = householdformkey.currentState?.value;
@@ -71,10 +71,16 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
   var adminIds = 0;
   var adminHierarchyId;
   @override
+  void initState() {
+    super.initState();
+    adminHierarchyId = context.read<AppStateProvider>().user!.adminHierarchyId!;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AppBaseScreen(
         appBar: AppBar(
-          title: Text('Add Household'),
+          title: const Text('Add Household'),
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -82,25 +88,25 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
             children: [
               Text('House Number: ${widget.building.houseNumber}'),
               Text('Location: ${widget.building.location}'),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               AppCard(
                   child: AppForm(
                 formKey: householdformkey,
                 controls: [
-                  AppInputDropDown(
+                  AppInputDropDown<String>(
                     items: _categoryList,
                     name: 'category',
                     label: 'Category',
                     onChange: (value) {
-                      if (value == 1) {
+                      if (value == 'INDIVIDUAL') {
                         setState(() {
                           showindividual = true;
                           showcompany = false;
                           all = true;
                         });
-                      } else if (value == 2) {
+                      } else if (value == 'COMPANY') {
                         setState(() {
                           showcompany = true;
                           showindividual = false;
@@ -109,105 +115,154 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                       }
                     },
                   ),
-                  AppVisibility(
-                      visible: showcompany,
-                      child:
-                          const AppInputText(fieldName: 'tin', label: 'TIN')),
-                  AppVisibility(
-                      visible: showcompany,
-                      child: const AppInputText(
-                          fieldName: 'companyName', label: 'Company Name')),
-                  AppVisibility(
-                      visible: showindividual,
-                      child:
-                          const AppInputText(fieldName: 'nin', label: 'NIN')),
-                  AppVisibility(
-                    visible: showindividual,
-                    child: const AppInputText(
-                        fieldName: 'firstName', label: 'First Name'),
-                  ),
-                  AppVisibility(
-                    visible: showindividual,
-                    child: const AppInputText(
-                        fieldName: 'middleName', label: 'Middle Name'),
-                  ),
-                  AppVisibility(
-                    visible: showindividual,
-                    child: const AppInputText(
-                        fieldName: 'lastName', label: 'Last Name'),
-                  ),
-                  AppVisibility(
-                    visible: showindividual,
-                    child: AppInputDropDown(
-                        items: _genderList, name: 'gender', label: 'Gender'),
-                  ),
-                  AppVisibility(
-                      visible: showindividual,
-                      child: const AppInputText(
-                          fieldName: 'mobileNumber', label: 'Phone Number')),
-                  AppVisibility(
-                      visible: all,
-                      child: const AppInputText(
-                          fieldName: 'email', label: 'Email')),
-                  AppVisibility(
-                    visible: all,
-                    child: const AppInputText(
-                        fieldName: 'address', label: 'Address'),
-                  ),
+                  if (showcompany)
+                    AppInputText(
+                      fieldName: 'tin',
+                      label: 'TIN',
+                      validators: [
+                        FormBuilderValidators.required(
+                            errorText: "Tin is required")
+                      ],
+                    ),
+                  if (showcompany)
+                    AppInputText(
+                        fieldName: 'companyName',
+                        label: 'Company Name',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Company Name is required")
+                        ]),
+                  if (showindividual)
+                    AppInputText(fieldName: 'nin', label: 'NIN', validators: [
+                      FormBuilderValidators.required(
+                          errorText: "NIN is required")
+                    ]),
+                  if (showindividual)
+                    AppInputText(
+                        fieldName: 'firstName',
+                        label: 'First Name',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "First Name is required")
+                        ]),
+                  if (showindividual)
+                    AppInputText(
+                        fieldName: 'middleName',
+                        label: 'Middle Name',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Middle Name is required")
+                        ]),
+                  if (showindividual)
+                    AppInputText(
+                        fieldName: 'lastName',
+                        label: 'Last Name',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Last Name is required")
+                        ]),
+                  if (showindividual)
+                    AppInputDropDown(
+                        items: _genderList,
+                        name: 'gender',
+                        label: 'Gender',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Gender is required")
+                        ]),
+                  if (showindividual)
+                    AppInputText(
+                        fieldName: 'mobileNumber',
+                        label: 'Phone Number',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Phone Number is required")
+                        ]),
+                  if (all)
+                    AppInputText(
+                        fieldName: 'email',
+                        label: 'Email',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Email is required")
+                        ]),
+                  if (all)
+                    AppInputText(
+                        fieldName: 'address',
+                        label: 'Address',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Address is required")
+                        ]),
                   const AppInputHidden(
                     fieldName: 'active',
                     value: 'true',
                   ),
-                  AppVisibility(
-                    visible: all,
-                    child: AppFetcher(
+                  if (all)
+                    AppFetcher(
                         api: '/admin-hierarchies/children/$adminHierarchyId',
                         builder: (items, isloaidng) => AppInputDropDown(
-                            items: items,
-                            name: 'adminHierarchyId',
-                            label: 'Sheia')),
-                  ),
-                  AppVisibility(
-                    visible: all,
-                    child: AppFetcher(
+                                items: items,
+                                name: 'adminHierarchyId',
+                                label: 'Sheia',
+                                validators: [
+                                  FormBuilderValidators.required(
+                                      errorText: "Sheia is required")
+                                ])),
+                  if (all)
+                    AppFetcher(
                         api: '/tax-payer-statuses',
                         builder: (items, isloaidng) => AppInputDropDown(
-                            items: items,
-                            displayValue: 'description',
-                            name: 'status',
-                            label: 'Taxpayer Status')),
-                  ),
-                  AppVisibility(
-                    visible: all,
-                    child: AppFetcher(
+                                items: items,
+                                displayValue: 'description',
+                                name: 'status',
+                                label: 'Taxpayer Status',
+                                validators: [
+                                  FormBuilderValidators.required(
+                                      errorText: "Taxpayer Status is required")
+                                ])),
+                  if (all)
+                    AppFetcher(
                         api: '/solid-waste-payment-modes',
                         builder: (items, isloaidng) => AppInputDropDown(
-                            items: items,
-                            name: 'paymentModeId',
-                            label: 'Payment Mode')),
-                  ),
-                  AppVisibility(
-                    visible: all,
-                    child: AppInputDropDown(
+                                items: items,
+                                name: 'paymentModeId',
+                                label: 'Payment Mode',
+                                validators: [
+                                  FormBuilderValidators.required(
+                                      errorText: "Payment Mode is required")
+                                ])),
+                  if (all)
+                    AppInputDropDown<String>(
                         items: _frequencyList,
-                        name: 'paymentFrequencey',
-                        label: 'Payment Frequencey'),
-                  ),
+                        name: 'paymentFrequency',
+                        label: 'Payment Frequencey',
+                        validators: [
+                          FormBuilderValidators.required(
+                              errorText: "Payment Frequency is required")
+                        ]),
                   AppInputHidden(
-                    fieldName: 'houseNumber',
+                    fieldName: 'buildingHouseNumber',
                     value: widget.building.houseNumber,
                   ),
                   AppInputHidden(
+                    fieldName: 'buildingId',
+                    value: widget.building.id,
+                  ),
+                  AppInputHidden(
                       fieldName: 'location', value: widget.building.location),
-                  AppVisibility(
-                    visible: all,
-                    child: AppFetcher(
+                  if (all)
+                    AppFetcher(
                         api: '/solid-waste-building-categories',
                         builder: (items, isloaidng) => AppInputDropDown(
-                            items: items,
-                            name: 'buildingCategoryId',
-                            label: 'Building Category')),
-                  ),
+                                items: items,
+                                name: 'buildingCategoryId',
+                                label: 'Building Category',
+                                validators: [
+                                  FormBuilderValidators.required(
+                                      errorText:
+                                          "Building Category is required")
+                                ])),
                   AppButton(
                       onPress: () {
                         if (householdformkey.currentState!.saveAndValidate()) {
