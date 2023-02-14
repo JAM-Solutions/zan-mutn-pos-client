@@ -140,6 +140,7 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
       return false;
     } on DeadlineExceededException {
       posIsConnected = false;
+      notifyError('hhh');
     } catch (e) {
       retryError = e.toString();
       debugPrint(e.toString());

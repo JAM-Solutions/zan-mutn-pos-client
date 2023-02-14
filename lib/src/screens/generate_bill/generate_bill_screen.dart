@@ -6,6 +6,7 @@ import 'package:zanmutm_pos_client/src/providers/generate_bill_provider.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
 
 class GenerateBillScreen extends StatefulWidget {
   const GenerateBillScreen({Key? key}) : super(key: key);
