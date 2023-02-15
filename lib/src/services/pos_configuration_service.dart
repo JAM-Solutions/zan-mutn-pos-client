@@ -29,7 +29,7 @@ class PosConfigurationService {
     try {
       var resp = await Api()
           .dio
-          .get("/pos-configurations/$posDeviceNumber/configurations");
+          .get("/pos-configurations/$posDeviceNumber/active-configurations");
       if (resp.data != null && resp.data['data'] != null) {
         PosConfiguration config = PosConfiguration.fromJson({
           ...resp.data['data'],
