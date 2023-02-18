@@ -4,8 +4,11 @@ import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
 import 'package:zanmutm_pos_client/src/models/device_info.dart';
 import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
+import 'package:zanmutm_pos_client/src/services/auth_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_icon_button.dart';
 
 class PosConfigScreen extends StatefulWidget {
   const PosConfigScreen({Key? key}) : super(key: key);
@@ -21,7 +24,7 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
   void initState() {
     super.initState();
     _deviceInfo = context.read<DeviceInfoProvider>().deviceInfo;
-    Future.delayed(Duration.zero,() => _loadConfig());
+    Future.delayed(Duration.zero, () => _loadConfig());
   }
 
   _loadConfig() {
@@ -37,6 +40,7 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
           child: AppBaseScreen(
               appBar: AppBar(
                 title: const Text("Pos Configurations"),
+
               ),
               isLoading: provider.posConfigIsLoading,
               child: Column(
