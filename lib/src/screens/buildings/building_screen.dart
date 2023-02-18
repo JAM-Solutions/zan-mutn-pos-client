@@ -29,7 +29,6 @@ class BuildingsScreen extends StatefulWidget {
 
 class _BuildingsScreenState extends State<BuildingsScreen> {
   Building? _building;
-
   searchHouseNumber(String houseNumber) async {
     _building =
         await context.read<BuildingProvider>().fetchbuildings(houseNumber);
@@ -139,8 +138,10 @@ class _BuildingsScreenState extends State<BuildingsScreen> {
                           ),
                           const AppInputHidden(
                               fieldName: 'active', value: 'true'),
-                          const AppInputText(
-                              fieldName: 'houseNumber', label: 'House Number'),
+                          AppInputHidden(
+                            fieldName: 'houseNumber',
+                            value: houseNumber.text.toString(),
+                          ),
                           AppFetcher(
                               api:
                                   '/admin-hierarchies/children/$adminHierarchyId',

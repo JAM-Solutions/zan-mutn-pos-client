@@ -38,10 +38,10 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
     {'id': 'INDIVIDUAL', 'name': 'INDIVIDUAL'},
     {'id': 'COMPANY', 'name': 'COMPANY'}
   ];
-  void onPressed() async{
+  void onPressed() async {
     var payload = householdformkey.currentState?.value;
     await context.read<BuildingProvider>().registerHousehold(payload);
-      Navigator.pop(context);
+    Navigator.pop(context);
   }
 
   final _formKey = GlobalKey<FormBuilderState>();
@@ -61,10 +61,9 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
   Widget build(BuildContext context) {
     return Consumer<BuildingProvider>(builder: (context, provider, child) {
       Building? building = provider.building;
-      return
-      MessageListener<BuildingProvider>(
+      return MessageListener<BuildingProvider>(
         child: AppBaseScreen(
-          isLoading: provider.fyIsLoading,
+            isLoading: provider.fyIsLoading,
             appBar: AppBar(
               title: const Text('Add Household'),
             ),
@@ -74,6 +73,8 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                 children: [
                   Text('House Number: ${widget.building.houseNumber}'),
                   Text('Location: ${widget.building.location}'),
+                  Text(
+                      'adminHierarchyName: ${widget.building.adminHierarchyName}'),
                   const SizedBox(
                     height: 16,
                   ),
@@ -119,10 +120,13 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                                   errorText: "Company Name is required")
                             ]),
                       if (showindividual)
-                        AppInputText(fieldName: 'nin', label: 'NIN', validators: [
-                          FormBuilderValidators.required(
-                              errorText: "NIN is required")
-                        ]),
+                        AppInputText(
+                            fieldName: 'nin',
+                            label: 'NIN',
+                            validators: [
+                              FormBuilderValidators.required(
+                                  errorText: "NIN is required")
+                            ]),
                       if (showindividual)
                         AppInputText(
                             fieldName: 'firstName',
@@ -186,7 +190,8 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                       ),
                       if (all)
                         AppFetcher(
-                            api: '/admin-hierarchies/children/$adminHierarchyId',
+                            api:
+                                '/admin-hierarchies/children/$adminHierarchyId',
                             builder: (items, isloaidng) => AppInputDropDown(
                                     items: items,
                                     name: 'adminHierarchyId',
@@ -237,7 +242,8 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                         value: widget.building.id,
                       ),
                       AppInputHidden(
-                          fieldName: 'location', value: widget.building.location),
+                          fieldName: 'location',
+                          value: widget.building.location),
                       if (all)
                         AppFetcher(
                             api: '/solid-waste-building-categories',

@@ -47,6 +47,19 @@ class _ViewHouseHoldScreenState extends State<ViewHouseHoldScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: const [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Text('Name'),
+                      Spacer(),
+                      Text('Collect Cash'),
+                      SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  ),
                   ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     shrinkWrap: true,
@@ -64,8 +77,8 @@ class _ViewHouseHoldScreenState extends State<ViewHouseHoldScreen> {
                               trailing: housedetails[index]
                                           .paymentModeName
                                           .toString() !=
-                                      'Cash'
-                                  ? Text('02893223977329'.toUpperCase())
+                                      'CASHLESS'
+                                  ? Text('199520000005'.toUpperCase())
                                   : AppButton(
                                       onPress: () => null,
                                       label: 'Collect Cash'),

@@ -11,7 +11,6 @@ import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/buildings/add_household.dart';
 import 'package:zanmutm_pos_client/src/screens/buildings/view_household.dart';
-import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
@@ -124,13 +123,6 @@ class AppRoute {
           pageTitle: "Home",
           path: dashboardTab,
           page: DashboardScreen(),
-        ),
-        AppTabRoute(
-          icon: Icon(Icons.shopping_cart),
-          label: "Cart",
-          pageTitle: "Collect Revenue",
-          path: cartTab,
-          page: CartScreen(),
         ),
         AppTabRoute(
             icon: Icon(Icons.compress),
