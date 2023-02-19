@@ -9,6 +9,8 @@ import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
+import 'package:zanmutm_pos_client/src/services/auth_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 
 class ConfigurationScreen extends StatefulWidget {
@@ -95,7 +97,13 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     ? const LinearProgressIndicator()
                     : null,
                 onTap: () => context.push(AppRoute.revenueSource),
-              )
+              ),
+              const Divider(),
+              ListTile(
+                title: const Text("Logout"),
+                leading: const Icon(Icons.logout_sharp),
+                onTap: () => getIt<AuthService>().logout(),
+              ),
             ],
           ),
         );

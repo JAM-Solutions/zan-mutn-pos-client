@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +10,7 @@ import 'package:zanmutm_pos_client/src/providers/currency_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
@@ -63,8 +66,10 @@ class _AppState extends State<App> {
     await _revenueSourceProvider.loadRevenueSource(user?.taxCollectorUuid);
     await _currencyProvider.loadCurrencies();
     _appState.setConfigLoaded();
+    Timer.periodic(const Duration(seconds: 10), (timer) {
+      context.read<PosStatusProvider>().syncTransactions();
+    });
   }
-
   @override
   Widget build(BuildContext context) {
     ///Select state of authentication from auth provider
