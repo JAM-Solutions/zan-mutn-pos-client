@@ -7,7 +7,8 @@ import 'package:zanmutm_pos_client/src/services/service.dart';
 class LoginProvider extends ChangeNotifier with MessageNotifierMixin {
   bool _isLoading = false;
   bool _showPassword = false;
- final loginService = getIt<AuthService>();
+  int trials = 0;
+  final loginService = getIt<AuthService>();
 
   bool get showPassword => _showPassword;
 

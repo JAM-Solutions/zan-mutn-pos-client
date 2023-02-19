@@ -44,11 +44,12 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (context, loginProvider, child) {
         return MessageListener<LoginProvider>(
           child: AppBaseScreen(
-             isLoading: loginProvider.isLoading,
+            isLoading: loginProvider.isLoading,
             child: Center(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(
+                      left: 16, right: 16, top: 10, bottom: 16),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

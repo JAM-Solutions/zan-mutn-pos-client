@@ -20,8 +20,7 @@ class CollectCashDialog {
 
   CollectCashDialog(this.context);
 
-  collectCash(
-      List<RevenueItem> items) async {
+  collectCash(List<RevenueItem> items) async {
     var configProvider = context.read<PosConfigurationProvider>();
     var cartProvider_ = context.read<CartProvider>();
     var user = context.read<AppStateProvider>().user;
@@ -33,8 +32,13 @@ class CollectCashDialog {
     if (confirmed == true) {
       //get tax payer details from taxpayer form
       var taxPayerValues = _taxPayerForm.currentState!.value;
-      bool success =await taxCollectionProvider.saveTransaction(items, configProvider.posConfiguration?.posDeviceId, user, year, taxPayerValues);
-      if(success) {
+      bool success = await taxCollectionProvider.saveTransaction(
+          items,
+          configProvider.posConfiguration?.posDeviceId,
+          user,
+          year,
+          taxPayerValues);
+      if (success) {
         cartProvider_.clearItems();
       }
     }
@@ -46,7 +50,16 @@ class CollectCashDialog {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Receipt'),
+          title: Row(
+            children: [
+              const Text('Receipt'),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.cancel),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
           content: SingleChildScrollView(
             reverse: true,
             child: Column(
