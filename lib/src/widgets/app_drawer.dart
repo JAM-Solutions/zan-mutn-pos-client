@@ -14,7 +14,6 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-
   @override
   void initState() {
     super.initState();
@@ -43,6 +42,7 @@ class _AppDrawerState extends State<AppDrawer> {
         return Drawer(
             backgroundColor: Colors.white,
             child: Column(
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SafeArea(
@@ -71,7 +71,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   const Divider(),
                   const SizedBox(
-                    height: 16,
+                    height: 10,
                   ),
                   Expanded(
                       child: Column(
@@ -82,10 +82,10 @@ class _AppDrawerState extends State<AppDrawer> {
                           AppRoute.revenueSource),
                       appMenuItem(Icons.calendar_month, 'Financial year',
                           AppRoute.financialYear),
-                          appMenuItem(Icons.house, 'Household',
+                      appMenuItem(Icons.house, 'Household Registration',
                           AppRoute.houseHold),
-                      appMenuItem(
-                          Icons.currency_exchange_rounded, 'Currency', AppRoute.currency),
+                      appMenuItem(Icons.currency_exchange_rounded, 'Currency',
+                          AppRoute.currency),
                       appMenuItem(
                           Icons.update, 'App Update', AppRoute.appUpdate),
                     ],

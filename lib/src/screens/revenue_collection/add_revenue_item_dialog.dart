@@ -125,40 +125,9 @@ class AddRevenueItemDialog {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                AppButton(
-                    label: 'Add to Cart',
-                    onPress: () {
-                      if (_addItemForm.currentState?.saveAndValidate() ==
-                          true) {
-                        Navigator.of(context).pop(OnAddAction.addToCart);
-                      }
-                    }),
                 Consumer<CartProvider>(
                   builder: (context, provider, child) {
-                    if (provider.cartItems.isNotEmpty) {
-                      return ElevatedButton(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Add & Checkout'),
-                            const SizedBox(
-                              width: 16,
-                            ),
-                            Badge(
-                              label: Text(
-                                  cartProvider.cartItems.length.toString()),
-                              child: const Icon(Icons.shopping_cart),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          if (_addItemForm.currentState?.saveAndValidate() ==
-                              true) {
-                            Navigator.of(context).pop(OnAddAction.collectCash);
-                          }
-                        },
-                      );
-                    }
+                    
                     return AppButton(
                         label: 'Collect Cash',
                         onPress: () {

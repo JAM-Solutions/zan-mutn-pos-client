@@ -6,12 +6,14 @@ part 'building.g.dart';
 class Building {
   final String houseNumber;
   final int buildingCategoryId;
+  final String buildingCategoryName;
+  final String adminHierarchyName;
   final String location;
   final String status;
   final int id;
 
-  Building(
-      this.houseNumber, this.buildingCategoryId, this.location, this.status, this.id);
+  Building(this.houseNumber, this.buildingCategoryId, this.buildingCategoryName, this.adminHierarchyName,
+      this.location, this.status, this.id);
 
   factory Building.fromJson(Map<String, dynamic> json) =>
       _$BuildingFromJson(json);

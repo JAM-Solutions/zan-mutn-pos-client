@@ -10,7 +10,7 @@ import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_tab_item.dart';
 import 'package:zanmutm_pos_client/src/screens/bill/bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/buildings/add_household.dart';
-import 'package:zanmutm_pos_client/src/screens/cart/cart_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/buildings/view_household.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/configuration_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/financial_year_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/configuration/revenue_config_screen.dart';
@@ -46,6 +46,7 @@ class AppRoute {
   static const String currency = "/currencies";
   static const String appUpdate = "/app-update";
   static const String addHouseHold = "/add-household";
+  static const String viewHouseHold = "/view-household";
 
   final _rootNavigatorKey = GlobalKey<NavigatorState>();
   final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -97,15 +98,21 @@ class AppRoute {
         parentNavigatorKey: _rootNavigatorKey,
         builder: (BuildContext context, GoRouterState state) =>
             const AppUpdateScreen(),
-      ) ,GoRoute(
-        path: AppRoute.addHouseHold,
-        parentNavigatorKey: _rootNavigatorKey,
-        builder: (BuildContext context, GoRouterState state) {
-          Building building = state.extra as Building;
-          return  AddHouseHoldScreen(building: building);
-        }
-
-      )
+      ),
+      GoRoute(
+          path: AppRoute.addHouseHold,
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (BuildContext context, GoRouterState state) {
+            Building building = state.extra as Building;
+            return AddHouseHoldScreen(building: building);
+          }),
+          GoRoute(
+          path: AppRoute.viewHouseHold,
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (BuildContext context, GoRouterState state) {
+            Building building = state.extra as Building;
+            return ViewHouseHoldScreen(building: building);
+          })
     ];
   }
 
@@ -116,13 +123,6 @@ class AppRoute {
           pageTitle: "Home",
           path: dashboardTab,
           page: DashboardScreen(),
-        ),
-        AppTabRoute(
-          icon: Icon(Icons.shopping_cart),
-          label: "Cart",
-          pageTitle: "Collect Revenue",
-          path: cartTab,
-          page: CartScreen(),
         ),
         AppTabRoute(
             icon: Icon(Icons.compress),

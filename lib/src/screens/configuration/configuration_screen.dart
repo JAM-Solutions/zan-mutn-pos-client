@@ -12,6 +12,7 @@ import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_icon_button.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   const ConfigurationScreen({Key? key}) : super(key: key);
@@ -53,6 +54,11 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => context.go(AppRoute.dashboardTab),
             ),
+            actions: [
+              AppIconButton(
+                  onPressed: () => getIt<AuthService>().logout(),
+                  icon: Icons.logout)
+            ],
           ),
           child: ListView(
             children: [
