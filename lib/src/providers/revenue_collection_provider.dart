@@ -111,7 +111,7 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
         debugPrint(e.toString());
       }
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText("SERIKALI YA MAPINDIZI ZANZIBAR", style: SunmiStyle(bold: true,align: SunmiPrintAlign.CENTER));
+      await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR", style: SunmiStyle(bold: true,align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText("(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}", style: SunmiStyle(bold: true,align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.line();
       await SunmiPrinter.printText('Address', style: SunmiStyle(align: SunmiPrintAlign.CENTER,fontSize: SunmiFontSize.SM));
