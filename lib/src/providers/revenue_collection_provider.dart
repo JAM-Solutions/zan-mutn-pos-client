@@ -173,7 +173,6 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText(
           'Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
-          // await SunmiPrinter.printRawData(barcode);
       await SunmiPrinter.lineWrap(4);
 
 // Jump 2 lines
