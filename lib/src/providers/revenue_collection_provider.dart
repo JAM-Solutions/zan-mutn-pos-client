@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:barcode/barcode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sunmi_printer_plus/enums.dart';
@@ -16,7 +19,8 @@ import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
-class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin {
+class RevenueCollectionProvider extends ChangeNotifier
+    with MessageNotifierMixin {
   List<RevenueSource> _filteredSources = List.empty(growable: true);
   List<RevenueSource> _allSources = List.empty(growable: true);
   final PosStatusProvider posStatusProvider;
@@ -54,12 +58,8 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
     }
   }
 
-  Future<bool> saveTransaction(
-      List<RevenueItem> items,
-      int? posDeviceId,
-      User? user,
-      FinancialYear? year,
-      Map<String, dynamic> taxPayerValues) async {
+  Future<bool> saveTransaction(List<RevenueItem> items, int? posDeviceId, User? user,
+      FinancialYear? year, Map<String, dynamic> taxPayerValues) async {
     //Use current time stamp as transaction id
     DateTime t = DateTime.now();
     String transactionId = t.toIso8601String();
@@ -102,7 +102,15 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
 
   Future<String?> _printReceipt(List<RevenueItem> items, User user,
       String receiptNumber, String? payerName, String date) async {
+
+
+  Future<String?> _printReceipt(List<RevenueItem> items, User user,
+      String receiptNumber, String? payerName, String date) async {
     bool? connected = await SunmiPrinter.bindingPrinter();
+//     final names = ['john', 'brian', 'denis'];
+// final code = names.join();
+// final barcode = Barcode.code128();
+//   final Uint8List bytes = barcode.toBytes(code);
     if (connected == true) {
       String total = currency.format(items
           .map((e) => e.quantity * e.amount)
@@ -117,8 +125,9 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
       } catch (e) {
         debugPrint(e.toString());
       }
+
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR",
+      await SunmiPrinter.printText("SERIKALI YA MAPINDIZI ZANZIBAR",
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText(
           "(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}",
