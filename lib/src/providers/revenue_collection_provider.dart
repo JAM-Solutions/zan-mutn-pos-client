@@ -168,9 +168,9 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText(
           'Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.lineWrap(4);
+      await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.printQRCode('Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}');
-
+      await SunmiPrinter.lineWrap(4);
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);
       return null;
