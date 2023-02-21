@@ -102,10 +102,6 @@ class RevenueCollectionProvider extends ChangeNotifier
 
   Future<String?> _printReceipt(List<RevenueItem> items, User user,
       String receiptNumber, String? payerName, String date) async {
-
-
-  Future<String?> _printReceipt(List<RevenueItem> items, User user,
-      String receiptNumber, String? payerName, String date) async {
     bool? connected = await SunmiPrinter.bindingPrinter();
 //     final names = ['john', 'brian', 'denis'];
 // final code = names.join();
@@ -133,7 +129,7 @@ class RevenueCollectionProvider extends ChangeNotifier
           "(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}",
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('Address',
+      await SunmiPrinter.printText('Simu: 00000',
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.printText('Simu: 0000000 | Faksi: 000000',
@@ -163,7 +159,7 @@ class RevenueCollectionProvider extends ChangeNotifier
                 align: SunmiPrintAlign.RIGHT, fontSize: SunmiFontSize.MD));
       }
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('Total $total',
+      await SunmiPrinter.printText('Jumla $total',
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));
       await SunmiPrinter.lineWrap(2);
       await SunmiPrinter.printText('Tarehe ya Kutoa risiti: $date',
@@ -175,8 +171,8 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printQRCode(
           'Jina la Mlipaji: ${payerName}\n Namba ya Risiti: ${receiptNumber}\nKiasi: ${total} \nTarehe ya Kutoa risiti: $date', size: 4);
       await SunmiPrinter.lineWrap(4);
+      await SunmiPrinter.printQRCode('Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}');
 
-// Jump 2 lines
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);
       return null;
