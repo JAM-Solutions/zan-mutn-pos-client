@@ -41,61 +41,47 @@ class _AppDrawerState extends State<AppDrawer> {
         var user = provider.user;
         return Drawer(
             backgroundColor: Colors.white,
-            child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 48),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image(
-                              width: width,
-                              image:
-                                  const AssetImage('assets/images/logo.jpeg')),
-                          const SizedBox(height: 4),
-                          Text(
-                            "${user?.firstName} ${user?.lastName ?? ''}",
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(user?.adminHierarchyName ?? ''),
-                          Text(provider.currentVersion ?? '')
-                        ],
-                      ),
+            child: SingleChildScrollView(
+              child: Column(children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image(
+                        width: width,
+                        image: const AssetImage('assets/images/logo.jpeg')),
+                    const SizedBox(height: 4),
+                    Text(
+                      "${user?.firstName} ${user?.lastName ?? ''}",
+                      style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                      child: Column(
-                    children: [
-                      appMenuItem(Icons.settings, 'Pos Configuration',
-                          AppRoute.posConfig),
-                      appMenuItem(Icons.money, 'Revenue Source Config',
-                          AppRoute.revenueSource),
-                      appMenuItem(Icons.calendar_month, 'Financial year',
-                          AppRoute.financialYear),
-                      appMenuItem(Icons.house, 'Household Registration',
-                          AppRoute.houseHold),
-                      appMenuItem(Icons.currency_exchange_rounded, 'Currency',
-                          AppRoute.currency),
-                      appMenuItem(
-                          Icons.update, 'App Update', AppRoute.appUpdate),
-                    ],
-                  )),
-                  ListTile(
-                    title: const Text("Logout"),
-                    leading: const Icon(Icons.logout_sharp),
-                    onTap: () => getIt<AuthService>().logout(),
-                  ),
-                ]));
+                    const SizedBox(height: 4),
+                    Text(user?.adminHierarchyName ?? ''),
+                    Text(provider.currentVersion ?? '')
+                  ],
+                ),
+                const Divider(),
+                const SizedBox(
+                  height: 10,
+                ),
+                appMenuItem(
+                    Icons.settings, 'Pos Configuration', AppRoute.posConfig),
+                appMenuItem(Icons.money, 'Revenue Source Config',
+                    AppRoute.revenueSource),
+                appMenuItem(Icons.calendar_month, 'Financial year',
+                    AppRoute.financialYear),
+                appMenuItem(
+                    Icons.house, 'Household Registration', AppRoute.houseHold),
+                appMenuItem(Icons.currency_exchange_rounded, 'Currency',
+                    AppRoute.currency),
+                appMenuItem(Icons.update, 'App Update', AppRoute.appUpdate),
+                ListTile(
+                  title: const Text("Logout"),
+                  leading: const Icon(Icons.logout_sharp),
+                  onTap: () => getIt<AuthService>().logout(),
+                ),
+              ]),
+            ));
       },
     );
   }

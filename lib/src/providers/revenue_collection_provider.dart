@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:barcode/barcode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sunmi_printer_plus/enums.dart';
@@ -16,7 +19,8 @@ import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
-class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin {
+class RevenueCollectionProvider extends ChangeNotifier
+    with MessageNotifierMixin {
   List<RevenueSource> _filteredSources = List.empty(growable: true);
   List<RevenueSource> _allSources = List.empty(growable: true);
   final PosStatusProvider posStatusProvider;
@@ -38,8 +42,7 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
     filterSource();
   }
 
-  void update(
-      RevenueSourceProvider revenueSourceProvider) {
+  void update(RevenueSourceProvider revenueSourceProvider) {
     _allSources = revenueSourceProvider.revenueSource;
     filterSource();
   }
@@ -55,19 +58,24 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
     }
   }
 
-  Future<bool> saveTransaction(List<RevenueItem> items, int? posDeviceId, User? user,
-      FinancialYear? year, Map<String, dynamic> taxPayerValues) async {
+  Future<bool> saveTransaction(
+      List<RevenueItem> items,
+      int? posDeviceId,
+      User? user,
+      FinancialYear? year,
+      Map<String, dynamic> taxPayerValues) async {
     //Use current time stamp as transaction id
     DateTime t = DateTime.now();
     String transactionId = t.toIso8601String();
     String receiptNumber = t.toIso8601String();
     // Try printing receipt if fail it return print error
-    String? printError = await _printReceipt(items, user!, receiptNumber, taxPayerValues['name'],dateFormat.format(t));
+    String? printError = await _printReceipt(items, user!, receiptNumber,
+        taxPayerValues['name'], dateFormat.format(t));
     //For each cart items map then to PosTransaction object
     List<PosTransaction> posTxns = items
         .map((item) => PosTransaction.fromCashCollection(
             transactionId,
-             receiptNumber,
+            receiptNumber,
             t,
             posDeviceId!,
             item,
@@ -96,10 +104,19 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
     }
   }
 
-  Future<String?> _printReceipt(List<RevenueItem> items, User user, String receiptNumber,String? payerName, String date) async {
+  
+
+  Future<String?> _printReceipt(List<RevenueItem> items, User user,
+      String receiptNumber, String? payerName, String date) async {
     bool? connected = await SunmiPrinter.bindingPrinter();
+//     final names = ['john', 'brian', 'denis'];
+// final code = names.join();
+// final barcode = Barcode.code128();
+//   final Uint8List bytes = barcode.toBytes(code);
     if (connected == true) {
-      String total = currency.format(items.map((e) => e.quantity * e.amount).fold(0.0, (acc, next) => acc + next));
+      String total = currency.format(items
+          .map((e) => e.quantity * e.amount)
+          .fold(0.0, (acc, next) => acc + next));
       await SunmiPrinter.startTransactionPrint(true);
       try {
         Uint8List bytes = (await rootBundle.load('assets/images/logo.jpeg'))
@@ -110,34 +127,49 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
       } catch (e) {
         debugPrint(e.toString());
       }
+
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR", style: SunmiStyle(bold: true,align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText("(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}", style: SunmiStyle(bold: true,align: SunmiPrintAlign.CENTER));
+      await SunmiPrinter.printText("SERIKALI YA MAPINDIZI ZANZIBAR",
+          style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
+      await SunmiPrinter.printText(
+          "(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}",
+          style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('Address', style: SunmiStyle(align: SunmiPrintAlign.CENTER,fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText('Simu: 0000000 | Faksi: 000000',style: SunmiStyle(align: SunmiPrintAlign.CENTER,fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText('Email: email@adminarea | Tovuti: 000000',style: SunmiStyle(align: SunmiPrintAlign.CENTER,fontSize: SunmiFontSize.SM));
+      await SunmiPrinter.printText('Simu: 00000',
+          style: SunmiStyle(
+              align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
+      await SunmiPrinter.printText('Email: ${user.email}',
+          style: SunmiStyle(
+              align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('STAKABADHI YA MALIPO', style: SunmiStyle(bold: true));
+      await SunmiPrinter.printText('STAKABADHI YA MALIPO',
+          style: SunmiStyle(bold: true));
       await SunmiPrinter.setAlignment(SunmiPrintAlign.LEFT);
-      await SunmiPrinter.printText('Namba ya risit: $receiptNumber', style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Jina la Mlipaji: ${payerName ?? ''}',style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Malipo kwa Tarakimu: $total',style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Hali ya Malipo: PAID', style: SunmiStyle(fontSize: SunmiFontSize.MD));
+      await SunmiPrinter.printText('Namba ya risit: $receiptNumber',
+          style: SunmiStyle(fontSize: SunmiFontSize.MD));
+      await SunmiPrinter.printText('Jina la Mlipaji: ${payerName ?? ''}',
+          style: SunmiStyle(fontSize: SunmiFontSize.MD));
+      await SunmiPrinter.printText('Malipo kwa Tarakimu: $total',
+          style: SunmiStyle(fontSize: SunmiFontSize.MD));
+      await SunmiPrinter.printText('Hali ya Malipo: PAID',
+          style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.lineWrap(1); // Jump 2 lines
       // Center align
       for (var item in items) {
         await SunmiPrinter.printText(
             '${item.revenueSource.name}   ${item.quantity} x ${currency.format(item.amount)}',
-            style: SunmiStyle(align: SunmiPrintAlign.RIGHT,fontSize: SunmiFontSize.MD));
+            style: SunmiStyle(
+                align: SunmiPrintAlign.RIGHT, fontSize: SunmiFontSize.MD));
       }
       await SunmiPrinter.line();
-      await SunmiPrinter.printText(
-          'Total $total',
+      await SunmiPrinter.printText('Total $total',
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText('Tarehe ya Kutoa risiti: $date',style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Jina la mtoa risiti: ${user.firstName} ${user.lastName}',style: SunmiStyle(fontSize: SunmiFontSize.MD));
+      await SunmiPrinter.printText('Tarehe ya Kutoa risiti: $date',
+          style: SunmiStyle(fontSize: SunmiFontSize.MD));
+      await SunmiPrinter.printText(
+          'Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
+          style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.lineWrap(4);
 
 // Jump 2 lines
