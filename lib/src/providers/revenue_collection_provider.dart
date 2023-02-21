@@ -58,8 +58,12 @@ class RevenueCollectionProvider extends ChangeNotifier
     }
   }
 
-  Future<bool> saveTransaction(List<RevenueItem> items, int? posDeviceId, User? user,
-      FinancialYear? year, Map<String, dynamic> taxPayerValues) async {
+  Future<bool> saveTransaction(
+      List<RevenueItem> items,
+      int? posDeviceId,
+      User? user,
+      FinancialYear? year,
+      Map<String, dynamic> taxPayerValues) async {
     //Use current time stamp as transaction id
     DateTime t = DateTime.now();
     String transactionId = t.toIso8601String();
@@ -123,7 +127,7 @@ class RevenueCollectionProvider extends ChangeNotifier
       }
 
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText("SERIKALI YA MAPINDIZI ZANZIBAR",
+      await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR",
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText(
           "(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}",
@@ -132,17 +136,14 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText('Simu: 00000',
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText('Simu: 0000000 | Faksi: 000000',
-          style: SunmiStyle(
-              align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText('Email: email@adminarea | Tovuti: 000000',
+      await SunmiPrinter.printText('Email: ${user.email}',
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.line();
       await SunmiPrinter.printText('STAKABADHI YA MALIPO',
           style: SunmiStyle(bold: true));
       await SunmiPrinter.setAlignment(SunmiPrintAlign.LEFT);
-      await SunmiPrinter.printText('Namba ya risiti: $receiptNumber',
+      await SunmiPrinter.printText('Namba ya risit: $receiptNumber',
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.printText('Jina la Mlipaji: ${payerName ?? ''}',
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
@@ -167,12 +168,10 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText(
           'Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.line();
+      await SunmiPrinter.lineWrap(2);
       await SunmiPrinter.printQRCode(
-          'Jina la Mlipaji: ${payerName}\n Namba ya Risiti: ${receiptNumber}\nKiasi: ${total} \nTarehe ya Kutoa risiti: $date', size: 4);
-      await SunmiPrinter.lineWrap(4);
-      await SunmiPrinter.printQRCode('Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}');
-
+          'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}');
+      await SunmiPrinter.lineWrap(2);
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);
       return null;
