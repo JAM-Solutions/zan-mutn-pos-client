@@ -127,7 +127,7 @@ class RevenueCollectionProvider extends ChangeNotifier
       }
 
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText("SERIKALI YA MAPINDIZI ZANZIBAR",
+      await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR",
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText(
           "(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}",
