@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/services/bill_service.dart';
+import 'package:zanmutm_pos_client/src/services/council_resource.dart';
 import 'package:zanmutm_pos_client/src/services/currency_service.dart';
 import 'package:zanmutm_pos_client/src/services/device_info_service.dart';
 import 'package:zanmutm_pos_client/src/services/financial_year_service.dart';
@@ -25,4 +26,5 @@ void registerServices() {
       () => RevenueSourceService());
   getIt.registerLazySingleton<CurrencyService>(() => CurrencyService());
   getIt.registerLazySingleton<BuildingsService>(() => BuildingsService());
+  getIt.registerLazySingleton<CouncilService>(() => CouncilService());
 }
