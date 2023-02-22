@@ -60,6 +60,9 @@ class AddRevenueItemDialog {
               backgroundColor: Theme.of(context).primaryColor,
               child: Text(source.name.substring(0, 1)),
             ),
+            trailing: IconButton(
+                icon: const Icon(Icons.cancel),
+                onPressed: () => Navigator.pop(context)),
           ),
           content: StatefulBuilder(
               builder: (BuildContext _, StateSetter setDialogState) {
@@ -73,7 +76,10 @@ class AddRevenueItemDialog {
 
             return SingleChildScrollView(
               child: AppForm(
-                initialValue: {'amount': source.unitCost ?? 0.00, 'quantity': 1},
+                initialValue: {
+                  'amount': source.unitCost ?? 0.00,
+                  'quantity': 1
+                },
                 formKey: _addItemForm,
                 controls: [
                   AppInputHidden(
@@ -127,7 +133,6 @@ class AddRevenueItemDialog {
               children: [
                 Consumer<CartProvider>(
                   builder: (context, provider, child) {
-                    
                     return AppButton(
                         label: 'Collect Cash',
                         onPress: () {
