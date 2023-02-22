@@ -21,13 +21,13 @@ class PosStatusProvider with ChangeNotifier {
       offlineTime = 0;
     } else {
       Duration diff = now_.difference(lastOffline!);
-      offlineTime = offlineTime + diff.inMinutes;
+      offlineTime = offlineTime + diff.inSeconds;
       lastOffline = now_;
     }
+    notifyListeners();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(AppConst.lastOffline, lastOffline!.toIso8601String());
     prefs.setInt(AppConst.offlineTime, offlineTime);
-    notifyListeners();
   }
 
   resetOfflineTime() async {

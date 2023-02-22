@@ -84,7 +84,7 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
       // If not show error message
       if (result > 0) {
         notifyInfo("Successfully");
-        _backGroundSyncTransaction();
+        backGroundSyncTransaction();
         return true;
       } else {
         notifyError("Whoops Something went wrong");
@@ -149,7 +149,7 @@ class RevenueCollectionProvider extends ChangeNotifier with MessageNotifierMixin
     return 'Print not connected';
   }
 
-  _backGroundSyncTransaction() async {
+  backGroundSyncTransaction() async {
     try {
       await posTransactionService.sync();
       posStatusProvider.resetOfflineTime();
