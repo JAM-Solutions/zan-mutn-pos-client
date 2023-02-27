@@ -1,15 +1,19 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/config/app_exceptions.dart';
+import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
-class AuthService {
-
+class AuthService extends ChangeNotifier with MessageNotifierMixin {
+  String? _retryError;
+  bool _posIsConnected = true;
   final String authenticationApi= "/authenticate";
 
   //Login user from api
@@ -51,11 +55,25 @@ class AuthService {
     }
   }
 
-  Future<void> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future logout() async {
+      Response response = await Dio().get("https://www.google.com");
+if(response.statusCode == 200) {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(AppConst.userKey);
     await prefs.remove(AppConst.tokenKey);
     appStateProvider.userLoggedOut();
+} else {
+  Fluttertoast.showToast(
+              msg: 'No internet connection',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 15.0,
+            );
+}
+    
   }
 
 }

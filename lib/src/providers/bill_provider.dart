@@ -63,7 +63,7 @@ class BillProvider extends ChangeNotifier with MessageNotifierMixin {
       notifyListeners();
     }
   }
-
+//
   retry() async {
     _posIsConnected = true;
     _retryError = null;

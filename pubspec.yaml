@@ -58,7 +58,7 @@ dependencies:
     tuple: ^2.0.1
     get_it: ^7.2.0
     mqtt_client: ^9.7.4
-    barcode: ^2.2.3
+    fluttertoast: ^8.2.1
 
 dev_dependencies:
     flutter_test:
