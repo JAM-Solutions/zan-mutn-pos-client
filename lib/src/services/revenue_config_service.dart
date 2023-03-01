@@ -37,7 +37,7 @@ class RevenueSourceService {
     try {
       var db = await DbProvider().database;
       var result =
-          await db.query(tableName, where: 'isActive=?', whereArgs: [1]);
+          await db.query(tableName, where: 'taxCollectorUuid=?', whereArgs: [taxCollectorUuid]);
       return result.map((e) => RevenueSource.fromJson(e)).toList();
     } catch (e) {
       throw ValidationException(e.toString());

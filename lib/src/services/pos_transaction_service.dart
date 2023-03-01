@@ -50,9 +50,9 @@ class PosTransactionService {
     return result;
   }
 
-  Future<bool> sync() async {
+  Future<bool> sync(String taxCollectorUuid) async {
     var db = await DbProvider().database;
-    List<Map<String, dynamic>> dbTransactions = await db.query(table);
+    List<Map<String, dynamic>> dbTransactions = await db.query(table, where: "taxCollectorUuid=?", whereArgs: [taxCollectorUuid]);
     for (var txn in dbTransactions) {
       var resp = await Api().dio.post(api, data: {
         ...txn,

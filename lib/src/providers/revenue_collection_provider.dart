@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:barcode/barcode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sunmi_printer_plus/enums.dart';
@@ -60,7 +58,6 @@ class RevenueCollectionProvider extends ChangeNotifier
 
   Future<bool> saveTransaction(
       List<RevenueItem> items,
-      int? posDeviceId,
       User? user,
       FinancialYear? year,
       Map<String, dynamic> taxPayerValues) async {
@@ -77,7 +74,6 @@ class RevenueCollectionProvider extends ChangeNotifier
             transactionId,
             receiptNumber,
             t,
-            posDeviceId!,
             item,
             user!,
             taxPayerValues,
@@ -92,7 +88,7 @@ class RevenueCollectionProvider extends ChangeNotifier
       // If not show error message
       if (result > 0) {
         notifyInfo("Successfully");
-        backGroundSyncTransaction();
+        backGroundSyncTransaction(user!.taxCollectorUuid!);
         return true;
       } else {
         notifyError("Whoops Something went wrong");
@@ -179,9 +175,9 @@ class RevenueCollectionProvider extends ChangeNotifier
     return 'Print not connected';
   }
 
-  backGroundSyncTransaction() async {
+  backGroundSyncTransaction(String taxCollectorUuid) async {
     try {
-      await posTransactionService.sync();
+      await posTransactionService.sync(taxCollectorUuid);
       posStatusProvider.resetOfflineTime();
     } on NoInternetConnectionException {
       posStatusProvider.setOfflineTime();

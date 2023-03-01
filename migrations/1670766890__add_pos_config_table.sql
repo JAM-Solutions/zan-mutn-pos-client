@@ -3,10 +3,8 @@ CREATE TABLE IF NOT EXISTS pos_configurations (
     uuid VARCHAR(200) NOT NULL,
     offlineLimit double precision NOT NULL,
     amountLimit double precision NOT NULL,
-    posDeviceId integer NOT NULL,
-    posDeviceName VARCHAR(200) NOT NULL,
-    posDeviceNumber VARCHAR(200) NOT NULL,
+    taxCollectorUuid VARCHAR(100) NOT NULL,
     lastUpdate VARCHAR(200) NOT NULL,
-    UNIQUE(posDeviceId),
+    UNIQUE(taxCollectorUuid),
     UNIQUE(uuid)
 )

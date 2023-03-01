@@ -21,11 +21,8 @@ class RevenueSourceProvider extends ChangeNotifier with MessageNotifierMixin {
     notifyListeners();
   }
 
-  loadRevenueSource(String? taxCollectorUuid) async {
+  loadRevenueSource(String taxCollectorUuid) async {
     try {
-      if(taxCollectorUuid == null) {
-        return;
-      }
       revenueSource = await  revenueSourceService.queryFromDb(taxCollectorUuid);
     } catch(e) {
       debugPrint(e.toString());
@@ -33,13 +30,9 @@ class RevenueSourceProvider extends ChangeNotifier with MessageNotifierMixin {
   }
 
 
-    fetchRevenueSource(String? taxCollectorUuid) async {
+    fetchRevenueSource(String taxCollectorUuid) async {
     revSourcesIsLoading = true;
     try {
-      if(taxCollectorUuid == null) {
-        notifyError('No tax collector uuid');
-        return;
-      }
       revenueSource = await  revenueSourceService.fetchAndStore(taxCollectorUuid);
       revSourcesIsLoading = false;
     } catch(e) {

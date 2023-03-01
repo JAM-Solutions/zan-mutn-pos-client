@@ -8,11 +8,11 @@ part 'pos_transaction.g.dart';
 class PosTransaction {
   final int? id;
   final String? trxNumber;
-  final int? posDeviceId;
   final int? revenueSourceId;
   final String? gfsCode;
   final int? adminHierarchyId;
   final int? taxPayerId;
+  final String? taxCollectorUuid;
   final double amount;
   final int quantity;
   final String? cashPayerName;
@@ -26,11 +26,11 @@ class PosTransaction {
   PosTransaction(
       this.id,
       this.trxNumber,
-      this.posDeviceId,
       this.revenueSourceId,
       this.gfsCode,
       this.adminHierarchyId,
       this.taxPayerId,
+      this.taxCollectorUuid,
       this.amount,
       this.quantity,
       this.cashPayerName,
@@ -49,7 +49,6 @@ class PosTransaction {
       String transactionId,
       String receiptNumber,
       DateTime transactionDate,
-      int posDeviceId,
       RevenueItem cartItem,
       User user,
       Map<String, dynamic> payerDetail,
@@ -60,11 +59,11 @@ class PosTransaction {
     return PosTransaction(
         null,
         transactionId,
-        posDeviceId,
         cartItem.revenueSource.id,
         cartItem.revenueSource.gfsCode,
         user.adminHierarchyId!,
         user.taxPayerId!,
+        user.taxCollectorUuid!,
         cartItem.amount,
         cartItem.quantity,
         payerDetail['name'],

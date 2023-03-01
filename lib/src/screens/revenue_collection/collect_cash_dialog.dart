@@ -34,7 +34,6 @@ class CollectCashDialog {
       var taxPayerValues = _taxPayerForm.currentState!.value;
       bool success = await taxCollectionProvider.saveTransaction(
           items,
-          configProvider.posConfiguration?.posDeviceId,
           user,
           year,
           taxPayerValues);

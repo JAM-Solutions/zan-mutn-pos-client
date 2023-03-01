@@ -20,6 +20,7 @@ RevenueSource _$RevenueSourceFromJson(Map<String, dynamic> json) =>
       (json['maximumAmount'] as num?)?.toDouble(),
       json['unitName'] as String?,
       (json['unitCost'] as num?)?.toDouble(),
+      json['taxCollectorUuid'] as String,
     );
 
 Map<String, dynamic> _$RevenueSourceToJson(RevenueSource instance) =>
@@ -36,4 +37,5 @@ Map<String, dynamic> _$RevenueSourceToJson(RevenueSource instance) =>
       'unitCost': instance.unitCost,
       'maximumAmount': instance.maximumAmount,
       'unitName': instance.unitName,
+      'taxCollectorUuid': instance.taxCollectorUuid,
     };

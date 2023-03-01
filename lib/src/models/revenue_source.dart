@@ -16,6 +16,8 @@ class RevenueSource {
   final double? unitCost;
   final double? maximumAmount;
   final String? unitName;
+  final String taxCollectorUuid;
+
 
   RevenueSource(
       this.id,
@@ -29,7 +31,7 @@ class RevenueSource {
       this.minimumAmount,
       this.maximumAmount,
       this.unitName,
-      this.unitCost);
+      this.unitCost, this.taxCollectorUuid);
 
   factory RevenueSource.fromJson(Map<String, dynamic> json) =>
       _$RevenueSourceFromJson({

@@ -83,18 +83,18 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
     _taxCollectorCharges = List.empty();
     _taxCollectorUnCompiled = List.empty(growable: true);
     notifyListeners();
-    syncAndLoad();
+    syncAndLoad(taxCollectorUuid!);
   }
 
-  syncAndLoad() async {
-    await _syncTransaction();
+  syncAndLoad(String taxCollectorUuid) async {
+    await _syncTransaction(taxCollectorUuid);
     await _getUnCompiled();
   }
 
 //Sync all transaction saved locally in pos device
-  _syncTransaction() async {
+  _syncTransaction(String taxCollectorUuid) async {
     try {
-      bool synced = await posTransactionService.sync();
+      bool synced = await posTransactionService.sync(taxCollectorUuid);
       transactionSynced = synced;
     } on NoInternetConnectionException {
       posIsConnected = false;
@@ -187,7 +187,7 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
     _retryError = null;
     notifyListeners();
     if (!_transactionSynced) {
-      syncAndLoad();
+      syncAndLoad(taxCollectorUuid!);
       return;
     } else if (!_allTransactionsCompiled) {
       compileTransactions();

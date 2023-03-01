@@ -29,7 +29,7 @@ class _RevenueConfigScreenState extends State<RevenueConfigScreen> {
   _loadRevenueSources() async {
     context
         .read<RevenueSourceProvider>()
-        .fetchRevenueSource(user?.taxCollectorUuid);
+        .fetchRevenueSource(user!.taxCollectorUuid!);
   }
 
   @override

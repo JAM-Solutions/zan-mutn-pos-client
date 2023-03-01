@@ -9,10 +9,10 @@ class PosConfigurationService {
   final String tableName = 'pos_configurations';
 
   /// Get Pos config from local db
-  Future<PosConfiguration?> queryFromDb(String posDeviceNumber) async {
+  Future<PosConfiguration?> queryFromDb(String taxCollectorUuid) async {
     var db = await DbProvider().database;
     var result = await db.query(tableName,
-        where: 'posDeviceNumber=?', whereArgs: [posDeviceNumber], limit: 1);
+        where: 'taxCollectorUuid=?', whereArgs: [taxCollectorUuid], limit: 1);
     if (result.isNotEmpty) {
       PosConfiguration posConfiguration =
           PosConfiguration.fromJson(result.single);
@@ -25,15 +25,14 @@ class PosConfigurationService {
   /// Fetch config from api
   /// Store to database
   /// Update State
-  Future<PosConfiguration?> fetchAndStore(String posDeviceNumber) async {
+  Future<PosConfiguration?> fetchAndStore(String taxCollectorUuid) async {
     try {
       var resp = await Api()
           .dio
-          .get("/pos-configurations/$posDeviceNumber/active-configurations");
+          .get("/tax-collector/$taxCollectorUuid/active-configurations");
       if (resp.data != null && resp.data['data'] != null) {
         PosConfiguration config = PosConfiguration.fromJson({
           ...resp.data['data'],
-          'posDeviceNumber': posDeviceNumber,
           'lastUpdate': dateFormat.format(DateTime.now())
         });
         await storeToDb(config);
@@ -42,10 +41,10 @@ class PosConfigurationService {
         return null;
       }
     } on NoInternetConnectionException {
-      var fromDb = await queryFromDb(posDeviceNumber);
+      var fromDb = await queryFromDb(taxCollectorUuid);
       return fromDb;
     } on DeadlineExceededException {
-      var fromDb = await queryFromDb(posDeviceNumber);
+      var fromDb = await queryFromDb(taxCollectorUuid);
       return fromDb;
     } catch (e) {
       debugPrint(e.toString());
@@ -58,8 +57,8 @@ class PosConfigurationService {
     var db = await DbProvider().database;
     var data = config.toJson();
     var existing = await db.query(tableName,
-        where: 'posDeviceNumber=?',
-        whereArgs: [config.posDeviceNumber],
+        where: 'taxCollectorUuid=?',
+        whereArgs: [config.taxCollectorUuid],
         limit: 1);
     var result = await (existing.isNotEmpty
         ? db.update(tableName, data)

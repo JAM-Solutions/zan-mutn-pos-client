@@ -24,22 +24,20 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
   User? _user;
-  AppDeviceInfo? _device;
 
   @override
   void initState() {
     super.initState();
     _user = context.read<AppStateProvider>().user;
-    _device = context.read<DeviceInfoProvider>().deviceInfo;
     Future.delayed(Duration.zero, () => _loadAllConfigs());
   }
 
   _loadAllConfigs() {
-    context.read<PosConfigurationProvider>().fetchPosConfig(_device);
+    context.read<PosConfigurationProvider>().fetchPosConfig(_user!.taxCollectorUuid!);
     context.read<FinancialYearProvider>().fetchFinancialYear();
     context
         .read<RevenueSourceProvider>()
-        .fetchRevenueSource(_user?.taxCollectorUuid);
+        .fetchRevenueSource(_user!.taxCollectorUuid!);
   }
 
   @override

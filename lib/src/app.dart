@@ -62,13 +62,13 @@ class _AppState extends State<App> {
     _appState.loadAppVersion();
     await _deviceInfoProvider.loadDevice();
     await _posConfigurationProvider
-        .loadPosConfig(_deviceInfoProvider.deviceInfo);
+        .loadPosConfig(user!.taxCollectorUuid!);
     await _financialYearProvider.loadFinancialYear();
-    await _revenueSourceProvider.loadRevenueSource(user?.taxCollectorUuid);
+    await _revenueSourceProvider.loadRevenueSource(user.taxCollectorUuid!);
     await _currencyProvider.loadCurrencies();
     _appState.setConfigLoaded();
     Timer.periodic(const Duration(seconds: 10), (timer) {
-      context.read<RevenueCollectionProvider>().backGroundSyncTransaction();
+      context.read<RevenueCollectionProvider>().backGroundSyncTransaction(user.taxCollectorUuid!);
     });
   }
   @override

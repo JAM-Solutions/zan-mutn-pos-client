@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
+import 'package:zanmutm_pos_client/src/models/user.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
@@ -22,10 +24,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late AppLocalizations? language;
   bool _gridView = true;
+  User? _user;
 
   @override
   void initState() {
     context.read<PosStatusProvider>().loadStatus();
+    _user = context.read<AppStateProvider>().user;
     super.initState();
   }
 
@@ -137,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             AppButton(
                 onPress: () =>
-                    context.read<PosStatusProvider>().syncTransactions(),
+                    context.read<PosStatusProvider>().syncTransactions(_user!.taxCollectorUuid!),
                 label: 'Synchronize')
           ],
         ),

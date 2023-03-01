@@ -64,9 +64,9 @@ class PosStatusProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  syncTransactions() async {
+  syncTransactions(String taxCollectorUuid) async {
     try {
-     bool synced =  await posTransactionService.sync();
+     bool synced =  await posTransactionService.sync(taxCollectorUuid);
      if(synced) {
        resetOfflineTime();
      }

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
-import 'package:zanmutm_pos_client/src/models/device_info.dart';
 import 'package:zanmutm_pos_client/src/models/pos_configuration.dart';
 import 'package:zanmutm_pos_client/src/services/pos_configuration_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
@@ -24,25 +23,18 @@ class PosConfigurationProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  loadPosConfig(AppDeviceInfo? device) async {
-    if (device == null) {
-      return;
-    }
+  loadPosConfig(String taxCollectorUuid) async {
     try {
-      posConfiguration = await posConfigService.queryFromDb(device.id);
+      posConfiguration = await posConfigService.queryFromDb(taxCollectorUuid);
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  fetchPosConfig(AppDeviceInfo? device) async {
-    if (device == null) {
-      notifyError('No device id');
-      return;
-    }
+  fetchPosConfig(String taxCollectorUuid) async {
     posConfigIsLoading = true;
     try {
-      var result = await posConfigService.fetchAndStore(device.id);
+      var result = await posConfigService.fetchAndStore(taxCollectorUuid);
       posConfiguration = result;
       posConfigIsLoading = false;
       notifyListeners();

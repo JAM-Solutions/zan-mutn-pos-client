@@ -12,9 +12,7 @@ PosConfiguration _$PosConfigurationFromJson(Map<String, dynamic> json) =>
       json['uuid'] as String,
       (json['offlineLimit'] as num).toDouble(),
       (json['amountLimit'] as num).toDouble(),
-      json['posDeviceId'] as int,
-      json['posDeviceName'] as String,
-      json['posDeviceNumber'] as String,
+      json['taxCollectorUuid'] as String,
       json['lastUpdate'] as String,
     );
 
@@ -24,8 +22,6 @@ Map<String, dynamic> _$PosConfigurationToJson(PosConfiguration instance) =>
       'uuid': instance.uuid,
       'offlineLimit': instance.offlineLimit,
       'amountLimit': instance.amountLimit,
-      'posDeviceId': instance.posDeviceId,
-      'posDeviceNumber': instance.posDeviceNumber,
-      'posDeviceName': instance.posDeviceName,
+      'taxCollectorUuid': instance.taxCollectorUuid,
       'lastUpdate': instance.lastUpdate,
     };
