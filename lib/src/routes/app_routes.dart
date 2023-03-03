@@ -19,6 +19,7 @@ import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/buildings/building_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/logout/logout_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/update/app_update_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_tab_navigation_shell.dart';
 import '../screens/pos_config/pos_config_screen.dart';
@@ -45,6 +46,7 @@ class AppRoute {
   static const String revenueSource = "/revenue-sources";
   static const String currency = "/currencies";
   static const String appUpdate = "/app-update";
+  static const String logout = "/logout";
   static const String addHouseHold = "/add-household";
   static const String viewHouseHold = "/view-household";
 
@@ -100,13 +102,19 @@ class AppRoute {
             const AppUpdateScreen(),
       ),
       GoRoute(
+        path: AppRoute.logout,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (BuildContext context, GoRouterState state) =>
+            const LogoutScreen(),
+      ),
+      GoRoute(
           path: AppRoute.addHouseHold,
           parentNavigatorKey: _rootNavigatorKey,
           builder: (BuildContext context, GoRouterState state) {
             Building building = state.extra as Building;
             return AddHouseHoldScreen(building: building);
           }),
-          GoRoute(
+      GoRoute(
           path: AppRoute.viewHouseHold,
           parentNavigatorKey: _rootNavigatorKey,
           builder: (BuildContext context, GoRouterState state) {
@@ -163,27 +171,16 @@ class AppRoute {
         // config if user not authenticated or no config loaded
         redirect: (context, state) {
           var appState = context.read<AppStateProvider>();
-          var posConfigState = context.read<PosConfigurationProvider>();
-          var fyState = context.read<FinancialYearProvider>();
-          var revenueState = context.read<RevenueSourceProvider>();
-          bool configured = posConfigState.posConfiguration != null &&
-              fyState.financialYear != null &&
-              revenueState.revenueSource.isNotEmpty;
-
-          final loggedIn = appState.isAuthenticated;
           //If user is
           final isLoginRoute = state.subloc == AppRoute.login;
-          final isConfigRoute = state.subloc.contains(AppRoute.config) ||
-              state.subloc.contains(AppRoute.financialYear) ||
-              state.subloc.contains(AppRoute.posConfig) ||
-              state.subloc.contains(AppRoute.revenueSource);
+          final isConfigRoute = state.subloc.contains(AppRoute.config);
           final toRoute = state.subloc;
           //If is state is not logged in return login
-          if (!loggedIn) {
+          if (!appState.isAuthenticated) {
             return isLoginRoute ? null : AppRoute.login;
-          } else if (loggedIn && !configured) {
+          } else if (appState.isAuthenticated && appState.configurationHasBeenLoaded && !appState.isConfigured) {
             return isConfigRoute ? null : AppRoute.config;
-          } else if (isLoginRoute && loggedIn) {
+          } else if ((isLoginRoute || isConfigRoute) && appState.isConfigured && appState.isAuthenticated) {
             return '/';
           } else {
             return null;

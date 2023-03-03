@@ -10,12 +10,14 @@ class RevenueSourceProvider extends ChangeNotifier with MessageNotifierMixin {
   final revenueSourceService = getIt<RevenueSourceService>();
 
   bool get revSourcesIsLoading => _revSourcesIsLoading;
+
   set revSourcesIsLoading(bool val) {
     _revSourcesIsLoading = val;
     notifyListeners();
   }
 
   List<RevenueSource> get revenueSource => _revenueSource;
+
   set revenueSource(List<RevenueSource> val) {
     _revenueSource = val;
     notifyListeners();
@@ -23,23 +25,25 @@ class RevenueSourceProvider extends ChangeNotifier with MessageNotifierMixin {
 
   loadRevenueSource(String taxCollectorUuid) async {
     try {
-      revenueSource = await  revenueSourceService.queryFromDb(taxCollectorUuid);
-    } catch(e) {
+      revenueSource = await revenueSourceService.queryFromDb(taxCollectorUuid);
+    } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-
-    fetchRevenueSource(String taxCollectorUuid) async {
+  Future<void> fetchRevenueSource(String taxCollectorUuid) async {
     revSourcesIsLoading = true;
     try {
-      revenueSource = await  revenueSourceService.fetchAndStore(taxCollectorUuid);
+      var result = await revenueSourceService.fetchAndStore(taxCollectorUuid);
       revSourcesIsLoading = false;
-    } catch(e) {
+      revenueSource = result;
+      if (result.isEmpty) {
+        notifyWarning("No revenue source found");
+      }
+    } catch (e) {
       debugPrint(e.toString());
       revSourcesIsLoading = false;
-   //   notifyError(e.toString());
+      notifyError(e.toString());
     }
   }
-
 }

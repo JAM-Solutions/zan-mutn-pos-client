@@ -31,10 +31,13 @@ class PosConfigurationProvider extends ChangeNotifier
     }
   }
 
-  fetchPosConfig(String taxCollectorUuid) async {
+  Future<void> fetchPosConfig(String taxCollectorUuid) async {
     posConfigIsLoading = true;
     try {
       var result = await posConfigService.fetchAndStore(taxCollectorUuid);
+      if(result == null) {
+        notifyError("No configuration found");
+      }
       posConfiguration = result;
       posConfigIsLoading = false;
       notifyListeners();

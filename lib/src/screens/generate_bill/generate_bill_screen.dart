@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
-import 'package:zanmutm_pos_client/src/models/format_type.dart';
 import 'package:zanmutm_pos_client/src/providers/generate_bill_provider.dart';
+import 'package:zanmutm_pos_client/src/screens/generate_bill/generate_bill_builder.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_tab_screen.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_detail_card.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_messages.dart';
+
+import '../../providers/app_state_provider.dart';
 
 class GenerateBillScreen extends StatefulWidget {
   const GenerateBillScreen({Key? key}) : super(key: key);
@@ -19,123 +18,27 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-        Duration.zero, () => context.read<GenerateBillProvider>().init());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GenerateBillProvider>(
-      builder: (context, provider, child) {
-        return MessageListener<GenerateBillProvider>(
-          child: AppBaseTabScreen(child: Builder(builder: (_) {
-            // If No internet connection or error has occured display
-            // Message and retry button
-            if (provider.retryError != null || !provider.posIsConnected) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(provider.retryError ?? 'No Internet connection'),
-                    AppButton(onPress: () => provider.retry(), label: 'Retry')
-                  ],
-                ),
-              );
-            } else {
-              // If transaction not synced return status showing synceing in progess
-              if (!provider.transactionSynced) {
-                return  Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: const [
-                      CircularProgressIndicator(),
-                      SizedBox(width: 16,),
-                      Text('Syncing Transactions....')
-                    ],
+    return ChangeNotifierProxyProvider<AppStateProvider, GenerateBillProvider>(
+        create: (_) => GenerateBillProvider(),
+        update: (_, userProvider, generateBillProvider) =>
+        generateBillProvider!..update(userProvider.user?.taxCollectorUuid),
+      child: Consumer<GenerateBillProvider>(
+        builder: (context, provider, child) {
+          return MessageListener<GenerateBillProvider>(
+            child: AppBaseTabScreen(
+                child: GenerateBillBuilder(
+                  provider: provider,
+                  child: const Center(
+                    child: Text('No Pending transaction found'),
                   ),
-                );
-              } else if (provider.transactionSynced &&
-                  !provider.allTransactionsCompiled &&
-                  provider.taxCollectorUnCompiled.isNotEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 8.0),
-                  child: Column(
-                    children: [
-                      AppDetailCard(
-                        title: 'Un compiled transactions',
-                        elevation: 0,
-                        data: {},
-                        columns: [
-                          AppDetailColumn(
-                              header: 'Total Amount',
-                              value: provider.taxCollectorUnCompiled
-                                  .map((e) => e.amount * e.quantity)
-                                  .fold(0.0,
-                                      (accum, subTotal) => accum + subTotal),
-                              format: FormatType.currency),
-                          AppDetailColumn(
-                              header: 'Total Transactions',
-                              value: provider.taxCollectorUnCompiled.length),
-                        ],
-                      ),
-                      AppButton(
-                          onPress: () => provider.compileTransactions(),
-                          label: 'Compile Transactions')
-                    ],
-                  ),
-                );
-              } else if (provider.allTransactionsCompiled &&
-                  !provider.allBillsGenerated) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                            itemBuilder: (BuildContext context, int idx) {
-                              var item = provider.taxCollectorCharges[idx];
-                              return AppDetailCard(
-                                title: '',
-                                elevation: 0,
-                                data: item.toJson(),
-                                columns: [
-                                  AppDetailColumn(
-                                      header: 'Amount',
-                                      value: item.amount,
-                                      format: FormatType.currency),
-                                  AppDetailColumn(
-                                      header: 'Total Transaction',
-                                      value:
-                                          item.transactions.length.toString()),
-                                ],
-                                actionBuilder: (_) => AppButton(
-                                  onPress: () => provider.generateBill(),
-                                  label: 'Generate Bill',
-                                ),
-                              );
-                            },
-                            separatorBuilder: (BuildContext context, int idx) {
-                              return const SizedBox(
-                                height: 4,
-                              );
-                            },
-                            itemCount: provider.taxCollectorCharges.length),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return const Center(
-                  child: Text('No Pending transaction found'),
-                );
-              }
-            }
-          })),
-        );
-      },
+                )),
+          );
+        },
+      ),
     );
   }
 }

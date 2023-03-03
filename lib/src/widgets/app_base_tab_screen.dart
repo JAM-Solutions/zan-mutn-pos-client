@@ -12,7 +12,16 @@ class AppBaseTabScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: child,
+      body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: const AssetImage("assets/images/logo.jpeg"),
+              fit: BoxFit.fitWidth,
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2), BlendMode.dstATop),
+            ),
+          ),
+          child: child),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

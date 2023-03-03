@@ -29,7 +29,7 @@ class FinancialYearProvider extends ChangeNotifier with MessageNotifierMixin {
     }
   }
 
-  fetchFinancialYear() async {
+  Future<void> fetchFinancialYear() async {
     fyIsLoading = true;
     try {
       financialYear = await  financialYearService.fetchAndStore();

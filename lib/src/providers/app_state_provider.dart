@@ -3,11 +3,14 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
+import 'package:zanmutm_pos_client/src/services/auth_service.dart';
+import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class AppStateProvider with ChangeNotifier {
   String? currentVersion;
   String? latestVersion;
   bool isAuthenticated = false;
+  bool isConfigured = false;
   bool sessionHasBeenFetched = false;
   bool configurationHasBeenLoaded = false;
   User? user;
@@ -15,9 +18,10 @@ class AppStateProvider with ChangeNotifier {
 
   static final AppStateProvider _instance = AppStateProvider._();
   factory AppStateProvider() => _instance;
+
   AppStateProvider._();
 
-  void sessionFetched(User? sessionUser) {
+  Future<void> sessionFetched(User? sessionUser) async {
     user = sessionUser;
     isAuthenticated = sessionUser != null;
     sessionHasBeenFetched = true;
@@ -36,14 +40,19 @@ class AppStateProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void userLoggedOut() async {
+  Future<void> userLoggedOut() async {
+    await getIt<AuthService>().logout();
+    debugPrint("logged out called");
     isAuthenticated = false;
     sessionHasBeenFetched = true;
+    configurationHasBeenLoaded = true;
+    isConfigured = false;
     notifyListeners();
   }
 
-  void setConfigLoaded() {
+  void setConfigLoaded({required isConfigured}) {
     configurationHasBeenLoaded = true;
+    this.isConfigured = isConfigured;
     notifyListeners();
   }
 

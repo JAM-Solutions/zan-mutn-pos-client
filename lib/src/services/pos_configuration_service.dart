@@ -29,7 +29,7 @@ class PosConfigurationService {
     try {
       var resp = await Api()
           .dio
-          .get("/tax-collector/$taxCollectorUuid/active-configurations");
+          .get("/tax-collectors/$taxCollectorUuid/active-configurations");
       if (resp.data != null && resp.data['data'] != null) {
         PosConfiguration config = PosConfiguration.fromJson({
           ...resp.data['data'],
@@ -61,7 +61,7 @@ class PosConfigurationService {
         whereArgs: [config.taxCollectorUuid],
         limit: 1);
     var result = await (existing.isNotEmpty
-        ? db.update(tableName, data)
+        ? db.update(tableName, data, where: "id=?", whereArgs: [existing.single['id']])
         : db.insert(tableName, data));
     return result;
   }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sunmi_printer_plus/enums.dart';
@@ -67,7 +66,7 @@ class RevenueCollectionProvider extends ChangeNotifier
     String receiptNumber = t.toIso8601String();
     // Try printing receipt if fail it return print error
     String? printError = await _printReceipt(items, user!, receiptNumber,
-        taxPayerValues['name'], dateFormat.format(t));
+        taxPayerValues['name'], dateFormat.format(t), user.taxCollectorUuid);
     //For each cart items map then to PosTransaction object
     List<PosTransaction> posTxns = items
         .map((item) => PosTransaction.fromCashCollection(
@@ -101,12 +100,17 @@ class RevenueCollectionProvider extends ChangeNotifier
   }
 
   Future<String?> _printReceipt(List<RevenueItem> items, User user,
-      String receiptNumber, String? payerName, String date) async {
+      String receiptNumber, String? payerName, String date, uuid) async {
+    // final String api = '/councils';
+    // AppStateProvider? adminHierarchyId;
+    // var id = AppStateProvider().user!.adminHierarchyId;
+    // var resp = await Api().dio.get('$api/$id');
+    // List councils = jsonDecode(resp.data['data']);
+
+    // Council? council;
+    // print(councils[1]['email']);
+    // print(council!.email == null ? 'm' : council.email.toString());
     bool? connected = await SunmiPrinter.bindingPrinter();
-//     final names = ['john', 'brian', 'denis'];
-// final code = names.join();
-// final barcode = Barcode.code128();
-//   final Uint8List bytes = barcode.toBytes(code);
     if (connected == true) {
       String total = currency.format(items
           .map((e) => e.quantity * e.amount)
@@ -126,13 +130,13 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR",
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText(
-          "(OR-TMSMIM) BARAZA LA MANISPAA ${user.adminHierarchyName}",
+          "(OR-TMSMIM) BARAZA LA MANISPAA \n ${user.adminHierarchyName}",
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('Simu: 00000',
+      await SunmiPrinter.printText('Simu: +255716340430',
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText('Email: ${user.email}',
+      await SunmiPrinter.printText('Email: mlandege.go.tz',
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.line();
@@ -165,7 +169,10 @@ class RevenueCollectionProvider extends ChangeNotifier
           'Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.lineWrap(1);
-      await SunmiPrinter.printQRCode('Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}');
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+      await SunmiPrinter.printQRCode(
+          'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}', size: 3
+          );
       await SunmiPrinter.lineWrap(4);
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);

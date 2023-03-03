@@ -1,4 +1,5 @@
 import 'package:zanmutm_pos_client/src/api/api.dart';
+import 'package:zanmutm_pos_client/src/models/bill.dart';
 import 'package:zanmutm_pos_client/src/models/pos_charge.dart';
 
 class PosChargeService {
@@ -12,7 +13,8 @@ class PosChargeService {
         .toList();
   }
 
-  Future<void> createBill(String taxCollectorUuid) async {
-     await Api().dio.post('$api/create-bill/$taxCollectorUuid');
+  Future<Bill> createBill(String taxCollectorUuid) async {
+    var resp =  await Api().dio.post('$api/create-bill/$taxCollectorUuid');
+    return Bill.fromJson(resp.data['data']);
   }
 }

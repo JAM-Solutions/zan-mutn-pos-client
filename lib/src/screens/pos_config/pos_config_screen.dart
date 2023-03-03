@@ -52,7 +52,7 @@ class _PosConfigScreenState extends State<PosConfigScreen> {
                       AppDetailColumn(
                           header: 'Amount Limit', value: config?.amountLimit),
                       AppDetailColumn(
-                          header: 'Last Update', value: 'lastUpdate'),
+                          header: 'Last Update', value: config?.lastUpdate),
                     ],
                     actionBuilder: (data) => IconButton(
                         splashRadius: 24,

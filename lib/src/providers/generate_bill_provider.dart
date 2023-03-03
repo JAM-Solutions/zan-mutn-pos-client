@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
+import 'package:zanmutm_pos_client/src/models/bill.dart';
 import 'package:zanmutm_pos_client/src/models/pos_charge.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/services/pos_charge_service.dart';
@@ -8,6 +9,7 @@ import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
+
   bool _posConnected = true;
   bool _transactionSynced = false;
   bool _allTransactionsCompiled = false;
@@ -16,7 +18,14 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
   List<PosCharge> _taxCollectorCharges = List.empty();
   List<PosTransaction> _taxCollectorUnCompiled = List.empty(growable: true);
   String? taxCollectorUuid;
+  Bill? _generatedBill;
+
   final posTransactionService = getIt<PosTransactionService>();
+
+  GenerateBillProvider(){
+    Future.delayed(
+        Duration.zero, () => init());
+  }
 
   /// This provider depends on current logged in user
   /// This function is used to update tax collector uuid when user state changed*/
@@ -28,6 +37,12 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
 
   set posIsConnected(bool val) {
     _posConnected = val;
+    notifyListeners();
+  }
+
+  Bill? get generatedBill => _generatedBill;
+  set generatedBill(Bill? value){
+    _generatedBill = value;
     notifyListeners();
   }
 
@@ -169,7 +184,7 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
 
   generateBill() async {
     try {
-      await getIt<PosChargeService>().createBill(taxCollectorUuid!);
+      generatedBill = await getIt<PosChargeService>().createBill(taxCollectorUuid!);
       loadCharges();
       notifyInfo("Bill generated successfully");
     } on NoInternetConnectionException {

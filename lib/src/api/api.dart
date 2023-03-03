@@ -62,6 +62,7 @@ class AppInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     debugPrint("Api response: [${response.statusCode}]");
+    debugPrint("Api body: ${response.data}");
     handler.next(response);
   }
 

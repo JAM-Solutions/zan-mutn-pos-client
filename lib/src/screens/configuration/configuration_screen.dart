@@ -24,20 +24,30 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
   User? _user;
+  late AppStateProvider _appState;
+  late PosConfigurationProvider _posConfigurationProvider;
+  late FinancialYearProvider _financialYearProvider;
+  late RevenueSourceProvider _revenueSourceProvider;
 
   @override
   void initState() {
     super.initState();
-    _user = context.read<AppStateProvider>().user;
+    _appState = context.read<AppStateProvider>();
+    _posConfigurationProvider = context.read<PosConfigurationProvider>();
+    _financialYearProvider = context.read<FinancialYearProvider>();
+    _revenueSourceProvider = context.read<RevenueSourceProvider>();
     Future.delayed(Duration.zero, () => _loadAllConfigs());
   }
 
-  _loadAllConfigs() {
-    context.read<PosConfigurationProvider>().fetchPosConfig(_user!.taxCollectorUuid!);
-    context.read<FinancialYearProvider>().fetchFinancialYear();
-    context
-        .read<RevenueSourceProvider>()
-        .fetchRevenueSource(_user!.taxCollectorUuid!);
+  _loadAllConfigs() async {
+    _user = _appState.user;
+    await _financialYearProvider.fetchFinancialYear();
+    await _posConfigurationProvider.fetchPosConfig(_user!.taxCollectorUuid!);
+    await _revenueSourceProvider.fetchRevenueSource(_user!.taxCollectorUuid!);
+    bool isConfigured = _posConfigurationProvider.posConfiguration != null &&
+        _revenueSourceProvider.revenueSource.isNotEmpty &&
+        _financialYearProvider.financialYear != null;
+    _appState.setConfigLoaded(isConfigured: isConfigured);
   }
 
   @override
@@ -57,10 +67,6 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               AppIconButton(
                   onPressed: () => getIt<AuthService>().logout(),
                   icon: Icons.logout),
-              AppIconButton(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DashboardScreen())),
-                  icon: Icons.home)
             ],
           ),
           child: ListView(
@@ -111,7 +117,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               ListTile(
                 title: const Text("Logout"),
                 leading: const Icon(Icons.logout_sharp),
-                onTap: () => getIt<AuthService>().logout(),
+                onTap: () {
+                  context.push(AppRoute.logout);
+                },
               ),
             ],
           ),

@@ -10,7 +10,6 @@ import 'package:zanmutm_pos_client/src/providers/currency_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/financial_year_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
@@ -19,7 +18,6 @@ import 'package:zanmutm_pos_client/src/screens/splash/splash_screen.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/theme/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'models/user.dart';
 
 class App extends StatefulWidget {
@@ -46,7 +44,6 @@ class _AppState extends State<App> {
     _posConfigurationProvider = context.read<PosConfigurationProvider>();
     _financialYearProvider = context.read<FinancialYearProvider>();
     _revenueSourceProvider = context.read<RevenueSourceProvider>();
-    _revenueSourceProvider = context.read<RevenueSourceProvider>();
     _currencyProvider = context.read<CurrencyProvider>();
     initApp();
   }
@@ -55,22 +52,27 @@ class _AppState extends State<App> {
     if (!mounted) return;
     User? user = await getIt<AuthService>().getSession();
     if (user == null) {
-      _appState.userLoggedOut();
+      await _appState.userLoggedOut();
     } else {
-      _appState.sessionFetched(user);
+      await _appState.sessionFetched(user);
+      _appState.loadAppVersion();
+      await _deviceInfoProvider.loadDevice();
+      await _posConfigurationProvider.loadPosConfig(user.taxCollectorUuid!);
+      await _revenueSourceProvider.loadRevenueSource(user.taxCollectorUuid!);
+      await _financialYearProvider.loadFinancialYear();
+      await _currencyProvider.loadCurrencies();
+      bool isConfigured = _posConfigurationProvider.posConfiguration != null &&
+          _revenueSourceProvider.revenueSource.isNotEmpty &&
+          _financialYearProvider.financialYear != null;
+      _appState.setConfigLoaded(isConfigured: isConfigured);
+      Timer.periodic(const Duration(seconds: 10), (timer) {
+        context
+            .read<RevenueCollectionProvider>()
+            .backGroundSyncTransaction(user.taxCollectorUuid!);
+      });
     }
-    _appState.loadAppVersion();
-    await _deviceInfoProvider.loadDevice();
-    await _posConfigurationProvider
-        .loadPosConfig(user!.taxCollectorUuid!);
-    await _financialYearProvider.loadFinancialYear();
-    await _revenueSourceProvider.loadRevenueSource(user.taxCollectorUuid!);
-    await _currencyProvider.loadCurrencies();
-    _appState.setConfigLoaded();
-    Timer.periodic(const Duration(seconds: 10), (timer) {
-      context.read<RevenueCollectionProvider>().backGroundSyncTransaction(user.taxCollectorUuid!);
-    });
   }
+
   @override
   Widget build(BuildContext context) {
     ///Select state of authentication from auth provider
@@ -78,8 +80,7 @@ class _AppState extends State<App> {
     ///else return a router app
     return Consumer<AppStateProvider>(
       builder: (context, provider, child) {
-        return provider.sessionHasBeenFetched &&
-                provider.configurationHasBeenLoaded
+        return provider.sessionHasBeenFetched && provider.sessionHasBeenFetched
             ? MaterialApp.router(
                 debugShowCheckedModeBanner: false,
                 routeInformationProvider: _router.routeInformationProvider,
