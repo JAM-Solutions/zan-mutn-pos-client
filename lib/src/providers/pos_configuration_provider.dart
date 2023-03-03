@@ -36,7 +36,7 @@ class PosConfigurationProvider extends ChangeNotifier
     try {
       var result = await posConfigService.fetchAndStore(taxCollectorUuid);
       if(result == null) {
-        notifyError("No configuration found");
+        notifyWarning("No configuration found");
       }
       posConfiguration = result;
       posConfigIsLoading = false;

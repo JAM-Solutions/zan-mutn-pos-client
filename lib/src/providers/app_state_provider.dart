@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:unique_identifier/unique_identifier.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
@@ -59,7 +62,6 @@ class AppStateProvider with ChangeNotifier {
   void loadAppVersion() async {
     final PackageInfo appInfo = await PackageInfo.fromPlatform();
     currentVersion = appInfo.version;
-    //load latest version from backend.
     notifyListeners();
   }
 }

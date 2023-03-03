@@ -18,9 +18,9 @@ class FinancialYearService {
         return year;
       }
     } on NoInternetConnectionException {
-      return null;
+      return (await queryFromDb());
     } on DeadlineExceededException {
-      return null;
+      return (await queryFromDb());
     } catch (e) {
       debugPrint(e.toString());
       throw ValidationException(e.toString());

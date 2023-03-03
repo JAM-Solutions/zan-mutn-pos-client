@@ -7,11 +7,14 @@ import 'package:zanmutm_pos_client/src/models/format_type.dart';
 class GenerateBillBuilder extends StatelessWidget {
   final GenerateBillProvider provider;
   final Widget child;
-  const GenerateBillBuilder({Key? key, required this.provider, required this.child}) : super(key: key);
+
+  const GenerateBillBuilder(
+      {Key? key, required this.provider, required this.child})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  Builder(builder: (_) {
+    return Builder(builder: (_) {
       // If No internet connection or error has occured display
       // Message and retry button
       if (provider.retryError != null || !provider.posIsConnected) {
@@ -44,8 +47,7 @@ class GenerateBillBuilder extends StatelessWidget {
             !provider.allTransactionsCompiled &&
             provider.taxCollectorUnCompiled.isNotEmpty) {
           return Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 8.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
             child: Column(
               children: [
                 AppDetailCard(
@@ -54,15 +56,14 @@ class GenerateBillBuilder extends StatelessWidget {
                   data: {},
                   columns: [
                     AppDetailColumn(
+                        header: 'Total Transactions',
+                        value: provider.taxCollectorUnCompiled.length),
+                    AppDetailColumn(
                         header: 'Total Amount',
                         value: provider.taxCollectorUnCompiled
                             .map((e) => e.amount * e.quantity)
-                            .fold(0.0,
-                                (accum, subTotal) => accum + subTotal),
+                            .fold(0.0, (accum, subTotal) => accum + subTotal),
                         format: FormatType.currency),
-                    AppDetailColumn(
-                        header: 'Total Transactions',
-                        value: provider.taxCollectorUnCompiled.length),
                   ],
                 ),
                 AppButton(
@@ -74,8 +75,7 @@ class GenerateBillBuilder extends StatelessWidget {
         } else if (provider.allTransactionsCompiled &&
             !provider.allBillsGenerated) {
           return Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               children: [
                 Expanded(
@@ -88,13 +88,12 @@ class GenerateBillBuilder extends StatelessWidget {
                           data: item.toJson(),
                           columns: [
                             AppDetailColumn(
+                                header: 'Total Transaction',
+                                value: item.transactions.length.toString()),
+                            AppDetailColumn(
                                 header: 'Amount',
                                 value: item.amount,
                                 format: FormatType.currency),
-                            AppDetailColumn(
-                                header: 'Total Transaction',
-                                value:
-                                item.transactions.length.toString()),
                           ],
                           actionBuilder: (_) => AppButton(
                             onPress: () => provider.generateBill(),
