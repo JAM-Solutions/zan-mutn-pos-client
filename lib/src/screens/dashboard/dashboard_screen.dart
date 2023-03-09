@@ -136,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               size: 48,
             ),
             Text(
-              'You have reach Offline $limit limit of $value $type please connect pos and sync transactions',
+              'You have reached Offline $limit limit of $value $type please connect pos and sync transactions',
               textAlign: TextAlign.center,
             ),
             AppButton(

@@ -43,74 +43,101 @@ class _LoginScreenState extends State<LoginScreen> {
     return Consumer<LoginProvider>(
       builder: (context, loginProvider, child) {
         return MessageListener<LoginProvider>(
-          child: AppBaseScreen(
-            isLoading: loginProvider.isLoading,
-            child: Center(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 16, right: 16, top: 10, bottom: 16),
+          child: loginProvider.numberLogs == 3
+              ? AppBaseScreen(
                   child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image(
-                            width: logoSize,
-                            height: logoSize,
-                            image: const AssetImage('assets/images/logo.jpeg')),
-                        const Text(
-                          'ZAN-MUTM-POS',
-                          style: TextStyle(
-                              color: Colors.blueGrey,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(context.read<AppStateProvider>().currentVersion ??
-                            ''),
-                        const SizedBox(
-                          height: 2,
-                        ),
-                        AppForm(
-                          formKey: _loginForm,
-                          controls: [
-                            const AppInputHidden(
-                              fieldName: 'grant_type',
-                              value: 'password',
-                            ),
-                            AppInputText(
-                              fieldName: 'username',
-                              label: 'Email',
-                              validators: [
-                                FormBuilderValidators.required(
-                                    errorText: "Email is required")
-                              ],
-                            ),
-                            AppInputText(
-                              fieldName: 'password',
-                              label: 'Password',
-                              obscureText: !loginProvider.showPassword,
-                              suffixIcon: IconButton(
-                                onPressed: () => loginProvider.showPassword =
-                                    !loginProvider.showPassword,
-                                icon: Icon(loginProvider.showPassword
-                                    ? Icons.remove_red_eye_sharp
-                                    : Icons.remove_red_eye_outlined),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.warning_rounded,
+                        size: 48,
+                      ),
+                      const Text(
+                        'You have reached 3 Trials, Another failed trial will deactivate the account',
+                        textAlign: TextAlign.center,
+                      ),
+                      AppButton(
+                        onPress: () {
+                          loginProvider.addLogs();
+                        },
+                        label: 'Continue',
+                      )
+                    ],
+                  ),
+                ))
+              : AppBaseScreen(
+                  isLoading: loginProvider.isLoading,
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, top: 10, bottom: 16),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(
+                                  width: logoSize,
+                                  height: logoSize,
+                                  image: const AssetImage(
+                                      'assets/images/logo.jpeg')),
+                              const Text(
+                                'ZAN-MUTM-POS',
+                                style: TextStyle(
+                                    color: Colors.blueGrey,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              validators: [
-                                FormBuilderValidators.required(
-                                    errorText: "Password is required")
-                              ],
-                            ),
-                            AppButton(onPress: _onSubmit, label: 'Login'),
-                          ],
+                              Text(context
+                                      .read<AppStateProvider>()
+                                      .currentVersion ??
+                                  ''),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              AppForm(
+                                formKey: _loginForm,
+                                controls: [
+                                  const AppInputHidden(
+                                    fieldName: 'grant_type',
+                                    value: 'password',
+                                  ),
+                                  AppInputText(
+                                    fieldName: 'username',
+                                    label: 'Email',
+                                    validators: [
+                                      FormBuilderValidators.required(
+                                          errorText: "Email is required")
+                                    ],
+                                  ),
+                                  AppInputText(
+                                    fieldName: 'password',
+                                    label: 'Password',
+                                    obscureText: !loginProvider.showPassword,
+                                    suffixIcon: IconButton(
+                                      onPressed: () =>
+                                          loginProvider.showPassword =
+                                              !loginProvider.showPassword,
+                                      icon: Icon(loginProvider.showPassword
+                                          ? Icons.remove_red_eye_sharp
+                                          : Icons.remove_red_eye_outlined),
+                                    ),
+                                    validators: [
+                                      FormBuilderValidators.required(
+                                          errorText: "Password is required")
+                                    ],
+                                  ),
+                                  AppButton(onPress: _onSubmit, label: 'Login'),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
         );
       },
     );
