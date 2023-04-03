@@ -60,6 +60,13 @@ dependencies:
     mqtt_client: ^9.7.4
     fluttertoast: ^8.2.1
     unique_identifier: ^0.3.0
+    flutter_launcher_icons: ^0.12.0
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/images/logo.png"
 
 dev_dependencies:
     flutter_test:

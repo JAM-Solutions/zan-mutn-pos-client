@@ -12,7 +12,7 @@
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:hasFragileUserData="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
