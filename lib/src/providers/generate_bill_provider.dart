@@ -9,7 +9,6 @@ import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 
 class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
-
   bool _posConnected = true;
   bool _transactionSynced = false;
   bool _allTransactionsCompiled = false;
@@ -22,9 +21,8 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
 
   final posTransactionService = getIt<PosTransactionService>();
 
-  GenerateBillProvider(){
-    Future.delayed(
-        Duration.zero, () => init());
+  GenerateBillProvider() {
+    Future.delayed(Duration.zero, () => init());
   }
 
   /// This provider depends on current logged in user
@@ -41,7 +39,8 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
   }
 
   Bill? get generatedBill => _generatedBill;
-  set generatedBill(Bill? value){
+
+  set generatedBill(Bill? value) {
     _generatedBill = value;
     notifyListeners();
   }
@@ -149,7 +148,9 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
     try {
       taxCollectorCharges =
           await getIt<PosChargeService>().getPendingCharges(taxCollectorUuid!);
-      allBillGenerated = taxCollectorCharges.isEmpty;
+      allBillGenerated = taxCollectorCharges.isEmpty ||
+          (taxCollectorCharges.length == 1 &&
+              taxCollectorCharges[0].amount == 0.00);
     } on NoInternetConnectionException {
       posIsConnected = false;
       return false;
@@ -184,7 +185,8 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
 
   generateBill() async {
     try {
-      generatedBill = await getIt<PosChargeService>().createBill(taxCollectorUuid!);
+      generatedBill =
+          await getIt<PosChargeService>().createBill(taxCollectorUuid!);
       loadCharges();
       notifyInfo("Bill generated successfully");
     } on NoInternetConnectionException {

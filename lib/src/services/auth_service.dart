@@ -30,9 +30,11 @@ class AuthService extends ChangeNotifier with MessageNotifierMixin {
     }
 
     String token = resp.data['access_token'];
+    String refreshToken = resp.data['refresh_token'];
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(AppConst.userKey, jsonEncode(user.toJson()));
     await prefs.setString(AppConst.tokenKey, token);
+    await prefs.setString(AppConst.refreshTokenKey, refreshToken);
     return user;
   }
 
@@ -41,9 +43,10 @@ class AuthService extends ChangeNotifier with MessageNotifierMixin {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString(AppConst.tokenKey);
+      final String? refreshToken = prefs.getString(AppConst.refreshTokenKey);
       final String? userString = prefs.getString(AppConst.userKey);
       User? user;
-      if (token != null && userString != null) {
+      if (token != null && userString != null && refreshToken != null) {
         user = User.fromJson(jsonDecode(userString));
       }
       return user;
@@ -57,5 +60,6 @@ class AuthService extends ChangeNotifier with MessageNotifierMixin {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(AppConst.userKey);
     await prefs.remove(AppConst.tokenKey);
+    await prefs.remove(AppConst.refreshTokenKey);
   }
 }

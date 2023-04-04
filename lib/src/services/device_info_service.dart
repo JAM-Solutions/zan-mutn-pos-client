@@ -9,7 +9,7 @@ class DeviceInfoService {
 
   AppDeviceInfo readAndroid(AndroidDeviceInfo build) {
     return AppDeviceInfo.fromJson({
-      'id': build.id,
+      'id': build.display,
       'brand': build.brand,
       'manufacturer': build.manufacturer,
       'model': build.model,
