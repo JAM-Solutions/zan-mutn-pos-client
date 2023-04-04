@@ -61,6 +61,7 @@ dependencies:
     fluttertoast: ^8.2.1
     unique_identifier: ^0.3.0
     flutter_launcher_icons: ^0.12.0
+    rename: ^2.1.1
 
 flutter_icons:
   android: "launcher_icon"

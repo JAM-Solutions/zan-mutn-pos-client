@@ -8,7 +8,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="zanmutm_pos_client"
+        android:label="ZAN-MUTM"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:hasFragileUserData="true"
