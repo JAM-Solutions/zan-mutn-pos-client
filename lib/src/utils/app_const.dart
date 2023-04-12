@@ -5,4 +5,5 @@ abstract class AppConst {
   static const offlineTime = 'ZANMUTM_OFFLINE_TIME';
   static const lastOffline = 'ZANMUTM_LAST_OFFLINE';
   static const registration = 'ZANMUTM_POS_REGISTRATION';
+  static const latestVersion = 'ZANMUTM_LATEST_VERSION';
 }

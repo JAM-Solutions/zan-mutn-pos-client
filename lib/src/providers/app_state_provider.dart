@@ -2,14 +2,16 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:unique_identifier/unique_identifier.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zanmutm_pos_client/src/api/api.dart';
+import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/services/auth_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
+import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
-class AppStateProvider with ChangeNotifier {
+class AppStateProvider with ChangeNotifier, MessageNotifierMixin {
   String? currentVersion;
   String? latestVersion;
   bool isAuthenticated = false;
@@ -61,7 +63,20 @@ class AppStateProvider with ChangeNotifier {
 
   void loadAppVersion() async {
     final PackageInfo appInfo = await PackageInfo.fromPlatform();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     currentVersion = appInfo.version;
+    try{
+     var resp = await Api().dio.get("/pos-app-releases/latest");
+     if(resp.statusCode == 200) {
+       latestVersion = resp.data['data'];
+       if(latestVersion != null && currentVersion !=null && latestVersion!.compareTo(currentVersion!) > 0) {
+         notifyInfo("New version $latestVersion! is available update");
+         prefs.setString(AppConst.latestVersion, latestVersion!);
+      }
+     }
+    } catch(e){
+      latestVersion =  prefs.getString(AppConst.latestVersion);
+    }
     notifyListeners();
   }
 }

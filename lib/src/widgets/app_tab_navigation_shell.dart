@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
@@ -70,22 +71,24 @@ class _AppTabNavigationShellState extends State<AppTabNavigationShell> {
             body: Selector<AppStateProvider, User>(
               selector: (context, state) => state.user!,
               builder: (context, user, child) {
-                return Column(
-                  children: [
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    Expanded(
-                        child: Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(18),
-                                  topRight: Radius.circular(18),
-                                )),
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            child: widget.child)),
-                  ],
+                return MessageListener<AppStateProvider>(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Expanded(
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(18),
+                                    topRight: Radius.circular(18),
+                                  )),
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                              child: widget.child)),
+                    ],
+                  ),
                 );
               },
             ),
