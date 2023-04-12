@@ -57,14 +57,15 @@ class RevenueCollectionProvider extends ChangeNotifier
     }
   }
 
-  Future<bool> saveTransaction(
-      List<RevenueItem> items,
-      User? user,
-      FinancialYear? year,
-      Map<String, dynamic> taxPayerValues) async {
+  Future<bool> saveTransaction(List<RevenueItem> items, User? user,
+      FinancialYear? year, Map<String, dynamic> taxPayerValues) async {
     //Use current time stamp as transaction id
     DateTime t = DateTime.now();
-    String transactionId = t.toIso8601String().replaceAll('-', '').replaceAll(':', '').replaceAll('.', '');
+    String transactionId = t
+        .toIso8601String()
+        .replaceAll('-', '')
+        .replaceAll(':', '')
+        .replaceAll('.', '');
     String receiptNumber = transactionId;
     // Try printing receipt if fail it return print error
     String? printError = await _printReceipt(items, user!, receiptNumber,
@@ -80,7 +81,8 @@ class RevenueCollectionProvider extends ChangeNotifier
             taxPayerValues,
             year!.id,
             printError == null,
-            printError))
+            printError,
+            posRegistration.id))
         .toList();
     try {
       // Save all pos transactions
@@ -173,8 +175,8 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
       await SunmiPrinter.printQRCode(
-          'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}', size: 3
-          );
+          'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
+          size: 3);
       await SunmiPrinter.lineWrap(4);
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);

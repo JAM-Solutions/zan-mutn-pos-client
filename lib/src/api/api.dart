@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/screens/login/login_service.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
@@ -23,13 +24,15 @@ class Api {
             int.parse(dotenv.env['API_CONNECTION_TIMEOUT'] ?? '10000'),
         receiveTimeout: int.parse(dotenv.env['API_RECEIVE_TIMEOUT'] ?? '15000'),
         sendTimeout: int.parse(dotenv.env['API_SEND_TIMEOUT'] ?? '10000')));
-    dio.interceptors.add(AppInterceptor());
+    dio.interceptors.add(AppInterceptor(dio));
     return dio;
   }
 }
 
 class AppInterceptor extends Interceptor {
-  AppInterceptor();
+  final Dio dio;
+
+  AppInterceptor(this.dio);
 
   //TODO use device serial number as cliendid and secret
   Codec<String, String> stringToBase64 = utf8.fuse(base64);
@@ -46,7 +49,9 @@ class AppInterceptor extends Interceptor {
       String token = accessToken;
       bool isExpired = JwtDecoder.isExpired(accessToken);
       if(isExpired) {
-        String? newToken = await _refreshToken(options);
+        String? newToken = await _refreshToken(options,  dio);
+        debugPrint(newToken);
+        debugPrint("-----new  toekn-----");
         token = newToken ?? token;
       }
       options.headers['Authorization'] = 'Bearer $token';
@@ -94,6 +99,9 @@ class AppInterceptor extends Interceptor {
                     err.response?.data['error_description'] ??
                     'Bad request');
           case 401:
+            // if(err.requestOptions.headers['refresh'] != null) {
+            //     appStateProvider.userLoggedOut();
+            // }
             throw UnauthorizedException(err.requestOptions);
           case 403:
             throw PermissionDenied(err.requestOptions);
@@ -115,20 +123,25 @@ class AppInterceptor extends Interceptor {
     return handler.next(err);
   }
 
-  Future<String?> _refreshToken(RequestOptions options) async {
+  Future<String?> _refreshToken(RequestOptions options, Dio dio) async {
     debugPrint("-----Refreshing token ----");
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? refreshToken =  prefs.getString(AppConst.refreshTokenKey);
     if (refreshToken == null) {
+      debugPrint("----Found null refresh token");
       return null;
     }
     try {
       options.headers['Authorization'] = 'Basic $clientAuth';
       options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-      var resp = await Dio(
-        BaseOptions(baseUrl: dotenv.env['API_SERVER'] ?? 'http://noapi'),
-      ).post(authenticationApi,
+      // var resp = await Dio(
+      //   BaseOptions(baseUrl: dotenv.env['API_SERVER'] ?? 'http://noapi'),
+      // ).post(authenticationApi,
+      //     options: Options(headers: options.headers),
+      //     data: {'grant_type': 'refresh_token', 'refresh_token': refreshToken});
+
+      var resp = await dio.post(authenticationApi,
           options: Options(headers: options.headers),
           data: {'grant_type': 'refresh_token', 'refresh_token': refreshToken});
       if(resp.statusCode == 200) {
@@ -138,7 +151,10 @@ class AppInterceptor extends Interceptor {
         await prefs.setString(AppConst.refreshTokenKey, refreshToken);
        return token;
       }
-    } catch (e) {
+    } on UnauthorizedException {
+      appStateProvider.userLoggedOut();
+    }
+    catch (e) {
       return null;
     }
     return null;

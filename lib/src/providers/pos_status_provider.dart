@@ -21,7 +21,7 @@ class PosStatusProvider with ChangeNotifier {
       offlineTime = 0;
     } else {
       Duration diff = now_.difference(lastOffline!);
-      offlineTime = offlineTime + diff.inSeconds;
+      offlineTime = offlineTime + diff.inMinutes;
       lastOffline = now_;
     }
     notifyListeners();

@@ -23,6 +23,7 @@ PosTransaction _$PosTransactionFromJson(Map<String, dynamic> json) =>
       json['isPrinted'] as bool,
       json['printError'] as String?,
       json['financialYearId'] as int?,
+      json['posDeviceId'] as int?,
       json['cashPayerAddress'] as String?,
     );
 
@@ -44,4 +45,5 @@ Map<String, dynamic> _$PosTransactionToJson(PosTransaction instance) =>
       'isPrinted': instance.isPrinted,
       'printError': instance.printError,
       'financialYearId': instance.financialYearId,
+      'posDeviceId': instance.posDeviceId,
     };

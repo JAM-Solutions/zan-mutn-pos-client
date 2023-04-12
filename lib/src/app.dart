@@ -70,7 +70,7 @@ class _AppState extends State<App> {
           _revenueSourceProvider.revenueSource.isNotEmpty &&
           _financialYearProvider.financialYear != null;
       _appState.setConfigLoaded(isConfigured: isConfigured);
-      Timer.periodic(const Duration(seconds: 10), (timer) {
+      Timer.periodic(const Duration(seconds: 600), (timer) {
         context
             .read<RevenueCollectionProvider>()
             .backGroundSyncTransaction(user.taxCollectorUuid!);

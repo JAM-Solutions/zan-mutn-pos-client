@@ -22,6 +22,7 @@ class PosTransaction {
   bool isPrinted;
   final String? printError;
   final int? financialYearId;
+  final int? posDeviceId;
 
   PosTransaction(
       this.id,
@@ -39,6 +40,7 @@ class PosTransaction {
       this.isPrinted,
       this.printError,
       this.financialYearId,
+      this.posDeviceId,
       this.cashPayerAddress);
 
   factory PosTransaction.fromJson(Map<String, dynamic> json) => _$PosTransactionFromJson(json);
@@ -54,7 +56,8 @@ class PosTransaction {
       Map<String, dynamic> payerDetail,
       int financialYearId,
       bool isPrinted,
-      String? printError
+      String? printError,
+      int posDeviceId
       )  {
     return PosTransaction(
         null,
@@ -72,6 +75,7 @@ class PosTransaction {
         isPrinted,
         printError,
         financialYearId,
+  posDeviceId,
         payerDetail['address']);
   }
 
