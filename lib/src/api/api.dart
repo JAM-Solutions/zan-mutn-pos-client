@@ -45,8 +45,6 @@ class AppInterceptor extends Interceptor {
     if (accessToken != null && !options.path.contains("/authenticate")) {
       String token = accessToken;
       bool isExpired = JwtDecoder.isExpired(accessToken);
-      debugPrint("&&&&&&&&&&&&&&&&&&&&&&&");
-      debugPrint(isExpired.toString());
       if(isExpired) {
         String? newToken = await _refreshToken(options);
         token = newToken ?? token;

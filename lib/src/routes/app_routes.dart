@@ -178,9 +178,13 @@ class AppRoute {
           //If is state is not logged in return login
           if (!appState.isAuthenticated) {
             return isLoginRoute ? null : AppRoute.login;
-          } else if (appState.isAuthenticated && appState.configurationHasBeenLoaded && !appState.isConfigured) {
+          } else if (appState.isAuthenticated &&
+              appState.configurationHasBeenLoaded &&
+              !appState.isConfigured) {
             return isConfigRoute ? null : AppRoute.config;
-          } else if ((isLoginRoute || isConfigRoute) && appState.isConfigured && appState.isAuthenticated) {
+          } else if ((isLoginRoute || isConfigRoute) &&
+              appState.isConfigured &&
+              appState.isAuthenticated) {
             return '/';
           } else {
             return null;

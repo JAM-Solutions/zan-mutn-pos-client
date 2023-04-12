@@ -4,4 +4,5 @@ abstract class AppConst {
   static const refreshTokenKey = 'ZANMUTM_REFRESH_TOKEN';
   static const offlineTime = 'ZANMUTM_OFFLINE_TIME';
   static const lastOffline = 'ZANMUTM_LAST_OFFLINE';
+  static const registration = 'ZANMUTM_POS_REGISTRATION';
 }

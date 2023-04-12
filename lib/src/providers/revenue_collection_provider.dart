@@ -7,6 +7,7 @@ import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
+import 'package:zanmutm_pos_client/src/models/pos_registration.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
@@ -21,11 +22,12 @@ class RevenueCollectionProvider extends ChangeNotifier
   List<RevenueSource> _filteredSources = List.empty(growable: true);
   List<RevenueSource> _allSources = List.empty(growable: true);
   final PosStatusProvider posStatusProvider;
+  final PosRegistration posRegistration;
   final posTransactionService = getIt<PosTransactionService>();
 
   String? _searchVal;
 
-  RevenueCollectionProvider(this.posStatusProvider);
+  RevenueCollectionProvider(this.posStatusProvider, this.posRegistration);
 
   List<RevenueSource> get revenueSources => _filteredSources;
 
@@ -62,8 +64,8 @@ class RevenueCollectionProvider extends ChangeNotifier
       Map<String, dynamic> taxPayerValues) async {
     //Use current time stamp as transaction id
     DateTime t = DateTime.now();
-    String transactionId = t.toIso8601String();
-    String receiptNumber = t.toIso8601String();
+    String transactionId = t.toIso8601String().replaceAll('-', '').replaceAll(':', '').replaceAll('.', '');
+    String receiptNumber = transactionId;
     // Try printing receipt if fail it return print error
     String? printError = await _printReceipt(items, user!, receiptNumber,
         taxPayerValues['name'], dateFormat.format(t), user.taxCollectorUuid);
