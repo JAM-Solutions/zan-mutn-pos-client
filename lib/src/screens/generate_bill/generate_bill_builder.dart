@@ -22,7 +22,7 @@ class GenerateBillBuilder extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(provider.retryError ?? 'No Internet connection'),
+              Text(provider.retryError ?? 'No Internet connection',textAlign: TextAlign.center),
               AppButton(onPress: () => provider.retry(), label: 'Retry')
             ],
           ),
@@ -39,7 +39,7 @@ class GenerateBillBuilder extends StatelessWidget {
                 SizedBox(
                   width: 16,
                 ),
-                Text('Syncing Transactions....')
+                Text('Syncing Transactions....', textAlign: TextAlign.center)
               ],
             ),
           );

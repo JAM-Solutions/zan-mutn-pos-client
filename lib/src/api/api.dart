@@ -99,12 +99,9 @@ class AppInterceptor extends Interceptor {
                     err.response?.data['error_description'] ??
                     'Bad request');
           case 401:
-            // if(err.requestOptions.headers['refresh'] != null) {
-            //     appStateProvider.userLoggedOut();
-            // }
             throw UnauthorizedException(err.requestOptions);
           case 403:
-            throw PermissionDenied(err.requestOptions);
+            throw PermissionDenied(err.requestOptions,  err.response?.data['message']);
           case 404:
             throw NotFoundException(err.requestOptions);
           case 409:
@@ -192,11 +189,12 @@ class ConflictException extends DioError {
 }
 
 class PermissionDenied extends DioError {
-  PermissionDenied(RequestOptions r) : super(requestOptions: r);
+  final String _message;
+  PermissionDenied(RequestOptions r, this._message) : super(requestOptions: r);
 
   @override
   String toString() {
-    return 'Permission Denied';
+    return _message;
   }
 }
 

@@ -33,7 +33,7 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
                 child: GenerateBillBuilder(
                   provider: provider,
                   child: const Center(
-                    child: Text('No Pending transaction found'),
+                    child: Text('No Pending transaction found',textAlign: TextAlign.center,),
                   ),
                 )),
           );

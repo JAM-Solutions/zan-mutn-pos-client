@@ -66,6 +66,7 @@ class RevenueItems extends StatelessWidget {
 
   _buildTitle(RevenueSource item) => Text(
         item.name,
+        textAlign: TextAlign.center,
         style: const TextStyle(
             fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.bold),
       );
@@ -104,19 +105,23 @@ class RevenueItems extends StatelessWidget {
                   onTap: () => AddRevenueItemDialog(context).addItem(item),
                   child: Card(
                       elevation: 2,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildAvatar(item),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          _buildTitle(item),
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          _buildSubTitle(item)
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            _buildAvatar(item),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            _buildTitle(item),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            _buildSubTitle(item)
+                          ],
+                        ),
                       )),
                 ))
             .toList(),

@@ -206,7 +206,11 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
     if (!_transactionSynced) {
       syncAndLoad(taxCollectorUuid!);
       return;
-    } else if (!_allTransactionsCompiled) {
+    }
+    else if (_taxCollectorUnCompiled.isEmpty) {
+      _getUnCompiled();
+    }
+    else if (!_allTransactionsCompiled) {
       compileTransactions();
       return;
     } else if (!_allBillsGenerated) {
