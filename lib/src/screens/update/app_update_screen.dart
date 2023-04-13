@@ -84,7 +84,7 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
                           value: _progress.toDouble(),
                         ),
                         Text(_downloadStatus == 2
-                            ? 'Downloading..'
+                            ? '$_progress% Downloading..'
                             : 'Download Completed'),
                         if (_progress == 100 && _downloadStatus == 3)
                           AppButton(
