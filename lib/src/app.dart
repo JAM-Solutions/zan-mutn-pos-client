@@ -54,13 +54,13 @@ class _AppState extends State<App> {
 
   Future<void> initApp() async {
     if (!mounted) return;
+    _appState.loadAppVersion();
     _registrationProvider.loadRegistration();
     User? user = await getIt<AuthService>().getSession();
     if (user == null) {
       await _appState.userLoggedOut();
     } else {
       await _appState.sessionFetched(user);
-      _appState.loadAppVersion();
       await _deviceInfoProvider.loadDevice();
       await _posConfigurationProvider.loadPosConfig(user.taxCollectorUuid!);
       await _revenueSourceProvider.loadRevenueSource(user.taxCollectorUuid!);
