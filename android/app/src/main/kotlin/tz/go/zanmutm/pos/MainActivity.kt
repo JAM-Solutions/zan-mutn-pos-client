@@ -1,4 +1,4 @@
-package com.example.zanmutm_pos_client
+package tz.go.zanmutm.pos
 
 import io.flutter.embedding.android.FlutterActivity
 

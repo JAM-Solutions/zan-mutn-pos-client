@@ -14,7 +14,7 @@
         android:hasFragileUserData="true"
         android:icon="@mipmap/launcher_icon">
         <activity
-            android:name=".MainActivity"
+            android:name="tz.go.zanmutm.pos.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
