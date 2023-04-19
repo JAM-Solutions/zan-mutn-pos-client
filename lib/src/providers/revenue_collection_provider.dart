@@ -1,14 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:mobiiot_printer/mobiiot_printer.dart';
 import 'package:sunmi_printer_plus/enums.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import 'package:sunmi_printer_plus/sunmi_style.dart';
 import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
+import 'package:zanmutm_pos_client/src/models/device_info.dart';
 import 'package:zanmutm_pos_client/src/models/financial_year.dart';
 import 'package:zanmutm_pos_client/src/models/pos_registration.dart';
 import 'package:zanmutm_pos_client/src/models/pos_transaction.dart';
+import 'package:zanmutm_pos_client/src/models/receipt.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
@@ -23,11 +26,12 @@ class RevenueCollectionProvider extends ChangeNotifier
   List<RevenueSource> _allSources = List.empty(growable: true);
   final PosStatusProvider posStatusProvider;
   final PosRegistration posRegistration;
+  final AppDeviceInfo appDeviceInfo;
   final posTransactionService = getIt<PosTransactionService>();
 
   String? _searchVal;
 
-  RevenueCollectionProvider(this.posStatusProvider, this.posRegistration);
+  RevenueCollectionProvider(this.posStatusProvider, this.posRegistration, this.appDeviceInfo);
 
   List<RevenueSource> get revenueSources => _filteredSources;
 
@@ -69,7 +73,7 @@ class RevenueCollectionProvider extends ChangeNotifier
     String receiptNumber = transactionId;
     // Try printing receipt if fail it return print error
     String? printError = await _printReceipt(items, user!, receiptNumber,
-        taxPayerValues['name'], dateFormat.format(t), user.taxCollectorUuid);
+        taxPayerValues['name'], dateFormat.format(t), user.taxCollectorUuid,appDeviceInfo.model);
     //For each cart items map then to PosTransaction object
     List<PosTransaction> posTxns = items
         .map((item) => PosTransaction.fromCashCollection(
@@ -104,56 +108,73 @@ class RevenueCollectionProvider extends ChangeNotifier
   }
 
   Future<String?> _printReceipt(List<RevenueItem> items, User user,
-      String receiptNumber, String? payerName, String date, uuid) async {
-    // final String api = '/councils';
-    // AppStateProvider? adminHierarchyId;
-    // var id = AppStateProvider().user!.adminHierarchyId;
-    // var resp = await Api().dio.get('$api/$id');
-    // List councils = jsonDecode(resp.data['data']);
+      String receiptNumber, String? payerName, String date, uuid, String brand) async {
+     Uint8List? logo;
+     try {
+        logo = (await rootBundle.load('assets/images/logo.jpeg'))
+           .buffer
+           .asUint8List();
+     } catch (e) {
+       debugPrint(e.toString());
+     }
+     String gov = "SERIKALI YA MAPINDUZI ZANZIBAR";
+     String council = "(OR-TMSMIM) BARAZA LA MANISPAA \n ${user.adminHierarchyName}";
+     String phone = 'Simu: +255716340430';
+     String email = 'Email: mlandege.go.tz';
+     String title = 'STAKABADHI YA MALIPO';
+     String recNumber = 'Namba ya risit: $receiptNumber';
+     String payer = 'Jina la Mlipaji: ${payerName ?? ''}';
+     String total = currency.format(items
+         .map((e) => e.quantity * e.amount)
+         .fold(0.0, (acc, next) => acc + next));
+     String receTotal = 'Malipo kwa Tarakimu: $total';
+     String status = 'Hali ya Malipo: PAID';
+     String paid = 'Jumla $total';
+     String paidDate = 'Tarehe ya Kutoa risiti: $date';
+     String printedBy = 'Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
+     String qr = 'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
+     Receipt receipt = Receipt(logo, gov, council, phone, email, title, recNumber, payer, total, receTotal, status, paid, paidDate, printedBy, qr);
+     if(brand.toUpperCase().contains('V2_PRO')) {
+       return (await printSunMi(receipt, items));
+     } else if(brand.contains('MP3') || brand.contains('MP4')) {
+       return (await printMobiIot(receipt, items));
+     } else {
+       return "Printer not implemented";
+     }
+  }
 
-    // Council? council;
-    // print(councils[1]['email']);
-    // print(council!.email == null ? 'm' : council.email.toString());
+  Future<String?> printSunMi(Receipt r, List<RevenueItem> items) async {
     bool? connected = await SunmiPrinter.bindingPrinter();
     if (connected == true) {
-      String total = currency.format(items
-          .map((e) => e.quantity * e.amount)
-          .fold(0.0, (acc, next) => acc + next));
       await SunmiPrinter.startTransactionPrint(true);
-      try {
-        Uint8List bytes = (await rootBundle.load('assets/images/logo.jpeg'))
-            .buffer
-            .asUint8List();
+      if(r.logo != null) {
         await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
-        await SunmiPrinter.printImage(bytes);
-      } catch (e) {
-        debugPrint(e.toString());
+        await SunmiPrinter.printImage(r.logo!);
       }
-
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText("SERIKALI YA MAPINDUZI ZANZIBAR",
+      await SunmiPrinter.printText(r.gov,
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText(
-          "(OR-TMSMIM) BARAZA LA MANISPAA \n ${user.adminHierarchyName}",
+          r.council,
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('Simu: +255716340430',
+      await SunmiPrinter.printText(r.phone,
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText('Email: mlandege.go.tz',
+      await SunmiPrinter.printText(r.email,
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('STAKABADHI YA MALIPO',
+      await SunmiPrinter.printText(r.title,
           style: SunmiStyle(bold: true));
       await SunmiPrinter.setAlignment(SunmiPrintAlign.LEFT);
-      await SunmiPrinter.printText('Namba ya risit: $receiptNumber',
+      await SunmiPrinter.printText(r.recNumber,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Jina la Mlipaji: ${payerName ?? ''}',
+      await SunmiPrinter.printText(r.payer,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Malipo kwa Tarakimu: $total',
+      await SunmiPrinter.printText(r.receTotal,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
-      await SunmiPrinter.printText('Hali ya Malipo: PAID',
+      await SunmiPrinter.printText(r.status,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.lineWrap(1); // Jump 2 lines
       // Center align
@@ -164,27 +185,80 @@ class RevenueCollectionProvider extends ChangeNotifier
                 align: SunmiPrintAlign.RIGHT, fontSize: SunmiFontSize.MD));
       }
       await SunmiPrinter.line();
-      await SunmiPrinter.printText('Jumla $total',
+      await SunmiPrinter.printText(r.paid,
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText('Tarehe ya Kutoa risiti: $date',
+      await SunmiPrinter.printText(r.paidDate,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.printText(
-          'Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
+          r.printedBy,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
-      await SunmiPrinter.printQRCode(
-          'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}',
+      await SunmiPrinter.printQRCode(r.qr,
           size: 3);
       await SunmiPrinter.lineWrap(4);
       await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
       await SunmiPrinter.exitTransactionPrint(true);
+      await SunmiPrinter.unbindingPrinter();
       return null;
     }
     debugPrint("not connected");
     return 'Print not connected';
   }
+
+  Future<String?> printMobiIot(Receipt r, List<RevenueItem> items) async {
+    String line = "--------------------------------";
+    bool? connected = await MobiiotPrinter.bindingPrinter();
+    if (connected == true) {
+      if(r.logo != null) {
+        await MobiiotPrinter.setAlignment(1);
+        await MobiiotPrinter.printImage(r.logo!);
+      }
+      await MobiiotPrinter.lineWrap(2);
+      await MobiiotPrinter.printText(r.gov,
+          style: {"bold": true,  "align": 1});
+      await MobiiotPrinter.printText(
+          r.council,
+          style: {"bold": true,  "align": 1});
+      await MobiiotPrinter.printText(line,style: {"align": 1});
+      await MobiiotPrinter.printText(r.phone,
+          style: { "font": 1, "align": 1});
+      await MobiiotPrinter.printText(r.email,
+          style: { "font": 1, "align": 1});
+      await MobiiotPrinter.printText(line,style: {"align": 1});
+      await MobiiotPrinter.printText(r.title,
+          style: {"bold": true,  "align": 1});
+      await MobiiotPrinter.printText(r.recNumber);
+      await MobiiotPrinter.printText(r.payer);
+      await MobiiotPrinter.printText(r.receTotal);
+      await MobiiotPrinter.printText(r.status);
+      await MobiiotPrinter.lineWrap(1); // Jump 2 lines
+      // Center align
+      for (var item in items) {
+        await MobiiotPrinter.printText(
+            '${item.revenueSource.name}   ${item.quantity} x ${currency.format(item.amount)}',
+            style: {"align": 2});
+      }
+      await MobiiotPrinter.printText(line,style: {"align": 1});
+      await MobiiotPrinter.printText(r.paid,
+          style: {"align": 2});
+      await MobiiotPrinter.lineWrap(2);
+      await MobiiotPrinter.printText(r.paidDate);
+      await MobiiotPrinter.printText(r.printedBy);
+      await MobiiotPrinter.lineWrap(1);
+      await MobiiotPrinter.setAlignment(1);
+      // await SunmiPrinter.printQRCode(r.qr,
+      //     size: 3);
+      await MobiiotPrinter.lineWrap(4);
+      await MobiiotPrinter.unbindingPrinter();
+      return null;
+    }
+    debugPrint("not connected");
+    return 'Print not connected';
+  }
+
+
 
   backGroundSyncTransaction(String taxCollectorUuid) async {
     try {

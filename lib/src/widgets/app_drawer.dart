@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/device_info_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -34,8 +35,8 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width / 3;
-    return Consumer<AppStateProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<AppStateProvider, DeviceInfoProvider>(
+      builder: (context, provider,d, child) {
         var user = provider.user;
         return Drawer(
             backgroundColor: Colors.white,
@@ -55,7 +56,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                     const SizedBox(height: 4),
                     Text(user?.adminHierarchyName ?? ''),
-                    Text(provider.currentVersion ?? '')
+                    Text(provider.currentVersion ?? ''),
+                    Text(d.deviceInfo?.brand ?? ' '),
+                    Text(d.deviceInfo?.model ?? ' ')
                   ],
                 ),
                 const Divider(),

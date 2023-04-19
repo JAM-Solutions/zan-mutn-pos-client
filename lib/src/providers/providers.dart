@@ -38,7 +38,7 @@ final appProviders = [
   ),
   ChangeNotifierProxyProvider<RevenueSourceProvider, RevenueCollectionProvider>(
       create: (_) => RevenueCollectionProvider(_.read<PosStatusProvider>(),
-          _.read<PosRegistrationProvider>().posRegistration!),
+          _.read<PosRegistrationProvider>().posRegistration!, _.read<DeviceInfoProvider>().deviceInfo!),
       update: (_, revProvider, dashProvider) =>
           dashProvider!..update(revProvider)),
   ChangeNotifierProxyProvider<AppStateProvider, BillProvider>(
