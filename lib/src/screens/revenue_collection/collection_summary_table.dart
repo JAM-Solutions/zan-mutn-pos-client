@@ -12,7 +12,7 @@ class CollectionSummaryTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var language = AppLocalizations.of(context);
-    return DataTable(columnSpacing: 14, columns: [
+    return DataTable(columnSpacing: 10, columns: [
       _getTableHeader(language?.revenue ?? "Revenue"),
       _getTableHeader(language?.quantity ?? "Quantity"),
       _getTableHeader(language?.amount ?? "Amount"),
@@ -37,6 +37,7 @@ class CollectionSummaryTable extends StatelessWidget {
             currency.format(items
                 .map((e) => e.amount * e.quantity)
                 .fold(0.0, (value, next) => value + next)),
+            textAlign: TextAlign.right,
             style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)))
       ])
     ]);
@@ -45,6 +46,8 @@ class CollectionSummaryTable extends StatelessWidget {
   _getTableHeader(String label, {double? width}) {
     var h = Text(
       label,
+      softWrap: true,
+      overflow: TextOverflow.ellipsis,
       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
     );
     return DataColumn(label: h);
@@ -53,6 +56,7 @@ class CollectionSummaryTable extends StatelessWidget {
   _getTableCell(String value, {double? width}) {
     var h = Text(
       value,
+      softWrap: true,
       style: const TextStyle(fontSize: 11),
     );
     return DataCell(h);

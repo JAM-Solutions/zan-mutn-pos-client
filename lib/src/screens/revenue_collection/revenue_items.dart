@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/revenue_collection_provider.dart';
+import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
+import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/screens/revenue_collection/add_revenue_item_dialog.dart';
+import 'package:zanmutm_pos_client/src/screens/revenue_collection/add_revenue_item_screen.dart';
+import 'package:zanmutm_pos_client/src/screens/revenue_collection/collect_cash_screen.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 
 class RevenueItems extends StatelessWidget {
@@ -10,6 +15,13 @@ class RevenueItems extends StatelessWidget {
   final TextEditingController controller = TextEditingController();
 
   RevenueItems({Key? key, this.gridView = true}) : super(key: key);
+
+  openAddItemPage(RevenueSource source) async {
+    final result = await appRoute.openDialogPage(AddRevenueItemScreen(source: source));
+    if(result != false && result is RevenueItem) {
+      final saved = await appRoute.openDialogPage(CollectCashScreen(items: [result]));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +98,8 @@ class RevenueItems extends StatelessWidget {
             leading: _buildAvatar(item),
             title: _buildTitle(item),
             trailing: _buildSubTitle(item),
-            onTap: () => AddRevenueItemDialog(context).addItem(item),
+            // onTap: () => AddRevenueItemDialog(context).addItem(item),
+            onTap: () => openAddItemPage(item),
           );
         },
         separatorBuilder: (BuildContext context, int index) {
@@ -102,7 +115,8 @@ class RevenueItems extends StatelessWidget {
             crossAxisCount: 2, crossAxisSpacing: 4, mainAxisSpacing: 4),
         children: revenueSources
             .map((item) => InkWell(
-                  onTap: () => AddRevenueItemDialog(context).addItem(item),
+                  // onTap: () => AddRevenueItemDialog(context).addItem(item),
+                  onTap: () => openAddItemPage(item),
                   child: Card(
                       elevation: 2,
                       child: Padding(

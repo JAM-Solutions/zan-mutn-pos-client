@@ -146,6 +146,16 @@ class AppRoute {
             page: BillScreen()),
       ];
 
+  Future? openDialogPage(Widget page) {
+    return _rootNavigatorKey.currentState?.push(MaterialPageRoute(
+        fullscreenDialog: true,
+        settings: const RouteSettings(),
+        builder: (context) => page));
+  }
+
+  void closeDialogPage(dynamic data) {
+    _rootNavigatorKey.currentState!.pop(data);
+  }
   //Route mapping
   GoRouter getRoutes() => GoRouter(
         //Listen to change of auth state from auth provider
