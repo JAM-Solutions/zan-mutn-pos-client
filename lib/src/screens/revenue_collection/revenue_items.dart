@@ -78,7 +78,8 @@ class RevenueItems extends StatelessWidget {
 
   _buildTitle(RevenueSource item) => Text(
         item.name,
-        textAlign: TextAlign.center,
+        softWrap: true,
+        textAlign: gridView ? TextAlign.center : TextAlign.left,
         style: const TextStyle(
             fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.bold),
       );
@@ -97,7 +98,7 @@ class RevenueItems extends StatelessWidget {
           return ListTile(
             leading: _buildAvatar(item),
             title: _buildTitle(item),
-            trailing: _buildSubTitle(item),
+            subtitle: _buildSubTitle(item),
             // onTap: () => AddRevenueItemDialog(context).addItem(item),
             onTap: () => openAddItemPage(item),
           );
@@ -117,26 +118,27 @@ class RevenueItems extends StatelessWidget {
             .map((item) => InkWell(
                   // onTap: () => AddRevenueItemDialog(context).addItem(item),
                   onTap: () => openAddItemPage(item),
-                  child: Card(
-                      elevation: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _buildAvatar(item),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            _buildTitle(item),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            _buildSubTitle(item)
-                          ],
-                        ),
-                      )),
+                  child: Column(children: [
+                    Card(
+                        elevation: 2,
+                        child: Container(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              _buildAvatar(item),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              _buildTitle(item),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              _buildSubTitle(item)
+                            ],
+                          ),
+                        )) ],)
                 ))
             .toList(),
       );

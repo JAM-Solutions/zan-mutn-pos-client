@@ -27,18 +27,24 @@ class _CollectCashScreenState extends State<CollectCashScreen> {
   final GlobalKey<FormBuilderState> _taxPayerForm = GlobalKey<FormBuilderState>();
 
   saveTransactions() async {
-    var user = context.read<AppStateProvider>().user;
-    var year = context.read<FinancialYearProvider>().financialYear;
-    var taxCollectionProvider = context.read<RevenueCollectionProvider>();
-    var taxPayerValues = _taxPayerForm.currentState!.value;
+    if (_taxPayerForm.currentState?.saveAndValidate() == true) {
+      var user = context
+          .read<AppStateProvider>()
+          .user;
+      var year = context
+          .read<FinancialYearProvider>()
+          .financialYear;
+      var taxCollectionProvider = context.read<RevenueCollectionProvider>();
+      var taxPayerValues = _taxPayerForm.currentState!.value;
 
-    bool success = await taxCollectionProvider.saveTransaction(
-        widget.items,
-        user,
-        year,
-        taxPayerValues);
-    if (success) {
-      appRoute.closeDialogPage(true);
+      bool success = await taxCollectionProvider.saveTransaction(
+          widget.items,
+          user,
+          year,
+          taxPayerValues);
+      if (success) {
+        appRoute.closeDialogPage(true);
+      }
     }
   }
 

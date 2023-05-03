@@ -58,71 +58,74 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
       appBar: AppBar(
         title: const Text("Collect Revenue"),
       ),
-      child: Column(
-        children: [
-          ListTile(
-            dense: true,
-            title: Text(widget.source.name),
-            contentPadding: const EdgeInsets.all(0.0),
-            subtitle: Text(widget.source.gfsCode),
-            leading: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor,
-              child: Text(widget.source.name.substring(0, 1)),
+      child: SingleChildScrollView(
+        reverse: true,
+        child: Column(
+          children: [
+            ListTile(
+              dense: true,
+              title: Text(widget.source.name),
+              contentPadding: const EdgeInsets.all(0.0),
+              subtitle: Text(widget.source.gfsCode),
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Text(widget.source.name.substring(0, 1)),
+              ),
             ),
-          ),
-          AppForm(
-            initialValue: {
-              'amount': widget.source.unitCost ?? 0.00,
-              'quantity': 1
-            },
-            formKey: _addItemForm,
-            controls: [
-              AppInputHidden(
-                fieldName: 'revenueSource',
-                value: widget.source.toJson(),
-              ),
-              AppInputNumber(
-                name: 'amount',
-                label: "Amount",
-                enabled: !(widget.source.unitCost != null &&
-                    widget.source.unitCost! > 0),
-                validators: [
-                  FormBuilderValidators.required(errorText: "Amount is required"),
-                  FormBuilderValidators.min(widget.source.unitCost ?? 500,
-                      errorText: 'Minimum is ${widget.source.unitCost ?? 500}')
-                ],
-                onChanged: (val) => calcSubTotal(),
-              ),
-              AppInputInteger(
-                name: 'quantity',
-                initialValue: 1,
-                label: "Quantity",
-                suffix: widget.source.unitName != null
-                    ? Text(widget.source.unitName!)
-                    : null,
-                validators: [
-                  FormBuilderValidators.required(
-                      errorText: "Quantity is required"),
-                  FormBuilderValidators.min(1, errorText: 'Minimum 1')
-                ],
-                onChanged: (val) => calcSubTotal(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Text(
-                    "Sub Total: ",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(currency.format(subTotal))
-                ],
-              ),
-              AppInputHidden(
-                  fieldName: 'revenueSourceId', value: widget.source.id),
-              AppButton(label: 'Collect Cash', onPress: () => addItem())
-            ],
-          ),
-        ],
+            AppForm(
+              initialValue: {
+                'amount': widget.source.unitCost ?? 0.00,
+                'quantity': 1
+              },
+              formKey: _addItemForm,
+              controls: [
+                AppInputHidden(
+                  fieldName: 'revenueSource',
+                  value: widget.source.toJson(),
+                ),
+                AppInputNumber(
+                  name: 'amount',
+                  label: "Amount",
+                  enabled: !(widget.source.unitCost != null &&
+                      widget.source.unitCost! > 0),
+                  validators: [
+                    FormBuilderValidators.required(errorText: "Amount is required"),
+                    FormBuilderValidators.min(widget.source.unitCost ?? 500,
+                        errorText: 'Minimum is ${widget.source.unitCost ?? 500}')
+                  ],
+                  onChanged: (val) => calcSubTotal(),
+                ),
+                AppInputInteger(
+                  name: 'quantity',
+                  initialValue: 1,
+                  label: "Quantity",
+                  suffix: widget.source.unitName != null
+                      ? Text(widget.source.unitName!)
+                      : null,
+                  validators: [
+                    FormBuilderValidators.required(
+                        errorText: "Quantity is required"),
+                    FormBuilderValidators.min(1, errorText: 'Minimum 1')
+                  ],
+                  onChanged: (val) => calcSubTotal(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text(
+                      "Sub Total: ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(currency.format(subTotal))
+                  ],
+                ),
+                AppInputHidden(
+                    fieldName: 'revenueSourceId', value: widget.source.id),
+                AppButton(label: 'Collect Cash', onPress: () => addItem())
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
