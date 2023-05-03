@@ -10,6 +10,7 @@ import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 class PosRegistrationProvider extends ChangeNotifier with MessageNotifierMixin {
   PosRegistration? _posRegistration;
   bool _isLoading = false;
+  bool registrationLoaded = false;
 
   set isLoading(bool val) {
     _isLoading = val;
@@ -26,6 +27,7 @@ class PosRegistrationProvider extends ChangeNotifier with MessageNotifierMixin {
   PosRegistration? get posRegistration => _posRegistration;
 
   loadRegistration() async {
+    registrationLoaded = false;
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? reg = prefs.getString(AppConst.registration);
@@ -35,6 +37,8 @@ class PosRegistrationProvider extends ChangeNotifier with MessageNotifierMixin {
     } catch (e) {
       posRegistration = null;
       notifyError(e.toString());
+    } finally {
+    registrationLoaded = true;
     }
   }
 

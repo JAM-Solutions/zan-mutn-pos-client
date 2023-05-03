@@ -69,9 +69,6 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
               backgroundColor: Theme.of(context).primaryColor,
               child: Text(widget.source.name.substring(0, 1)),
             ),
-            trailing: IconButton(
-                icon: const Icon(Icons.cancel),
-                onPressed: () => Navigator.pop(context)),
           ),
           AppForm(
             initialValue: {

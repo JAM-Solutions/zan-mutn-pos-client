@@ -85,8 +85,9 @@ class _AppState extends State<App> {
     ///else return a router app
     return Consumer2<AppStateProvider, PosRegistrationProvider>(
       builder: (context, provider, regProvider, child) {
-        if(regProvider.posRegistration == null) {
-          return PosRegistrationScreen();
+        if (regProvider.registrationLoaded &&
+            regProvider.posRegistration == null) {
+          return const PosRegistrationScreen();
         }
         return provider.sessionHasBeenFetched && provider.sessionHasBeenFetched
             ? MaterialApp.router(

@@ -24,14 +24,20 @@ class RevenueCollectionProvider extends ChangeNotifier
     with MessageNotifierMixin {
   List<RevenueSource> _filteredSources = List.empty(growable: true);
   List<RevenueSource> _allSources = List.empty(growable: true);
-  final PosStatusProvider posStatusProvider;
-  final PosRegistration posRegistration;
-  final AppDeviceInfo appDeviceInfo;
+   late PosStatusProvider posStatusProvider;
+   late PosRegistration posRegistration;
+   late AppDeviceInfo appDeviceInfo;
   final posTransactionService = getIt<PosTransactionService>();
 
   String? _searchVal;
 
-  RevenueCollectionProvider(this.posStatusProvider, this.posRegistration, this.appDeviceInfo);
+ void update(revenueSourceProvider, posRegistration, posStatusProvider, appDeviceInfo) {
+    this.posStatusProvider = posStatusProvider;
+    this.posRegistration = posRegistration;
+    this.appDeviceInfo = appDeviceInfo;
+    _allSources = revenueSourceProvider.revenueSource;
+    filterSource();
+  }
 
   List<RevenueSource> get revenueSources => _filteredSources;
 
@@ -44,12 +50,6 @@ class RevenueCollectionProvider extends ChangeNotifier
     _searchVal = val;
     filterSource();
   }
-
-  void update(RevenueSourceProvider revenueSourceProvider) {
-    _allSources = revenueSourceProvider.revenueSource;
-    filterSource();
-  }
-
   void filterSource() {
     if (_searchVal != null && _searchVal!.isNotEmpty) {
       revenueSources = _allSources

@@ -36,11 +36,13 @@ final appProviders = [
     create: (_) => LoginProvider(),
     lazy: true,
   ),
-  ChangeNotifierProxyProvider<RevenueSourceProvider, RevenueCollectionProvider>(
-      create: (_) => RevenueCollectionProvider(_.read<PosStatusProvider>(),
-          _.read<PosRegistrationProvider>().posRegistration!, _.read<DeviceInfoProvider>().deviceInfo!),
-      update: (_, revProvider, dashProvider) =>
-          dashProvider!..update(revProvider)),
+  ChangeNotifierProxyProvider4<RevenueSourceProvider, PosRegistrationProvider,
+          PosStatusProvider, DeviceInfoProvider, RevenueCollectionProvider>(
+      create: (_) => RevenueCollectionProvider(),
+      update: (_, sources, registration, status, device, collection) =>
+          collection!
+            ..update(sources, registration.posRegistration, status,
+                device.deviceInfo)),
   ChangeNotifierProxyProvider<AppStateProvider, BillProvider>(
       create: (_) => BillProvider(),
       update: (_, userProvider, generateBillProvider) =>

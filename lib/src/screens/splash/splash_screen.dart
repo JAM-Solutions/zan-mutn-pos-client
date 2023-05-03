@@ -10,7 +10,7 @@ class SplashScreen extends StatelessWidget {
     return   const MaterialApp(
       home:  AppBaseScreen(
         child:  Center(
-        child:  Text("Loading....", textDirection: TextDirection.ltr,),
+        child:  Text("Configuration Loading....", textDirection: TextDirection.ltr,),
         ),
       ),
     );
