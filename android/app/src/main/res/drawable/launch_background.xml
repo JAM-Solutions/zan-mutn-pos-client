@@ -4,12 +4,13 @@
     <item android:drawable="@android:color/white" />
 
     <!-- You can insert your own image assets here -->
-    <item android:gravity="center"
-        android:drawable="@mipmap/logo">
+    <item android:gravity="center">
+        <bitmap
+            android:src="@mipmap/logo"/>
+        <item
+            android:text="Zan-Mutm"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            />
     </item>
-    <item
-        android:text="Zan-Mutm"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        android:gravity="bottom|center_horizontal" />
 </layer-list>
