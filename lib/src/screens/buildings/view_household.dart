@@ -47,14 +47,14 @@ class _ViewHouseHoldScreenState extends State<ViewHouseHoldScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: const [
+                   Row(
+                    children: [
                       SizedBox(
                         width: 20,
                       ),
                       Text('Name'),
                       Spacer(),
-                      Text('Collect Cash'),
+                      Text('Control Number'),
                       SizedBox(
                         width: 20,
                       ),
@@ -74,14 +74,10 @@ class _ViewHouseHoldScreenState extends State<ViewHouseHoldScreen> {
                                   .taxPayerName
                                   .toString()
                                   .toUpperCase()),
-                              trailing: housedetails[index]
-                                          .paymentModeName
-                                          .toString() !=
-                                      'CASHLESS'
-                                  ? Text('199520000005'.toUpperCase())
-                                  : AppButton(
-                                      onPress: () => null,
-                                      label: 'Collect Cash'),
+                              trailing: Text(
+                                  housedetails[index].controlNumber == null
+                                      ? ''
+                                      : housedetails[index].controlNumber),
                             ),
                           ),
                         ],

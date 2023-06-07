@@ -6,8 +6,9 @@ part 'household.g.dart';
 class Households {
   final String taxPayerName;
   final String paymentModeName;
+  var controlNumber;
 
-  Households(this.taxPayerName, this.paymentModeName);
+  Households(this.taxPayerName, this.paymentModeName, this.controlNumber);
 
   factory Households.fromJson(Map<String, dynamic> json) =>
       _$HouseholdsFromJson(json);

@@ -9,6 +9,7 @@ part of 'household.dart';
 Households _$HouseholdsFromJson(Map<String, dynamic> json) => Households(
       json['taxPayerName'] as String,
       json['paymentModeName'] as String,
+      json['controlNumber'],
     );
 
 Map<String, dynamic> _$HouseholdsToJson(Households instance) =>

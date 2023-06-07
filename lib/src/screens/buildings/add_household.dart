@@ -189,16 +189,24 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                         value: 'true',
                       ),
                       if (all)
+                        AppInputHidden(
+                          fieldName: 'adminHierarchyId',
+                          value: adminHierarchyId,
+                        ),
+                      if (all)
                         AppFetcher(
-                            api:
-                                '/admin-hierarchies/children/$adminHierarchyId',
+                            api: '/solid-waste-grades',
                             builder: (items, isloaidng) => AppInputDropDown(
                                     items: items,
-                                    name: 'adminHierarchyId',
-                                    label: 'Sheia',
+                                    name: 'solidWasteGradeId',
+                                    label: 'Solid waste grade',
+                                    onChange: (solidWasteGradeId) => setState(() {
+                                          var id = solidWasteGradeId;
+                                          debugPrint(id.toString());
+                                        }),
                                     validators: [
                                       FormBuilderValidators.required(
-                                          errorText: "Sheia is required")
+                                          errorText: "grade is required")
                                     ])),
                       if (all)
                         AppFetcher(
