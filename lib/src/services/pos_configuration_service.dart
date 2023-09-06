@@ -46,9 +46,6 @@ class PosConfigurationService {
     } on DeadlineExceededException {
       var fromDb = await queryFromDb(taxCollectorUuid);
       return fromDb;
-    } catch (e) {
-      debugPrint(e.toString());
-      return null;
     }
   }
 

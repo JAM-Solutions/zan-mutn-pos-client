@@ -41,7 +41,7 @@ class PosConfigurationProvider extends ChangeNotifier
       posConfiguration = result;
       posConfigIsLoading = false;
       notifyListeners();
-    } catch (e) {
+    }  catch (e) {
       debugPrint(e.toString());
       posConfigIsLoading = false;
       notifyError(e.toString());

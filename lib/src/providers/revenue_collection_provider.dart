@@ -166,9 +166,12 @@ class RevenueCollectionProvider extends ChangeNotifier
         paidDate,
         printedBy,
         qr);
-    if (brand.toUpperCase().contains('V2_PRO')) {
+    if ((brand.toUpperCase().contains('V2')
+        || brand.toUpperCase().contains('V1')) &&
+        !brand.contains('MP3') &&
+        !brand.contains('MP4')) {
       return (await printSunMi(receipt, items));
-    } else if (brand.contains('MP3') || brand.contains('MP4')) {
+    } else if (brand.contains('MP')) {
       return (await printMobiIot(receipt, items));
     } else {
       return "Printer not implemented";
@@ -253,16 +256,28 @@ class RevenueCollectionProvider extends ChangeNotifier
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.title,
           style: {"bold": true, "align": 1});
-      await MobiiotPrinter.printText(r.recNumber, style: {"font": 1,"bold": false,});
-      await MobiiotPrinter.printText(r.payer, style: {"font": 1,"bold": false,});
-      await MobiiotPrinter.printText(r.receTotal, style: {"font": 1,"bold": false,});
-      await MobiiotPrinter.printText(r.status, style: {"font": 1, "bold": false,});
+      await MobiiotPrinter.printText(r.recNumber, style: {
+        "font": 1,
+        "bold": false,
+      });
+      await MobiiotPrinter.printText(r.payer, style: {
+        "font": 1,
+        "bold": false,
+      });
+      await MobiiotPrinter.printText(r.receTotal, style: {
+        "font": 1,
+        "bold": false,
+      });
+      await MobiiotPrinter.printText(r.status, style: {
+        "font": 1,
+        "bold": false,
+      });
       await MobiiotPrinter.lineWrap(1); // Jump 2 lines
       // Center align
       for (var item in items) {
         await MobiiotPrinter.printText(
             '${item.revenueSource.name}   ${item.quantity} x ${currency.format(item.amount)}',
-            style: {"font": 1, "align":2});
+            style: {"font": 1, "align": 2});
       }
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.paid, style: {"align": 2, "font": 1});
