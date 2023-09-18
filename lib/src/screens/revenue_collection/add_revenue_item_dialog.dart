@@ -12,6 +12,7 @@ import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_integer.dart';
+import 'package:zanmutm_pos_client/src/widgets/app_input_integer_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_number.dart';
 
 class AddRevenueItemDialog {
@@ -98,7 +99,7 @@ class AddRevenueItemDialog {
                     ],
                     onChanged: (val) => calcSubTotal(),
                   ),
-                  AppInputInteger(
+                  AppInputIntegerButton(
                     name: 'quantity',
                     initialValue: 1,
                     label: "Quantity",

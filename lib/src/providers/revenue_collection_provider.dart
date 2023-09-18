@@ -123,6 +123,7 @@ class RevenueCollectionProvider extends ChangeNotifier
       String date,
       uuid,
       String brand) async {
+    DateTime now = DateTime.now();
     Uint8List? logo;
     try {
       logo = (await rootBundle.load('assets/images/logo.jpeg'))
@@ -134,8 +135,8 @@ class RevenueCollectionProvider extends ChangeNotifier
     String gov = "SERIKALI YA MAPINDUZI ZANZIBAR";
     String council =
         "(OR-TMSMIM) BARAZA LA MANISPAA \n ${user.adminHierarchyName}";
-    String phone = 'Simu: +255716340430';
-    String email = 'Email: mlandege.go.tz';
+    String phone = 'Simu: 0242230034';
+    String email = 'Email: info@tamisemim.go.tz';
     String title = 'STAKABADHI YA MALIPO';
     String recNumber = 'Namba ya risit: $receiptNumber';
     String payer = 'Jina la Mlipaji: ${payerName ?? ''}';
@@ -145,7 +146,8 @@ class RevenueCollectionProvider extends ChangeNotifier
     String receTotal = 'Malipo kwa Tarakimu: $total';
     String status = 'Hali ya Malipo: PAID';
     String paid = 'Jumla $total';
-    String paidDate = 'Tarehe ya Kutoa risiti: $date';
+    String paidDate = 'Tarehe : $date';
+    String receiptTime = 'Muda : ${now.hour}:${now.minute}';
     String printedBy =
         'Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
     String qr =
@@ -164,6 +166,7 @@ class RevenueCollectionProvider extends ChangeNotifier
         status,
         paid,
         paidDate,
+        receiptTime,
         printedBy,
         qr);
     if (brand.toUpperCase().contains('V2_PRO')) {
@@ -192,6 +195,12 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText(r.phone,
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
+      await SunmiPrinter.printText(r.paidDate,
+          style: SunmiStyle(
+              align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
+      await SunmiPrinter.printText(r.receiptTime,
+          style: SunmiStyle(
+              align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.printText(r.email,
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
@@ -218,8 +227,6 @@ class RevenueCollectionProvider extends ChangeNotifier
       await SunmiPrinter.printText(r.paid,
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.RIGHT));
       await SunmiPrinter.lineWrap(2);
-      await SunmiPrinter.printText(r.paidDate,
-          style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.printText(r.printedBy,
           style: SunmiStyle(fontSize: SunmiFontSize.MD));
       await SunmiPrinter.lineWrap(1);
@@ -250,24 +257,37 @@ class RevenueCollectionProvider extends ChangeNotifier
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.phone, style: {"font": 1, "align": 1});
       await MobiiotPrinter.printText(r.email, style: {"font": 1, "align": 1});
+      await MobiiotPrinter.printText(r.paidDate, style: {"font": 1, "align": 1});
+      await MobiiotPrinter.printText(r.receiptTime, style: {"font": 1, "align": 1});
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.title,
           style: {"bold": true, "align": 1});
-      await MobiiotPrinter.printText(r.recNumber, style: {"font": 1,"bold": false,});
-      await MobiiotPrinter.printText(r.payer, style: {"font": 1,"bold": false,});
-      await MobiiotPrinter.printText(r.receTotal, style: {"font": 1,"bold": false,});
-      await MobiiotPrinter.printText(r.status, style: {"font": 1, "bold": false,});
+      await MobiiotPrinter.printText(r.recNumber, style: {
+        "font": 1,
+        "bold": false,
+      });
+      await MobiiotPrinter.printText(r.payer, style: {
+        "font": 1,
+        "bold": false,
+      });
+      await MobiiotPrinter.printText(r.receTotal, style: {
+        "font": 1,
+        "bold": false,
+      });
+      await MobiiotPrinter.printText(r.status, style: {
+        "font": 1,
+        "bold": false,
+      });
       await MobiiotPrinter.lineWrap(1); // Jump 2 lines
       // Center align
       for (var item in items) {
         await MobiiotPrinter.printText(
             '${item.revenueSource.name}   ${item.quantity} x ${currency.format(item.amount)}',
-            style: {"font": 1, "align":2});
+            style: {"font": 1, "align": 2});
       }
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.paid, style: {"align": 2, "font": 1});
       await MobiiotPrinter.lineWrap(2);
-      await MobiiotPrinter.printText(r.paidDate, style: {"font": 1});
       await MobiiotPrinter.printText(r.printedBy, style: {"font": 1});
       await MobiiotPrinter.lineWrap(8);
       await MobiiotPrinter.unbindingPrinter();
