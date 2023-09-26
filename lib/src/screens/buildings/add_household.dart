@@ -174,7 +174,10 @@ class _AddHouseHoldScreenState extends State<AddHouseHoldScreen> {
                             label: 'Email',
                             validators: [
                               FormBuilderValidators.required(
-                                  errorText: "Email is required")
+                                  errorText: "Email is required"),
+                              FormBuilderValidators.email(
+                                errorText: "Please enter a valid email address",
+                              ),
                             ]),
                       if (all)
                         AppInputText(

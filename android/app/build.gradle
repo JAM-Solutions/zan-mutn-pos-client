@@ -53,7 +53,7 @@ android {
 
     defaultConfig {
         applicationId "tz.go.zanmutm.pos"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

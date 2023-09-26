@@ -16,6 +16,7 @@ class Receipt {
   final String paidDate;
   final String printedBy;
   final String qr;
+  final String receiptTime;
 
   Receipt(
       this.logo,
@@ -32,5 +33,7 @@ class Receipt {
       this.paid,
       this.paidDate,
       this.printedBy,
-      this.qr);
+      this.qr,
+      this.receiptTime
+      );
 }
