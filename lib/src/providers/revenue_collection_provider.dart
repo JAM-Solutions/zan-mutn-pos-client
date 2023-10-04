@@ -257,8 +257,10 @@ class RevenueCollectionProvider extends ChangeNotifier
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.phone, style: {"font": 1, "align": 1});
       await MobiiotPrinter.printText(r.email, style: {"font": 1, "align": 1});
-      await MobiiotPrinter.printText(r.paidDate, style: {"font": 1, "align": 1});
-      await MobiiotPrinter.printText(r.receiptTime, style: {"font": 1, "align": 1});
+      await MobiiotPrinter.printText(r.paidDate,
+          style: {"font": 1, "align": 1});
+      await MobiiotPrinter.printText(r.receiptTime,
+          style: {"font": 1, "align": 1});
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.title,
           style: {"bold": true, "align": 1});
