@@ -146,9 +146,11 @@ class RevenueCollectionProvider extends ChangeNotifier
     String status = 'Hali ya Malipo: PAID';
     String paid = 'Jumla $total';
     String paidDate = 'Tarehe : $date';
-    String receiptTime = 'Muda : ${now.hour}:${now.minute}';
+    String receiptTime = '${now.hour}:${now.minute}';
     String printedBy =
         'Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
+    String collectionPointName =
+        'Collection Point: ${user.collectionPointName ?? ''}';
     String qr =
         'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
     Receipt receipt = Receipt(
@@ -165,9 +167,10 @@ class RevenueCollectionProvider extends ChangeNotifier
         status,
         paid,
         paidDate,
-        receiptTime,
         printedBy,
-        qr);
+        qr,
+      receiptTime,
+        collectionPointName);
     if (brand.toUpperCase().contains('V2_PRO')) {
       return (await printSunMi(receipt, items));
     } else if (brand.contains('MP3') || brand.contains('MP4')) {
@@ -190,14 +193,13 @@ class RevenueCollectionProvider extends ChangeNotifier
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText(r.council,
           style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
+      await SunmiPrinter.printText(r.collectionPointName,
+          style: SunmiStyle(bold: true, align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.line();
       await SunmiPrinter.printText(r.phone,
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText(r.paidDate,
-          style: SunmiStyle(
-              align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
-      await SunmiPrinter.printText(r.receiptTime,
+      await SunmiPrinter.printText('${r.paidDate}  ${r.receiptTime}',
           style: SunmiStyle(
               align: SunmiPrintAlign.CENTER, fontSize: SunmiFontSize.SM));
       await SunmiPrinter.printText(r.email,
@@ -256,9 +258,7 @@ class RevenueCollectionProvider extends ChangeNotifier
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.phone, style: {"font": 1, "align": 1});
       await MobiiotPrinter.printText(r.email, style: {"font": 1, "align": 1});
-      await MobiiotPrinter.printText(r.paidDate,
-          style: {"font": 1, "align": 1});
-      await MobiiotPrinter.printText(r.receiptTime,
+      await MobiiotPrinter.printText('${r.paidDate} ${r.receiptTime}',
           style: {"font": 1, "align": 1});
       await MobiiotPrinter.printText(line, style: {"align": 1, "font": 1});
       await MobiiotPrinter.printText(r.title,

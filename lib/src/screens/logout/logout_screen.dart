@@ -41,7 +41,7 @@ class _LogoutScreenState extends State<LogoutScreen> {
           return MessageListener<GenerateBillProvider>(
               child: AppBaseScreen(
             appBar: AppBar(
-              title: Text("Logout"),
+              title: const Text("Logout"),
             ),
             child: GenerateBillBuilder(
                 provider: provider,
@@ -49,39 +49,39 @@ class _LogoutScreenState extends State<LogoutScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                  if (provider.generatedBill != null)
-                    AppDetailCard(
-                        elevation: 0,
-                        title: "Generated Bill",
-                        data: {},
-                        columns: [
-                          AppDetailColumn(
-                              header: 'Amount',
-                              value: provider.generatedBill!.amount,
-                              format: FormatType.currency),
-                          AppDetailColumn(
-                              header: 'Control Number',
-                              value: provider.generatedBill!.controlNumber),
-                          AppDetailColumn(
-                              header: 'Due time',
-                              value: provider.generatedBill!.dueTime
-                                  ?.toIso8601String(),
-                              format: FormatType.date),
-                          AppDetailColumn(
-                              header: 'Expire On',
-                              value: provider.generatedBill!.expireDate
-                                  ?.toIso8601String(),
-                              format: FormatType.date)
-                        ]),
-                  if (provider.generatedBill == null)
-                    Text("No pending transaction found"),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  AppButton(
-                      onPress: () => _clearConfig(),
-                      label: "Click here to complete Logout")
-                ])),
+                      if (provider.generatedBill != null)
+                        AppDetailCard(
+                            elevation: 0,
+                            title: "Generated Bill",
+                            data: {},
+                            columns: [
+                              AppDetailColumn(
+                                  header: 'Amount',
+                                  value: provider.generatedBill!.amount,
+                                  format: FormatType.currency),
+                              AppDetailColumn(
+                                  header: 'Control Number',
+                                  value: provider.generatedBill!.controlNumber),
+                              AppDetailColumn(
+                                  header: 'Due time',
+                                  value: provider.generatedBill!.dueTime
+                                      ?.toIso8601String(),
+                                  format: FormatType.date),
+                              AppDetailColumn(
+                                  header: 'Expire On',
+                                  value: provider.generatedBill!.expireDate
+                                      ?.toIso8601String(),
+                                  format: FormatType.date)
+                            ]),
+                      if (provider.generatedBill == null)
+                        const Text("No pending transaction found"),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      AppButton(
+                          onPress: () => _clearConfig(),
+                          label: "Click here to complete Logout")
+                    ])),
           ));
         },
       ),

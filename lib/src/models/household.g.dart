@@ -16,4 +16,5 @@ Map<String, dynamic> _$HouseholdsToJson(Households instance) =>
     <String, dynamic>{
       'taxPayerName': instance.taxPayerName,
       'paymentModeName': instance.paymentModeName,
+      'controlNumber': instance.controlNumber,
     };

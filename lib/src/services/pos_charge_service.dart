@@ -13,8 +13,12 @@ class PosChargeService {
         .toList();
   }
 
-  Future<Bill> createBill(String taxCollectorUuid) async {
+  Future<Bill?> createBill(String taxCollectorUuid) async {
     var resp =  await Api().dio.post('$api/create-bill/$taxCollectorUuid');
-    return Bill.fromJson(resp.data['data']);
+    if(resp.data['data'] != null) {
+      return Bill.fromJson(resp.data['data']);
+    } else{
+      return null;
+    }
   }
 }
