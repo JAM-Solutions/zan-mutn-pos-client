@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
-import 'package:zanmutm_pos_client/src/providers/cart_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
-import 'package:zanmutm_pos_client/src/screens/dashboard/dashboard_screen.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
@@ -28,7 +25,6 @@ class AddRevenueItemScreen extends StatefulWidget {
 class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
   final _addItemForm = GlobalKey<FormBuilderState>();
   double subTotal = 0;
-
 
   @override
   void initState() {
@@ -89,9 +85,11 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
                   enabled: !(widget.source.unitCost != null &&
                       widget.source.unitCost! > 0),
                   validators: [
-                    FormBuilderValidators.required(errorText: "Amount is required"),
+                    FormBuilderValidators.required(
+                        errorText: "Amount is required"),
                     FormBuilderValidators.min(widget.source.unitCost ?? 500,
-                        errorText: 'Minimum is ${widget.source.unitCost ?? 500}')
+                        errorText:
+                            'Minimum is ${widget.source.unitCost ?? 500}')
                   ],
                   onChanged: (val) => calcSubTotal(),
                 ),
@@ -99,6 +97,7 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
                   name: 'quantity',
                   initialValue: 1,
                   label: "Quantity",
+                  showSteps: true,
                   suffix: widget.source.unitName != null
                       ? Text(widget.source.unitName!)
                       : null,
@@ -109,16 +108,19 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
                   ],
                   onChanged: (val) => calcSubTotal(),
                 ),
+                const Divider(color: Colors.black,),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
                       "Sub Total: ",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    Text(currency.format(subTotal))
+                    Text(currency.format(subTotal),
+                      style: const TextStyle(fontWeight: FontWeight.bold),)
                   ],
                 ),
+                const Divider(color: Colors.black,),
                 AppInputHidden(
                     fieldName: 'revenueSourceId', value: widget.source.id),
                 AppButton(label: 'Collect Cash', onPress: () => addItem())

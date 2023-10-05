@@ -15,7 +15,6 @@ import 'package:zanmutm_pos_client/src/models/receipt.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/models/user.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
-import 'package:zanmutm_pos_client/src/providers/revenue_source_provider.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';

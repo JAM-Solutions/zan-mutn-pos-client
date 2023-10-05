@@ -19,6 +19,6 @@ class DeviceInfoProvider extends ChangeNotifier {
 
   Future<void> loadDevice() async {
     final DeviceInfoPlugin infoPlugin = DeviceInfoPlugin();
-    deviceInfo = await deviceInfoService.getInfo(infoPlugin);
+    deviceInfo = await DeviceInfoService().getInfo(infoPlugin);
   }
 }

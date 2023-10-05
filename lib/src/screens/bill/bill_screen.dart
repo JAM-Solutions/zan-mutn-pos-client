@@ -53,6 +53,9 @@ class _BillScreenState extends State<BillScreen> {
                                 value: item.amount,
                                 format: FormatType.currency),
                             AppDetailColumn(
+                                header: 'Status',
+                                value: item.statusName),
+                            AppDetailColumn(
                                 header: 'Control Number',
                                 value: item.controlNumber),
                             AppDetailColumn(
