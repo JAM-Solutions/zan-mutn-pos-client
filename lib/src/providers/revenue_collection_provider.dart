@@ -150,7 +150,7 @@ class RevenueCollectionProvider extends ChangeNotifier
     String printedBy =
         'Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
     String collectionPointName =
-        'Collection Point: ${user.collectionPointName ?? ''}';
+        'Collection Point: _____________________';
     String qr =
         'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
     Receipt receipt = Receipt(
@@ -169,11 +169,14 @@ class RevenueCollectionProvider extends ChangeNotifier
         paidDate,
         printedBy,
         qr,
-      receiptTime,
+        receiptTime,
         collectionPointName);
-    if (brand.toUpperCase().contains('V2_PRO')) {
+    if (brand.toUpperCase().contains('V2_PRO') ||
+        brand.toUpperCase().contains('V1')) {
       return (await printSunMi(receipt, items));
-    } else if (brand.contains('MP3') || brand.contains('MP4')) {
+    } else if (brand.contains('MP2') ||
+        brand.contains('MP3') ||
+        brand.contains('MP4') || brand.contains('MP')) {
       return (await printMobiIot(receipt, items));
     } else {
       return "Printer not implemented";
