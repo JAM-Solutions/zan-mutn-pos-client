@@ -20,7 +20,8 @@ class AppInputInteger extends StatefulWidget {
       this.validators = const [],
       this.initialValue,
       this.suffix,
-      this.onChanged,  this.showSteps =false});
+      this.onChanged,
+      this.showSteps = false});
 
   @override
   State<AppInputInteger> createState() => _AppInputIntegerState();
@@ -60,32 +61,44 @@ class _AppInputIntegerState extends State<AppInputInteger> {
                   onChanged: (value) {
                     onChange(field, value);
                   }),
-              if(widget.showSteps)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        int old = int.parse(_controller.text ?? '0');
-                        var newValue = (old > 0 ? old - 1 : 0).toString();
-                        setState(() {
-                          _controller.text = newValue;
-                        });
-                        onChange(field, newValue);
-                      },
-                      icon: const Icon(Icons.remove_circle_outlined,color: Colors.redAccent,)),
-                  IconButton(
-                      onPressed: () {
-                        var newValue =
-                            (int.parse(_controller.text ?? '0') + 1).toString();
-                        setState(() {
-                          _controller.text = newValue;
-                        });
-                        onChange(field, newValue);
-                      },
-                      icon:  Icon(Icons.add_circle,color: Theme.of(context).primaryColor,))
-                ],
-              )
+              if (widget.showSteps)
+                const SizedBox(
+                  height: 15,
+                ),
+              if (widget.showSteps)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          int old = int.parse(_controller.text ?? '0');
+                          var newValue = (old > 0 ? old - 1 : 0).toString();
+                          setState(() {
+                            _controller.text = newValue;
+                          });
+                          onChange(field, newValue);
+                        },
+                        icon: const Icon(
+                          Icons.remove_circle_outlined,
+                          color: Colors.redAccent,
+                        )),
+                    const SizedBox(width: 60,),
+                    IconButton(
+                        onPressed: () {
+                          var newValue =
+                              (int.parse(_controller.text ?? '0') + 1)
+                                  .toString();
+                          setState(() {
+                            _controller.text = newValue;
+                          });
+                          onChange(field, newValue);
+                        },
+                        icon: Icon(
+                          Icons.add_circle,
+                          color: Theme.of(context).primaryColor,
+                        ))
+                  ],
+                )
             ],
           );
         }));

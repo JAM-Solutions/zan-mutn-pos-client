@@ -11,7 +11,6 @@ import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_form.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_hidden.dart';
-import 'package:zanmutm_pos_client/src/widgets/app_input_integer.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_integer_button.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_input_number.dart';
 
