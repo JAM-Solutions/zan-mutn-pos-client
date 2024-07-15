@@ -126,24 +126,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           )));
 
-  _buildSync(String limit, String value, String type) => Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.warning_rounded,
-              size: 48,
-            ),
-            Text(
-              'You have reached Offline $limit limit of $value $type please connect pos and sync transactions',
-              textAlign: TextAlign.center,
-            ),
-            AppButton(
-                onPress: () =>
-                    context.read<PosStatusProvider>().syncTransactions(_user!.taxCollectorUuid!),
-                label: 'Synchronize')
-          ],
+  _buildSync(String limit, String value, String type) => MessageListener<PosStatusProvider>(
+    child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.warning_rounded,
+                size: 48,
+              ),
+              Text(
+                'You have reached Offline $limit limit of $value $type please connect pos and sync transactions',
+                textAlign: TextAlign.center,
+              ),
+              AppButton(
+                  onPress: () =>
+                      context.read<PosStatusProvider>().syncTransactions(_user!.taxCollectorUuid!),
+                  label: 'Synchronize')
+            ],
+          ),
         ),
-      );
+  );
 }

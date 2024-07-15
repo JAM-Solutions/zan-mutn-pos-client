@@ -9,6 +9,11 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  ElevatedButton(
-        onPressed: () => onPress(), child: Text(label));
+        onPressed: () => onPress(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).primaryColor, // Set the background color
+      ),
+        child: Text(label),
+    );
   }
 }

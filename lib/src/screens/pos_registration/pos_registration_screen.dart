@@ -45,6 +45,7 @@ class _PosRegistrationScreenState extends State<PosRegistrationScreen> {
           return MessageListener<PosRegistrationProvider>(
             child: AppBaseScreen(
               isLoading: provider.isLoading,
+              padding:const EdgeInsets.symmetric(horizontal: 40),
               child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -64,7 +65,8 @@ class _PosRegistrationScreenState extends State<PosRegistrationScreen> {
                                   errorText: 'IMEI is required')
                             ],
                           ),
-                          AppButton(onPress: () => fetchRegistration(context),
+                          AppButton(
+                              onPress: () => fetchRegistration(context),
                               label: 'Register')
                         ],
                       ),

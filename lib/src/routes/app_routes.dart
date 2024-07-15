@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:zanmutm_pos_client/src/app.dart';
 import 'package:zanmutm_pos_client/src/models/building.dart';
 import 'package:zanmutm_pos_client/src/providers/app_state_provider.dart';
 import 'package:zanmutm_pos_client/src/providers/tab_provider.dart';
@@ -180,11 +181,19 @@ class AppRoute {
           var appState = context.read<AppStateProvider>();
           //If user is
           final isLoginRoute = state.subloc == AppRoute.login;
+          final isLogout = state.subloc == AppRoute.logout;
           final isConfigRoute = state.subloc.contains(AppRoute.config);
           final toRoute = state.subloc;
-          //If is state is not logged in return login
+          /**
+           * If user not authenticated and route is not login rout then
+           * return login route.
+           * Else if user authenticated and configuration has been loaded but
+           * POS not configured successfully then go to config route
+           */
           if (!appState.isAuthenticated) {
             return isLoginRoute ? null : AppRoute.login;
+          } else if(appState.isAuthenticated && isLogout) {
+            return AppRoute.logout;
           } else if (appState.isAuthenticated &&
               appState.configurationHasBeenLoaded &&
               !appState.isConfigured) {

@@ -25,11 +25,11 @@ class AppInputText extends StatelessWidget {
         validator: FormBuilderValidators.compose(validators),
         builder: ((field) {
           return TextFormField(
-
               decoration: InputDecoration(
                 suffixIcon: suffixIcon,
                 label: Text(label),
                 errorText: field.errorText,
+                border: const OutlineInputBorder()
               ),
               initialValue: field.value,
               obscureText: obscureText,

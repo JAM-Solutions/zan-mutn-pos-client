@@ -1,12 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zanmutm_pos_client/src/api/api.dart';
 import 'package:zanmutm_pos_client/src/db/db.dart';
+import 'package:zanmutm_pos_client/src/mixin/message_notifier_mixin.dart';
 import 'package:zanmutm_pos_client/src/services/pos_transaction_service.dart';
 import 'package:zanmutm_pos_client/src/services/service.dart';
 import 'package:zanmutm_pos_client/src/utils/app_const.dart';
 
-class PosStatusProvider with ChangeNotifier {
+class PosStatusProvider with ChangeNotifier, MessageNotifierMixin {
 
   final posTransactionService = getIt<PosTransactionService>();
 
@@ -70,6 +72,10 @@ class PosStatusProvider with ChangeNotifier {
      if(synced) {
        resetOfflineTime();
      }
+    } on NoInternetConnectionException {
+      notifyError("No internet connection");
+    } on DeadlineExceededException {
+      notifyError("Connection time out");
     } catch (e) {
       debugPrint(e.toString());
     }

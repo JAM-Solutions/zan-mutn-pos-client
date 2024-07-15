@@ -72,6 +72,7 @@ class RevenueCollectionProvider extends ChangeNotifier
         .replaceAll(':', '')
         .replaceAll('.', '');
     String receiptNumber = transactionId;
+
     // Try printing receipt if fail it return print error
     String? printError = await _printReceipt(
         items,
@@ -82,6 +83,12 @@ class RevenueCollectionProvider extends ChangeNotifier
         user.taxCollectorUuid,
         appDeviceInfo.model);
     //For each cart items map then to PosTransaction object
+    bool isPrinted = printError == null;
+
+    // Take only 180 char snapshot of the print error to save space
+    if(!isPrinted) {
+      printError = truncateString(printError,180);
+    }
     List<PosTransaction> posTxns = items
         .map((item) => PosTransaction.fromCashCollection(
             transactionId,
