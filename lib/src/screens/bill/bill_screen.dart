@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/listeners/message_listener.dart';
 import 'package:zanmutm_pos_client/src/models/format_type.dart';
@@ -27,7 +27,12 @@ class _BillScreenState extends State<BillScreen> {
     return Consumer<BillProvider>(
       builder: (context, provider, child) {
         return MessageListener<BillProvider>(
-          child: AppBaseTabScreen(child: Builder(builder: (_) {
+          child: AppBaseTabScreen(
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => provider.loadPendingBills(),
+                child: const Icon(Icons.refresh),
+              ),
+              child: Builder(builder: (_) {
             if (provider.retryError != null || !provider.posIsConnected) {
               return Center(
                 child: Column(
@@ -44,7 +49,8 @@ class _BillScreenState extends State<BillScreen> {
                     itemBuilder: (BuildContext _, int index) {
                       var item = provider.bills[index];
                       return AppDetailCard(
-                          elevation: 0,
+                          elevation: 1,
+                          isNumbered: true,
                           title: (index + 1).toString(),
                           data: item.toJson(),
                           columns: [
@@ -59,8 +65,8 @@ class _BillScreenState extends State<BillScreen> {
                                 header: 'Control Number',
                                 value: item.controlNumber),
                             AppDetailColumn(
-                                header: 'Due time',
-                                value: item.dueTime?.toIso8601String(),
+                                header: 'Created At',
+                                value: item.createdAt?.toIso8601String(),
                                 format: FormatType.date),
                             AppDetailColumn(
                                 header: 'Expire On',

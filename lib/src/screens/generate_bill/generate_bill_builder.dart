@@ -52,7 +52,7 @@ class GenerateBillBuilder extends StatelessWidget {
               children: [
                 AppDetailCard(
                   title: 'Un compiled transactions',
-                  elevation: 0,
+                  elevation: 1,
                   data: {},
                   columns: [
                     AppDetailColumn(

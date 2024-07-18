@@ -18,6 +18,9 @@ Bill _$BillFromJson(Map<String, dynamic> json) => Bill(
       (json['amount'] as num).toDouble(),
       json['controlNumber'] as String?,
       json['statusName'] as String?,
+      json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$BillToJson(Bill instance) => <String, dynamic>{
@@ -28,4 +31,5 @@ Map<String, dynamic> _$BillToJson(Bill instance) => <String, dynamic>{
       'amount': instance.amount,
       'controlNumber': instance.controlNumber,
       'statusName': instance.statusName,
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

@@ -86,8 +86,8 @@ class RevenueCollectionProvider extends ChangeNotifier
     bool isPrinted = printError == null;
 
     // Take only 180 char snapshot of the print error to save space
-    if(!isPrinted) {
-      printError = truncateString(printError,180);
+    if (!isPrinted) {
+      printError = truncateString(printError, 180);
     }
     List<PosTransaction> posTxns = items
         .map((item) => PosTransaction.fromCashCollection(
@@ -156,8 +156,7 @@ class RevenueCollectionProvider extends ChangeNotifier
     String receiptTime = '${now.hour}:${now.minute}';
     String printedBy =
         'Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
-    String collectionPointName =
-        'Collection Point: _____________________';
+    String collectionPointName = 'Collection Point: ${user.collectionPointName ?? '__________'}';
     String qr =
         'Jina la Mlipaji: ${payerName}, \n Namba ya risit: $receiptNumber, \n Total $total, \n Jina la mtoa risiti: ${user.firstName} ${user.lastName}';
     Receipt receipt = Receipt(
@@ -178,15 +177,14 @@ class RevenueCollectionProvider extends ChangeNotifier
         qr,
         receiptTime,
         collectionPointName);
-    if (brand.toUpperCase().contains('V2_PRO') ||
-        brand.toUpperCase().contains('V1')) {
+    List<String> sunMiBrands = ['V1', 'V2_PRO', 'V2S_PLUS','V2S', 'V3_MIX','L2S', 'L2KS','L2H','M2', 'P3_MIX', 'P2_PRO','P2_SE','P2','T2', 'V2'];
+    List<String> mpBrands = ['MP2', 'MP3', 'MP4', 'MP'];
+    if (sunMiBrands.any((b) => brand.toUpperCase().contains(b))) {
       return (await printSunMi(receipt, items));
-    } else if (brand.contains('MP2') ||
-        brand.contains('MP3') ||
-        brand.contains('MP4') || brand.contains('MP')) {
+    } else if (mpBrands.any((b) => brand.toUpperCase().contains(b))) {
       return (await printMobiIot(receipt, items));
     } else {
-      return "Printer not implemented";
+      return "${brand.toUpperCase()} Printer not implemented";
     }
   }
 

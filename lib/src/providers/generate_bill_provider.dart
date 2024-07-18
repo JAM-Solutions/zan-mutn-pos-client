@@ -102,7 +102,7 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
 
   syncAndLoad(String taxCollectorUuid) async {
     await _syncTransaction(taxCollectorUuid);
-    await _getUnCompiled();
+    await getUnCompiled();
   }
 
 //Sync all transaction saved locally in pos device
@@ -122,7 +122,7 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
   }
 
   // Get all Un compiled transaction to generate Charge Summary
-  _getUnCompiled() async {
+  getUnCompiled() async {
     if (_transactionSynced) {
       try {
         List<PosTransaction> transaction =
@@ -208,7 +208,7 @@ class GenerateBillProvider extends ChangeNotifier with MessageNotifierMixin {
       return;
     }
     else if (_taxCollectorUnCompiled.isEmpty) {
-      _getUnCompiled();
+      getUnCompiled();
     }
     else if (!_allTransactionsCompiled) {
       compileTransactions();

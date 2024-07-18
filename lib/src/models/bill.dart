@@ -11,9 +11,10 @@ class Bill {
   final double amount;
   final String? controlNumber;
   final String? statusName;
+  final DateTime? createdAt;
 
   Bill(this.id, this.uuid, this.dueTime, this.expireDate, this.amount,
-      this.controlNumber, this.statusName);
+      this.controlNumber, this.statusName, this.createdAt);
 
   factory Bill.fromJson(Map<String, dynamic> json) => _$BillFromJson(json);
 

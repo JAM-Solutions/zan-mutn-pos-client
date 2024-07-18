@@ -30,6 +30,10 @@ class _GenerateBillScreenState extends State<GenerateBillScreen> {
         builder: (context, provider, child) {
           return MessageListener<GenerateBillProvider>(
             child: AppBaseTabScreen(
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () => provider.getUnCompiled(),
+                  child: const Icon(Icons.refresh),
+                ),
                 child: GenerateBillBuilder(
                   provider: provider,
                   child: const Center(
