@@ -45,7 +45,7 @@ class _PosRegistrationScreenState extends State<PosRegistrationScreen> {
           return MessageListener<PosRegistrationProvider>(
             child: AppBaseScreen(
               isLoading: provider.isLoading,
-              padding:const EdgeInsets.symmetric(horizontal: 40),
+              padding:const EdgeInsets.symmetric(horizontal: 20),
               child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

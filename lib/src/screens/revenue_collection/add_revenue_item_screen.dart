@@ -55,7 +55,7 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
     return Consumer<PosConfigurationProvider>(
         builder: (context, configProvider, child) {
           var maxUnitCost = configProvider.posConfiguration?.amountLimit ?? 400000;
-          var minUnitCost = widget.source.unitCost ?? 500;
+          var minUnitCost = widget.source.unitCost ?? 50;
           int maxUnits = maxUnitCost ~/ minUnitCost;
 
           return AppBaseScreen(

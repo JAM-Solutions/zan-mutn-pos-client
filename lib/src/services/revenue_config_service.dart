@@ -19,7 +19,7 @@ class RevenueSourceService {
             .map((e) => RevenueSource.fromJson(e))
             .toList();
         // Store to db
-        await storeToDb(sources);
+        await storeToDb(sources, taxCollectorUuid);
         return sources;
       }
     } on NoInternetConnectionException {
@@ -45,10 +45,10 @@ class RevenueSourceService {
   }
 
   ///Save pos config to database
-  Future<void> storeToDb(List<RevenueSource> sources) async {
+  Future<void> storeToDb(List<RevenueSource> sources, String taxCollectorUuid) async {
     try {
       var db = await DbProvider().database;
-      await db.delete(tableName);
+      await db.delete(tableName, where: 'taxCollectorUuid=?', whereArgs: [taxCollectorUuid]);
       for (var source in sources) {
         var data = {
           ...source.toJson(),
