@@ -118,27 +118,29 @@ class RevenueItems extends StatelessWidget {
             .map((item) => InkWell(
                   // onTap: () => AddRevenueItemDialog(context).addItem(item),
                   onTap: () => openAddItemPage(item),
-                  child: Column(children: [
-                    Card(
-                        elevation: 2,
-                        child: Container(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              _buildAvatar(item),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              _buildTitle(item),
-                              const SizedBox(
-                                height: 4,
-                              ),
-                              _buildSubTitle(item)
-                            ],
-                          ),
-                        )) ],)
+                  child: Row(children: [
+                    Expanded(
+                      child: Card(
+                          elevation: 2,
+                          child: Container(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                _buildAvatar(item),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                _buildTitle(item),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                _buildSubTitle(item)
+                              ],
+                            ),
+                          )),
+                    ) ],)
                 ))
             .toList(),
       );
