@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:zanmutm_pos_client/src/models/cart_item.dart';
 import 'package:zanmutm_pos_client/src/models/revenue_source.dart';
 import 'package:zanmutm_pos_client/src/providers/pos_configuration_provider.dart';
+import 'package:zanmutm_pos_client/src/providers/pos_status_provider.dart';
 import 'package:zanmutm_pos_client/src/routes/app_routes.dart';
 import 'package:zanmutm_pos_client/src/utils/helpers.dart';
 import 'package:zanmutm_pos_client/src/widgets/app_base_screen.dart';
@@ -52,9 +53,11 @@ class _AddRevenueItemScreenState extends State<AddRevenueItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PosConfigurationProvider>(
-        builder: (context, configProvider, child) {
-          var maxUnitCost = configProvider.posConfiguration?.amountLimit ?? 400000;
+    return Consumer2<PosConfigurationProvider,PosStatusProvider>(
+        builder: (context, configProvider,statusProvide, child) {
+          var limitAmount = configProvider.posConfiguration?.amountLimit ?? 400000;
+          var totalCollection = statusProvide.totalCollection ?? 0;
+          var maxUnitCost = limitAmount - totalCollection;
           var minUnitCost = widget.source.unitCost ?? 50;
           int maxUnits = maxUnitCost ~/ minUnitCost;
 
